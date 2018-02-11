@@ -1,0 +1,15 @@
+﻿displayName = Box of Gadgets
+author = DarkLight
+version = 0.0.1.0
+homepage =
+dllReferences =
+modReferences =
+weakReferences =
+buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, .git\*, LICENSE, .gitignore, .gitattributes, excluded\*
+languageVersion = 6
+side = Both
+noCompile = false
+hideCode = true
+hideResources = true
+includeSource = false
+includePDB = false

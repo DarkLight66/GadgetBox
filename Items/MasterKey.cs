@@ -1,0 +1,41 @@
+﻿using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.Localization;
+
+namespace GadgetBox.Items
+{
+    public class MasterKey : ModItem
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.AddTranslation(GameCulture.Spanish, "Llave maestra");
+            Tooltip.SetDefault("Opens any lock");
+            Tooltip.AddTranslation(GameCulture.Spanish, "Abre cualquier cerradura");
+        }
+
+        public override void SetDefaults()
+        {
+            item.width = 16;
+            item.height = 34;
+            item.value = Item.sellPrice(gold: 10);
+            item.rare = 6;
+        }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemID.GoldenKey, 10);
+            recipe.AddIngredient(ItemID.ShadowKey);
+            recipe.AddIngredient(ItemID.HallowedKey);
+            recipe.AddIngredient(ItemID.CorruptionKey);
+            recipe.AddIngredient(ItemID.CrimsonKey);
+            recipe.AddIngredient(ItemID.FrozenKey);
+            recipe.AddIngredient(ItemID.JungleKey);
+            recipe.AddIngredient(ItemID.TempleKey);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
+    }
+}

@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{23E39A3E-9694-47C5-9961-F9D60B21B4A1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GadgetBox</RootNamespace>
+    <AssemblyName>GadgetBox</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="Microsoft.Xna.Framework.Game" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Terraria">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Terraria\Terraria.exe</HintPath>
+    </Reference>
+    <Reference Include="ReLogic">
+      <HintPath>..\References\ReLogic.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buffs\ShinyEquipment.cs" />
+    <Compile Include="GadgetBox.cs" />
+    <Compile Include="GadgetItem.cs" />
+    <Compile Include="GadgetMethods.cs" />
+    <Compile Include="GadgetNPC.cs" />
+    <Compile Include="GadgetTile.cs" />
+    <Compile Include="GadgetWorld.cs" />
+    <Compile Include="Items\Placeable\ReflectorBlock.cs" />
+    <Compile Include="Items\EnchantedPolish.cs" />
+    <Compile Include="Items\Accessories\EtherealVortex.cs" />
+    <Compile Include="GadgetPlayer.cs" />
+    <Compile Include="Items\ReforgingKit.cs" />
+    <Compile Include="Items\MasterKey.cs" />
+    <Compile Include="Items\LesserReforgingKit.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tiles\ReflectorBlockTile.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Buffs\ShinyEquipment.png" />
+    <Content Include="build.txt" />
+    <Content Include="description.txt" />
+    <Content Include="icon.png" />
+    <Content Include="Items\Placeable\ReflectorBlock.png" />
+    <Content Include="Items\EnchantedPolish.png" />
+    <Content Include="Items\Accessories\EtherealVortex.png" />
+    <Content Include="Items\MasterKey.png" />
+    <Content Include="Items\LesserReforgingKit.png" />
+    <Content Include="Items\ReforgingKit.png" />
+    <Content Include="Tiles\ReflectorBlockTile.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>"C:\Program Files (x86)\Steam\steamapps\common\Terraria\tModLoaderServer.exe" -build "$(ProjectDir)\" -eac "$(TargetPath)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
