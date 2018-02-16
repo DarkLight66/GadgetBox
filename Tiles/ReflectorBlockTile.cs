@@ -1,5 +1,4 @@
-﻿using static System.Math;
-using System;
+﻿using System;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -8,7 +7,7 @@ using GadgetBox.Items.Placeable;
 
 namespace GadgetBox.Tiles
 {
-    public class ReflectorBlockTile : ModTile
+	public class ReflectorBlockTile : ModTile
     {
         public override void SetDefaults()
         {

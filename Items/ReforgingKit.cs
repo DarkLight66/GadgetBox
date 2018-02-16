@@ -1,20 +1,10 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
-using Terraria.Localization;
 
 namespace GadgetBox.Items
 {
-    public class ReforgingKit : ModItem
+	public class ReforgingKit : ModItem
     {
-        public override void SetStaticDefaults()
-        {
-            DisplayName.AddTranslation(GameCulture.Spanish, "Equipo de refuerzo");
-            Tooltip.SetDefault("Grants a random prefix to your held item"
-                + "\n<right> to use");
-            Tooltip.AddTranslation(GameCulture.Spanish, "Le da un sufijo al azar a tu objeto en mano"
-                + "\n<right> para usar");
-        }
-
         public override void SetDefaults()
         {
             item.width = 32;

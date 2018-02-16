@@ -1,22 +1,10 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
-using Terraria.Localization;
 
 namespace GadgetBox.Items
 {
-    public class LesserReforgingKit : ModItem
+	public class LesserReforgingKit : ModItem
     {
-        public override void SetStaticDefaults()
-        {
-            DisplayName.AddTranslation(GameCulture.Spanish, "Equipo de refuerzo menor");
-            Tooltip.SetDefault("Grants a random prefix to your held item"
-                + "\nOnly works on unprefixed items"
-                + "\n<right> to use");
-            Tooltip.AddTranslation(GameCulture.Spanish, "Le da un sufijo al azar a tu objeto en mano"
-                + "\nSolo funciona con objetos sin sufijo"
-                + "\n<right> para usar");
-        }
-
         public override void SetDefaults()
         {
             item.width = 30;

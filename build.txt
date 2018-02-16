@@ -1,11 +1,11 @@
 ﻿displayName = Box of Gadgets
 author = DarkLight
-version = 0.0.1.1
+version = 0.0.2.0
 homepage = https://github.com/DarkLight66/GadgetBox
 dllReferences =
 modReferences =
 weakReferences =
-buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, .git\*, LICENSE, .gitignore, .gitattributes, excluded\*
+buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, .git\*, LICENSE, README.md, .gitignore, .gitattributes, excluded\*, Wiki\*
 languageVersion = 6
 side = Both
 noCompile = false

@@ -1,22 +1,12 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Localization;
 using GadgetBox.Buffs;
 
 namespace GadgetBox.Items
 {
-    public class EnchantedPolish : ModItem
+	public class EnchantedPolish : ModItem
     {
-        public override void SetStaticDefaults()
-        {
-            DisplayName.AddTranslation(GameCulture.Spanish, "Pulidor encantado");
-            Tooltip.SetDefault("Polishes your equipment temporarily"
-                + "\nPolished equipment grants extra effects depending on their prefix");
-            Tooltip.AddTranslation(GameCulture.Spanish, "Pule tus equipamientos temporalmente"
-                + "\nEquipamientos pulidos otorgan efectos extra dependiendo de su sufijo");
-        }
-
         public override void SetDefaults()
         {
             item.width = 30;

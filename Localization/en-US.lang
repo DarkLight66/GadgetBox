@@ -1,0 +1,21 @@
+BuffName.ShinyEquipment=Shiny Equipment
+BuffDescription.ShinyEquipment=Equipment grants extra effects depending on their prefix
+
+ItemTooltip.CritterNetAttachment=Critters hit by all weapons will be catched
+ItemTooltip.EtherealVortex=Increases pickup range for floating items
+
+ItemTooltip.ReflectorBlock=Reflects most projectiles
+
+ItemTooltip.OldShovel=Good for digging soft land
+ItemTooltip.PlatedShovel=Cuts through land like butter
+
+ItemTooltip.EnchantedPolish=Polishes your equipment temporarily\nPolished equipment grants extra effects depending on their prefix
+ItemTooltip.LesserReforgingKit=Grants a random prefix to your held item\nOnly works on unprefixed items\n<right> to use
+ItemTooltip.MasterKey=Opens any lock
+ItemTooltip.ReforgingKit=Grants a random prefix to your held item\n<right> to use
+
+ShovelPower=% shovel power
+CriticalDamage=% critical damage
+MiningSpeed=% mining speed
+ArmorPenetration= armor penetration
+JumpHeight= jump height

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GadgetBox.Prefixes;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -10,16 +11,25 @@ namespace GadgetBox
 {
     public static class GadgetMethods
     {
-        public static void PrefixHeldItem(this Player player)
+		internal static void AddToolPrefix(this Mod mod, ToolPrefixType prefixType, float damageMult = 1f, float knockbackMult = 1f, float useTimeMult = 1f, float scaleMult = 1f, int critBonus = 0, int tileBoost = 0)
+		{
+			mod.AddPrefix(prefixType.ToString(), new ToolPrefix(damageMult, knockbackMult, useTimeMult, scaleMult, critBonus, tileBoost));
+			ToolPrefix.ToolPrefixes.Add(mod.GetPrefix(prefixType.ToString()).Type);
+		}
+
+		public static void PrefixHeldItem(this Player player)
         {
             Item toPrefix = player.inventory[player.selectedItem];
             bool favorited = toPrefix.favorited;
-            Item item = new Item();
+			int stack = toPrefix.stack;
+			Item item = new Item();
             item.netDefaults(toPrefix.netID);
-            item.Prefix(-2);
-            toPrefix = player.inventory[player.selectedItem] = item.CloneWithModdedData(toPrefix);
+			item = item.CloneWithModdedData(Main.reforgeItem);
+			item.Prefix(-2);
+            toPrefix = player.inventory[player.selectedItem] = item.Clone();
             toPrefix.Center = player.Center;
             toPrefix.favorited = favorited;
+			toPrefix.stack = stack;
             ItemLoader.PostReforge(toPrefix);
             ItemText.NewText(toPrefix, toPrefix.stack, true, false);
             Main.PlaySound(SoundID.Item37);

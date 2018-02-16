@@ -1,0 +1,39 @@
+BuffName.ShinyEquipment=Equipamientos radiantes
+BuffDescription.ShinyEquipment=Equipamientos otorgan effectos extra dependiendo de su sufijo
+
+ItemName.CritterNetAttachment=Accesorio de red para bichos
+ItemTooltip.CritterNetAttachment=Bichos golpeados por qualquier arma seran atrapados
+ItemName.EtherealVortex=Vórtice etéreo
+ItemTooltip.EtherealVortex=Aumenta el alcance de recolección de objetos flotantes
+
+ItemName.ReflectorBlock=Bloque Reflector
+ItemTooltip.ReflectorBlock=Refleja la mayoría de los projectiles
+
+ItemName.OldShovel=Pala vieja
+ItemTooltip.OldShovel=Util para excavar tierra blanda
+ItemName.PlatedShovel=Pala Blindada
+ItemTooltip.PlatedShovel=Corta la tierra como si fuera mantequilla
+
+ItemName.EnchantedPolish=Pulidor encantado
+ItemTooltip.EnchantedPolish=Pule tus equipamientos temporalmente\nEquipamientos pulidos otorgan efectos extra dependiendo de su sufijo
+ItemName.LesserReforgingKit=Equipo de refuerzo menor
+ItemTooltip.LesserReforgingKit=Le da un sufijo al azar a tu objeto en mano\nSolo funciona con objetos sin sufijo\n<right> para usar
+ItemName.MasterKey=Llave maestra
+ItemTooltip.MasterKey=Abre cualquier cerradura
+ItemName.ReforgingKit=Equipo de refuerzo
+ItemTooltip.ReforgingKit=Le da un sufijo al azar a tu objeto en mano\n<right> para usar
+
+Prefix.Trashed=(Destrosado)
+Prefix.Shortened=(Acortado)
+Prefix.Restless=(Inquieto)
+Prefix.Accelerated=(Acelerado)
+Prefix.Reaching=(Estirado)
+Prefix.Enlarged=(Agrandado)
+Prefix.Extended=(Extendido)
+Prefix.Engineered=(Diseñado)
+
+ShovelPower=% potencia de pala
+CriticalDamage=% de daño critico
+MiningSpeed=% velocidad de minería
+ArmorPenetration= penetracion de armadura
+JumpHeight= altura de salto
