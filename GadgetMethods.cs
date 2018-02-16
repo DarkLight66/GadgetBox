@@ -13,8 +13,8 @@ namespace GadgetBox
     {
 		internal static void AddToolPrefix(this Mod mod, ToolPrefixType prefixType, float damageMult = 1f, float knockbackMult = 1f, float useTimeMult = 1f, float scaleMult = 1f, int critBonus = 0, int tileBoost = 0)
 		{
-			mod.AddPrefix(prefixType.ToString(), new ToolPrefix(damageMult, knockbackMult, useTimeMult, scaleMult, critBonus, tileBoost));
-			ToolPrefix.ToolPrefixes.Add(mod.GetPrefix(prefixType.ToString()).Type);
+			mod.AddPrefix(prefixType.ToString(), new ToolPrefix(damageMult, knockbackMult, useTimeMult, critBonus, tileBoost));
+			ToolPrefix.ToolPrefixes.Add((ToolPrefix)mod.GetPrefix(prefixType.ToString()));
 		}
 
 		public static void PrefixHeldItem(this Player player)

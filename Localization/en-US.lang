@@ -17,5 +17,5 @@ ItemTooltip.ReforgingKit=Grants a random prefix to your held item\n<right> to us
 ShovelPower=% shovel power
 CriticalDamage=% critical damage
 MiningSpeed=% mining speed
-ArmorPenetration= armor penetration
-JumpHeight= jump height
+ArmorPenetration=armor penetration
+JumpHeight=jump height

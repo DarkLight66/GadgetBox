@@ -19,7 +19,6 @@ namespace GadgetBox
                 AutoloadGores = true,
                 AutoloadSounds = true
             };
-			AnyGoldBar = Name + ":AnyGoldBar";
 		}
         
         public override void Load()
@@ -39,6 +38,7 @@ namespace GadgetBox
 				ItemID.GoldBar,
 				ItemID.PlatinumBar
 			});
+			AnyGoldBar = Name + ":AnyGoldBar";
 			RecipeGroup.RegisterGroup(AnyGoldBar, group);
 		}
 

@@ -3,6 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using GadgetBox.Items;
 using GadgetBox.Items.Accessories;
+using GadgetBox.Items.Tools;
 
 namespace GadgetBox
 {
@@ -27,7 +28,26 @@ namespace GadgetBox
             }
         }
 
-        public override void SetupTravelShop(int[] shop, ref int nextSlot)
+		public override void SetupShop(int type, Chest shop, ref int nextSlot)
+		{
+			if (nextSlot > 38)
+				return;
+			if (type == NPCID.Merchant)
+			{
+				int slot = 0;
+				while (slot < nextSlot)
+				{
+					if (shop.item[++slot - 1].type != ItemID.CopperAxe)
+						continue;
+					for (int i = nextSlot; i > slot; i--)
+						shop.item[i] = shop.item[i - 1];
+					shop.item[slot].SetDefaults(mod.ItemType<OldShovel>());
+					slot = ++nextSlot;
+				}
+			}
+		}
+
+		public override void SetupTravelShop(int[] shop, ref int nextSlot)
         {
             if (!Main.hardMode || nextSlot >= shop.Length || !Main.rand.NextBool(50))
                 return;

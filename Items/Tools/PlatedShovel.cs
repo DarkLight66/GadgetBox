@@ -1,5 +1,7 @@
 ﻿using Terraria;
 using Microsoft.Xna.Framework;
+using Terraria.ModLoader;
+using Terraria.ID;
 
 namespace GadgetBox.Items.Tools
 {
@@ -12,12 +14,23 @@ namespace GadgetBox.Items.Tools
 			item.knockBack = 6f;
 			item.melee = true;
 			item.useAnimation = 18;
-			item.useTime = 13;
+			item.useTime = 12;
+			item.tileBoost = 1;
 			item.value = Item.sellPrice(silver: 20);
 			item.rare = 1;
 			item.autoReuse = true;
 			item.useTurn = true;
 			shovel = 75;
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType<OldShovel>());
+			recipe.AddRecipeGroup(GadgetBox.AnyGoldBar, 10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
 		}
 	}
 }
