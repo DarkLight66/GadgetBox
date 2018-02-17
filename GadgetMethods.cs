@@ -11,7 +11,7 @@ namespace GadgetBox
 {
     public static class GadgetMethods
     {
-		internal static void AddToolPrefix(this Mod mod, ToolPrefixType prefixType, float damageMult = 1f, float knockbackMult = 1f, float useTimeMult = 1f, float scaleMult = 1f, int critBonus = 0, int tileBoost = 0)
+		internal static void AddToolPrefix(this Mod mod, ToolPrefixType prefixType, float damageMult = 1f, float knockbackMult = 1f, float useTimeMult = 1f, int critBonus = 0, int tileBoost = 0)
 		{
 			mod.AddPrefix(prefixType.ToString(), new ToolPrefix(damageMult, knockbackMult, useTimeMult, critBonus, tileBoost));
 			ToolPrefix.ToolPrefixes.Add((ToolPrefix)mod.GetPrefix(prefixType.ToString()));
@@ -35,7 +35,43 @@ namespace GadgetBox
             Main.PlaySound(SoundID.Item37);
         }
 
-        public static List<Tuple<Point16, ushort>> TilesHit(Vector2 Position, Vector2 Velocity, int Width, int Height)
+		public static void CatchNPC(int npcIndex, int who = -1, bool fromMelee = true)
+		{
+			NPC npc = Main.npc[npcIndex];
+			if (!npc.active)
+				return;
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.CatchNPC, 2);
+				packet.Write((byte)npcIndex);
+				packet.Write(fromMelee);
+				packet.Send();
+				npc.active = false;
+				return;
+			}
+			if (npc.catchItem > 0)
+			{
+				npc.active = false;
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npcIndex);
+				if (npc.SpawnedFromStatue)
+				{
+					Vector2 position = npc.Center - new Vector2(20);
+					Utils.PoofOfSmoke(position);
+					if (Main.netMode == NetmodeID.Server)
+					{
+						NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npcIndex);
+						NetMessage.SendData(MessageID.PoofOfSmoke, -1, -1, null, (int)position.X, position.Y);
+					}
+					return;
+				}
+				if (fromMelee)
+					Item.NewItem(Main.player[who].Center, 0, 0, npc.catchItem, 1, false, 0, true);
+				else
+					Item.NewItem(npc.Center, 0, 0, npc.catchItem);
+			}
+		}
+
+		public static List<Tuple<Point16, ushort>> TilesHit(Vector2 Position, Vector2 Velocity, int Width, int Height)
         {
             Vector2 vector = Position + Velocity;
             int num = (int)(Position.X / 16f) - 1;

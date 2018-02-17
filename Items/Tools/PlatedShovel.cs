@@ -10,11 +10,11 @@ namespace GadgetBox.Items.Tools
 		public override void SetShovelDefaults()
 		{
 			item.Size = new Vector2(40);
-			item.damage = 14;
+			item.damage = 13;
 			item.knockBack = 6f;
 			item.melee = true;
-			item.useAnimation = 18;
-			item.useTime = 12;
+			item.useAnimation = 19;
+			item.useTime = 13;
 			item.tileBoost = 1;
 			item.value = Item.sellPrice(silver: 20);
 			item.rare = 1;

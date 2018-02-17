@@ -1,7 +1,7 @@
 BuffName.ShinyEquipment=Shiny Equipment
 BuffDescription.ShinyEquipment=Equipment grants extra effects depending on their prefix
 
-ItemTooltip.CritterNetAttachment=Critters hit by all weapons will be catched
+ItemTooltip.CritterNetAttachment=Critters hit by all weapons will be catched\nIncreases pickup range for catched critters
 ItemTooltip.EtherealVortex=Increases pickup range for floating items
 
 ItemTooltip.ReflectorBlock=Reflects most projectiles

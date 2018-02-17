@@ -30,7 +30,7 @@ namespace GadgetBox
 		{
 			if (critterCatch && target.catchItem > 0 && proj.Colliding(proj.getRect(), target.getRect()))
 			{
-				NPC.CatchNPC(target.whoAmI, player.whoAmI);
+				GadgetMethods.CatchNPC(target.whoAmI, player.whoAmI, false);
 				return false;
 			}
 			return null;
@@ -47,7 +47,7 @@ namespace GadgetBox
 				if (!npc.active || npc.catchItem <= 0)
 					continue;
 				if (hitbox.Intersects(npc.getRect()) && (npc.noTileCollide || player.CanHit(npc)))
-					NPC.CatchNPC(i, player.whoAmI);
+					GadgetMethods.CatchNPC(i, player.whoAmI);
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace GadgetBox
                 damage += (int)(damage * (critShine * 0.01f));
         }
 
-        public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             if (shinyEquips && crit && critShine > 0)
                 damage += (int)(damage * (critShine * 0.01f));

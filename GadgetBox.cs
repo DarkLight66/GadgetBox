@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -42,6 +43,17 @@ namespace GadgetBox
 			RecipeGroup.RegisterGroup(AnyGoldBar, group);
 		}
 
+		public override void HandlePacket(BinaryReader reader, int whoAmI)
+		{
+			MessageType message = (MessageType)reader.ReadByte();
+			switch (message)
+			{
+				case MessageType.CatchNPC:
+					GadgetMethods.CatchNPC(reader.ReadByte(), whoAmI, reader.ReadBoolean()); // fixes catching of npcs with projectiles
+					break;
+			}
+		}
+
 		internal ModPacket GetPacket(MessageType type, int capacity)
         {
             ModPacket packet = GetPacket(capacity + 1);
@@ -54,15 +66,10 @@ namespace GadgetBox
 
         internal static void Log(string message, params object[] formatData)
             => ErrorLogger.Log(string.Format("[{0}][{1}] {2}", Instance, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), string.Format(message, formatData)));
-
-        //public static void RedundantFunc()
-        //{
-        //    var something = System.Linq.Enumerable.Range(1, 10);
-        //}
     }
 
     internal enum MessageType
     {
-        // for future use
+        CatchNPC
     }
 }

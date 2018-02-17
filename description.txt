@@ -1,9 +1,14 @@
 ﻿This mod aims to add random useful items and features to the game. It'll be mostly items or features that give some kind of QoL improvement.
 
-Adds Shovels, a new tool type that can dig soft soils very quickly, notably they can all grass types in one hit.
-Adds Tool Prefixes, these have a 50% of being applied to any pickaxe, axe, hammer or shovel. 
+Adds Shovels, a new tool type that can dig soft soils very quickly, notably they can dig all grass types in one hit.
+Adds Tool Prefixes, these have a 50% chance of being applied to any pickaxe, axe, hammer or shovel. 
 
 Changelog:
+0.0.2.1 : Fixes: 
+- Critter Net Attachment teleporting critters to the player. It now also increases catched critter grab range to compensate.
+- Old Shovel appearing twice in the merchant shop (and replacing torches).
+- Most tool prefixes not working as intended.
+- Some spanish translations missing accents and having other grammatical errors (thanks a lot to RascaLDiego for the help!).
 0.0.2.0 : Updated to TModLoader 0.10.1.2, added Critter Net Attachment, Old Shovel, Plated Shovel, Tool Prefixes and Localization files.
 0.0.1.1 : Added mod icon.
 0.0.1.0 : Initial release, added Master Key, Eethereal Vortex, Enchanted Polish, Reflector Block, Reforging Kit and Lesser Reforging Kit.

@@ -14,7 +14,9 @@ namespace GadgetBox
         {
             if (ItemID.Sets.ItemNoGravity[item.type] && player.GetModPlayer<GadgetPlayer>().etherMagnet)
                 grabRange += grabRange > Player.defaultItemGrabRange ? 100 : 500;
-        }
+			if (item.makeNPC > 0 && player.GetModPlayer<GadgetPlayer>().critterCatch)
+				grabRange += grabRange > Player.defaultItemGrabRange ? 70 : 300;
+		}
 
         public override void OpenVanillaBag(string context, Player player, int arg)
         {

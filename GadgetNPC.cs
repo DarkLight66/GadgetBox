@@ -41,6 +41,7 @@ namespace GadgetBox
 						continue;
 					for (int i = nextSlot; i > slot; i--)
 						shop.item[i] = shop.item[i - 1];
+					shop.item[slot] = new Item();
 					shop.item[slot].SetDefaults(mod.ItemType<OldShovel>());
 					slot = ++nextSlot;
 				}
