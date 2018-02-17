@@ -22,8 +22,8 @@ namespace GadgetBox
                 case NPCID.BlueArmoredBonesMace:
                 case NPCID.BlueArmoredBonesNoPants:
                 case NPCID.BlueArmoredBonesSword:
-                    if (Main.rand.NextBool(Main.expertMode ? 50 : 100))
-                        Item.NewItem(npc.getRect(), mod.ItemType<EnchantedPolish>(), Main.rand.Next(1,3));
+					if (Main.rand.NextBool(Main.expertMode ? 50 : 100))
+						Item.NewItem(npc.getRect(), mod.ItemType<EnchantedPolish>(), Main.rand.Next(1, 3));
                     break;
             }
         }
@@ -37,7 +37,7 @@ namespace GadgetBox
 				int slot = 0;
 				while (slot < nextSlot)
 				{
-					if (shop.item[++slot - 1].type != ItemID.CopperAxe)
+					if (shop.item[++slot - 1].type != ItemID.CopperAxe && slot != nextSlot)
 						continue;
 					for (int i = nextSlot; i > slot; i--)
 						shop.item[i] = shop.item[i - 1];

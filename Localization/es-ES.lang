@@ -2,22 +2,22 @@ BuffName.ShinyEquipment=Equipamientos radiantes
 BuffDescription.ShinyEquipment=Equipamientos otorgan efectos extra dependiendo de su sufijo
 
 ItemName.CritterNetAttachment=Accesorio de red para bichos
-ItemTooltip.CritterNetAttachment=Bichos golpeados por cualquier arma serán atrapados\nAumenta el alcance de recolección de bichos atrapados
-ItemName.EtherealVortex=Vórtice etéreo
-ItemTooltip.EtherealVortex=Aumenta el alcance de recolección de objetos flotantes
+ItemTooltip.CritterNetAttachment=Bichos golpeados por cualquier arma serÃ¡n atrapados\nAumenta el alcance de recolecciÃ³n de bichos atrapados
+ItemName.EtherealVortex=VÃ³rtice etÃ©reo
+ItemTooltip.EtherealVortex=Aumenta el alcance de recolecciÃ³n de objetos flotantes
 
 ItemName.ReflectorBlock=Bloque Reflector
-ItemTooltip.ReflectorBlock=Refleja la mayoría de los projectiles
+ItemTooltip.ReflectorBlock=Refleja la mayorÃ­a de los projectiles
 
 ItemName.OldShovel=Pala vieja
-ItemTooltip.OldShovel=Útil para excavar tierra blanda
+ItemTooltip.OldShovel=Ãštil para excavar tierra blanda
 ItemName.PlatedShovel=Pala Blindada
 ItemTooltip.PlatedShovel=Corta la tierra como si fuera mantequilla
 
 ItemName.EnchantedPolish=Pulidor encantado
 ItemTooltip.EnchantedPolish=Pule tus equipamientos temporalmente\nEquipamientos pulidos otorgan efectos extra dependiendo de su sufijo
 ItemName.LesserReforgingKit=Equipo de refuerzo menor
-ItemTooltip.LesserReforgingKit=Le da un sufijo al azar a tu objeto en mano\nSólo funciona con objetos sin sufijo\n<right> para usar
+ItemTooltip.LesserReforgingKit=Le da un sufijo al azar a tu objeto en mano\nSÃ³lo funciona con objetos sin sufijo\n<right> para usar
 ItemName.MasterKey=Llave maestra
 ItemTooltip.MasterKey=Abre cualquier cerradura
 ItemName.ReforgingKit=Equipo de refuerzo
@@ -30,10 +30,10 @@ Prefix.Accelerated=(Acelerado)
 Prefix.Reaching=(Estirado)
 Prefix.Enlarged=(Agrandado)
 Prefix.Extended=(Extendido)
-Prefix.Engineered=(Diseñado)
+Prefix.Engineered=(DiseÃ±ado)
 
 ShovelPower=% potencia de pala
-CriticalDamage=% de daño crítico
-MiningSpeed=% velocidad de minería
-ArmorPenetration=penetración de armadura
+CriticalDamage=% de daÃ±o crÃ­tico
+MiningSpeed=% velocidad de minerÃ­a
+ArmorPenetration=penetraciÃ³n de armadura
 JumpHeight=altura de salto
