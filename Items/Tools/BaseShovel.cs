@@ -170,7 +170,7 @@ namespace GadgetBox.Items.Tools
 			}
 		}
 
-		// Adapted from teh vanilla Player class method
+		// Adapted from the vanilla Player class method
 		public void PickTile(Player player, int x, int y, int shovelPower)
 		{
 			int tileId = player.hitTile.HitObject(x, y, 1);

@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{23E39A3E-9694-47C5-9961-F9D60B21B4A1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -12,7 +11,7 @@
     <AssemblyName>GadgetBox</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,9 +21,11 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -57,8 +58,14 @@
     <Compile Include="GadgetMethods.cs" />
     <Compile Include="GadgetNPC.cs" />
     <Compile Include="GadgetTile.cs" />
+    <Compile Include="GadgetUI\ChlorophyteExtractorUI.cs" />
+    <Compile Include="GadgetUI\UIPowerBar.cs" />
+    <Compile Include="GadgetUI\UIPowerButton.cs" />
+    <Compile Include="GadgetUI\UIExtractorSlot.cs" />
+    <Compile Include="GadgetUI\UIPowerSlot.cs" />
     <Compile Include="GadgetWorld.cs" />
     <Compile Include="Items\Accessories\CritterNetAttachment.cs" />
+    <Compile Include="Items\Placeable\ChlorophyteExtractor.cs" />
     <Compile Include="Items\Placeable\ReflectorBlock.cs" />
     <Compile Include="Items\EnchantedPolish.cs" />
     <Compile Include="Items\Accessories\EtherealVortex.cs" />
@@ -72,6 +79,8 @@
     <Compile Include="Prefixes\GadgetItemPrefix.cs" />
     <Compile Include="Prefixes\ToolPrefix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tiles\ChlorophyteExtractorTE.cs" />
+    <Compile Include="Tiles\ChlorophyteExtractorTile.cs" />
     <Compile Include="Tiles\ReflectorBlockTile.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +89,7 @@
     <Content Include="description.txt" />
     <Content Include="icon.png" />
     <Content Include="Items\Accessories\CritterNetAttachment.png" />
+    <Content Include="Items\Placeable\ChlorophyteExtractor.png" />
     <Content Include="Items\Placeable\ReflectorBlock.png" />
     <Content Include="Items\EnchantedPolish.png" />
     <Content Include="Items\Accessories\EtherealVortex.png" />
@@ -88,6 +98,8 @@
     <Content Include="Items\ReforgingKit.png" />
     <Content Include="Items\Tools\PlatedShovel.png" />
     <Content Include="Items\Tools\OldShovel.png" />
+    <Content Include="Tiles\ChlorophyteExtractorTile.png" />
+    <Content Include="Tiles\ChlorophyteExtractorTile_Highlight.png" />
     <Content Include="Tiles\ReflectorBlockTile.png" />
   </ItemGroup>
   <ItemGroup>

@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using GadgetBox.Items.Accessories;
+using GadgetBox.GadgetUI;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using GadgetBox.Tiles;
 
 namespace GadgetBox
 {
@@ -16,7 +19,10 @@ namespace GadgetBox
         public byte critShine = 0;
         public byte speedShine = 0;
 
-        public override void ResetEffects()
+		public Point16 extractorPos = Point16.NegativeOne;
+		public int extractor = -1;
+
+		public override void ResetEffects()
         {
             etherMagnet = false;
             shinyEquips = false;
@@ -25,6 +31,45 @@ namespace GadgetBox
             critShine = 0;
             speedShine = 0;
         }
+
+		public override void UpdateDead()
+		{
+			if (extractor > -1)
+				ChlorophyteExtractorUI.CloseUI(this, true);
+		}
+
+		public override void clientClone(ModPlayer clientClone)
+		{
+			GadgetPlayer gadgetClone = clientClone as GadgetPlayer;
+			gadgetClone.extractor = extractor;
+		}
+
+		public override void SendClientChanges(ModPlayer clientPlayer)
+		{
+			GadgetPlayer gadgetCient = clientPlayer as GadgetPlayer;
+			if (gadgetCient.extractor != extractor && extractor == -1)
+			{
+				ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.SyncPlayerExtractor, 4);
+				packet.Write((short)-1);
+				packet.Send();
+			}
+		}
+
+		public override void PreUpdate()
+		{
+			if (Main.myPlayer != player.whoAmI || !ChlorophyteExtractorUI.visible)
+				return;
+			if (!Main.playerInventory || player.chest != -1 || Main.npcShop != 0 || player.talkNPC != -1 || ChlorophyteExtractorUI.ExtractorTE.ID == -1)
+				ChlorophyteExtractorUI.CloseUI(this, true);
+			else
+			{
+				int playerX = (int)(player.Center.X / 16);
+				int playerY = (int)(player.Center.Y / 16);
+				if (playerX < extractorPos.X - Player.tileRangeX || playerX > extractorPos.X + Player.tileRangeX + 1 ||
+					playerY < extractorPos.Y - Player.tileRangeY || playerY > extractorPos.Y + Player.tileRangeY + 1)
+					ChlorophyteExtractorUI.CloseUI(this);
+			}
+		}
 
 		public override bool? CanHitNPCWithProj(Projectile proj, NPC target)
 		{

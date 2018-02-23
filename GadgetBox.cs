@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.UI;
+using GadgetBox.GadgetUI;
+using GadgetBox.Tiles;
+using Terraria.DataStructures;
 
 namespace GadgetBox
 {
@@ -12,7 +17,10 @@ namespace GadgetBox
         internal static GadgetBox Instance;
 		internal static string AnyGoldBar;
 
-        public GadgetBox()
+		internal static UserInterface chloroExtractInterface;
+		internal ChlorophyteExtractorUI chlorophyteExtractorUI;
+
+		public GadgetBox()
         {
             Properties = new ModProperties()
             {
@@ -25,12 +33,53 @@ namespace GadgetBox
         public override void Load()
         {
             Instance = this;
+			if (!Main.dedServ)
+			{
+				chlorophyteExtractorUI = new ChlorophyteExtractorUI();
+				chlorophyteExtractorUI.Activate();
+				chloroExtractInterface = new UserInterface();
+				chloroExtractInterface.SetState(chlorophyteExtractorUI);
+			}
         }
 
         public override void Unload()
         {
-            Instance = null;
-        }
+			ChlorophyteExtractorUI.ExtractorTE = null;
+			chloroExtractInterface = null;
+			Instance = null;
+		}
+
+		int lastSeenScreenWidth;
+		int lastSeenScreenHeight;
+
+		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+		{
+			int invIndex = layers.FindIndex(l => l.Name.Equals("Vanilla: Inventory"));
+			if (invIndex != -1)
+			{
+				layers.Insert(invIndex, new LegacyGameInterfaceLayer(
+					Name + ": Chlorophyte Extractor UI",
+					delegate
+					{
+						if (ChlorophyteExtractorUI.visible && !Main.recBigList)
+						{
+							if (lastSeenScreenWidth != Main.screenWidth || lastSeenScreenHeight != Main.screenHeight)
+							{
+								chlorophyteExtractorUI.Recalculate();
+								lastSeenScreenWidth = Main.screenWidth;
+								lastSeenScreenHeight = Main.screenHeight;
+							}
+							chloroExtractInterface.Update(Main._drawInterfaceGameTime);
+							chlorophyteExtractorUI.Draw(Main.spriteBatch);
+						}
+						else
+							chlorophyteExtractorUI.powerButton.Update(Main._drawInterfaceGameTime);
+						return true;
+					},
+					InterfaceScaleType.UI)
+				);
+			}
+		}
 
 		public override void AddRecipeGroups()
 		{
@@ -51,6 +100,20 @@ namespace GadgetBox
 				case MessageType.CatchNPC:
 					GadgetMethods.CatchNPC(reader.ReadByte(), whoAmI, reader.ReadBoolean()); // fixes catching of npcs with projectiles
 					break;
+				case MessageType.RequestExtractorOpen:
+					ChlorophyteExtractorTE.ReceiveRequestOpen(reader, whoAmI);
+					break;
+				case MessageType.SyncPlayerExtractor:
+					ChlorophyteExtractorTE.SyncPlayerExtractor(reader, whoAmI);
+					break;
+				case MessageType.SyncPlayerExtractorIndex:
+					ChlorophyteExtractorTE.SyncPlayerExtractorIndex(reader, whoAmI);
+					break;
+				case MessageType.ExtractorMessage:
+					TileEntity ExtractorTE;
+					if(TileEntity.ByID.TryGetValue(reader.ReadInt16(), out ExtractorTE) && ExtractorTE is ChlorophyteExtractorTE)
+					((ChlorophyteExtractorTE)ExtractorTE).RecieveMessage(reader, whoAmI);
+					break;
 			}
 		}
 
@@ -70,6 +133,11 @@ namespace GadgetBox
 
     internal enum MessageType
     {
-        CatchNPC
-    }
+        CatchNPC,
+		RequestExtractorOpen,
+		SyncPlayerExtractor,
+		CloseExtractor,
+		ExtractorMessage,
+		SyncPlayerExtractorIndex
+	}
 }

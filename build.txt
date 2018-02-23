@@ -2,9 +2,6 @@
 author = DarkLight
 version = 0.0.2.2
 homepage = https://github.com/DarkLight66/GadgetBox
-dllReferences =
-modReferences =
-weakReferences =
 buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, .git\*, LICENSE, README.md, .gitignore, .gitattributes, excluded\*, Wiki\*
 languageVersion = 6
 side = Both
@@ -12,4 +9,4 @@ noCompile = false
 hideCode = true
 hideResources = true
 includeSource = false
-includePDB = false
+includePDB = true
