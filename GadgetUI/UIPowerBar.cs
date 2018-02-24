@@ -4,7 +4,7 @@ using Terraria.UI;
 
 namespace GadgetBox.GadgetUI
 {
-	public class UIPowerBar : UIElement
+	internal class UIPowerBar : UIHoverText
 	{
 		Texture2D _barTexture;
 		Texture2D _fillTexture;
@@ -23,8 +23,13 @@ namespace GadgetBox.GadgetUI
 
 		public void SetProgress(float value)
 		{
+			_visualProgress = value;
+		}
+
+		public void SetTargetProgress(float value)
+		{
 			_targetProgress = value;
-			if (value >= _visualProgress)
+			if (value < _visualProgress)
 				_visualProgress = value;
 		}
 
@@ -41,7 +46,7 @@ namespace GadgetBox.GadgetUI
 				spriteBatch.Draw(_fillTexture, dimensions.Position(), sourceRect, Color.Gray);
 				dimensions.X += _fillTexture.Width;
 			}
-			_visualProgress = _visualProgress * 0.95f + 0.05f * _targetProgress;
+			//_visualProgress = _visualProgress * 0.95f + 0.05f * _targetProgress;
 			dimensions.X = GetInnerDimensions().X;
 			dimensions.Width *= _visualProgress;
 			drawAmount = (int)(dimensions.Width / _fillTexture.Width);

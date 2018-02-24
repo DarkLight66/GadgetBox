@@ -103,16 +103,14 @@ namespace GadgetBox
 				case MessageType.RequestExtractorOpen:
 					ChlorophyteExtractorTE.ReceiveRequestOpen(reader, whoAmI);
 					break;
-				case MessageType.SyncPlayerExtractor:
-					ChlorophyteExtractorTE.SyncPlayerExtractor(reader, whoAmI);
+				case MessageType.SyncExtractorPlayer:
+					ChlorophyteExtractorTE.SyncExtractorPlayer(reader, whoAmI);
 					break;
-				case MessageType.SyncPlayerExtractorIndex:
-					ChlorophyteExtractorTE.SyncPlayerExtractorIndex(reader, whoAmI);
+				case MessageType.SyncExtractorPlayerIndex:
+					ChlorophyteExtractorTE.SyncExtractorPlayerIndex(reader, whoAmI);
 					break;
 				case MessageType.ExtractorMessage:
-					TileEntity ExtractorTE;
-					if(TileEntity.ByID.TryGetValue(reader.ReadInt16(), out ExtractorTE) && ExtractorTE is ChlorophyteExtractorTE)
-					((ChlorophyteExtractorTE)ExtractorTE).RecieveMessage(reader, whoAmI);
+					ChlorophyteExtractorTE.ExtractorByID(reader.ReadInt32())?.RecieveMessage(reader, whoAmI);
 					break;
 			}
 		}
@@ -129,15 +127,15 @@ namespace GadgetBox
 
         internal static void Log(string message, params object[] formatData)
             => ErrorLogger.Log(string.Format("[{0}][{1}] {2}", Instance, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), string.Format(message, formatData)));
-    }
+	}
 
-    internal enum MessageType
+	internal enum MessageType
     {
         CatchNPC,
 		RequestExtractorOpen,
-		SyncPlayerExtractor,
+		SyncExtractorPlayer,
 		CloseExtractor,
 		ExtractorMessage,
-		SyncPlayerExtractorIndex
+		SyncExtractorPlayerIndex
 	}
 }

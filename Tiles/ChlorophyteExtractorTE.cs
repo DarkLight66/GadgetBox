@@ -19,9 +19,12 @@ namespace GadgetBox.Tiles
 		public short Mud { get; private set; }
 		public short Chlorophyte { get; private set; }
 		public byte FrameYOffset { get; private set; }
-		public bool IsWorking => IsON && Power > 0 && Mud > 0 && Chlorophyte < MaxResources;
-
+		public byte CurrentPlayer { get; internal set; }
+		public bool CanTurnOn => Power > 0 && Mud > 0 && Chlorophyte < MaxResources;
+		public bool IsWorking => IsON && CanTurnOn;
+		bool OldIsWorking { get; set; }
 		TEServerMsg ServerMsg { get; set; } = TEServerMsg.None;
+		short DigDelay { get; set; }
 
 		public ChlorophyteExtractorTE()
 		{
@@ -30,16 +33,23 @@ namespace GadgetBox.Tiles
 			Mud = 0;
 			Chlorophyte = 0;
 			FrameYOffset = 0;
-			ID = -1;
+			CurrentPlayer = 255;
+			OldIsWorking = IsWorking;
+			DigDelay = 0;
 		}
 
 		public override void OnKill()
 		{
-			if (Main.netMode == NetmodeID.MultiplayerClient)
+			if (CurrentPlayer != byte.MaxValue)
 			{
-				if (ChlorophyteExtractorUI.visible)
-					ChlorophyteExtractorUI.CloseUI(Main.LocalPlayer.GetModPlayer<GadgetPlayer>(), false);
-				return;
+				if (Main.netMode == NetmodeID.Server)
+				{
+					ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.SyncExtractorPlayer, 4);
+					packet.Write(-1);
+					packet.Send(CurrentPlayer);
+				}
+				else
+					ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE);
 			}
 			Rectangle hitbox = new Rectangle((Position.X - 1) * 16, (Position.Y - 1) * 16, 54, 54);
 			if (Chlorophyte > 0)
@@ -50,8 +60,17 @@ namespace GadgetBox.Tiles
 
 		public override void Update()
 		{
-			if (!IsWorking)
+			if (IsWorking != OldIsWorking)
+			{
+				FrameYOffset = (byte)(IsWorking ? Main.tileFrame[TileID.Extractinator] : 0);
+				DigDelay = (short)(IsWorking ? Main.rand.Next(540, 1080) : 0);
+				OldIsWorking = IsWorking;
+			}
+			if (DigDelay > 0)
+				DigDelay--;
+			if (DigDelay > 0 || !IsWorking)
 				return;
+			DigDelay = (short)Main.rand.Next(360, 720);
 			int x = Utils.Clamp(Main.rand.Next(-3, 4) + Position.X, 10, Main.maxTilesX - 10);
 			int y = Utils.Clamp(Main.rand.Next(2, 9) + Position.Y, 10, Main.maxTilesY - 10);
 			Tile tile = Framing.GetTileSafely(x, y);
@@ -75,11 +94,12 @@ namespace GadgetBox.Tiles
 			WorldGen.SquareTileFrame(x, y, true);
 			if (Main.netMode == NetmodeID.Server)
 				NetMessage.SendTileSquare(-1, x, y, 1, TileChangeType.None);
-			if (--Power <= 0)
-				IsON = false;
+			Power--;
 			Mud--;
 			Chlorophyte++;
-			SendServer(TEServerMsg.SyncAll);
+			if (!CanTurnOn)
+				IsON = false;
+			SendServer();
 		}
 
 		internal void TogglePower()
@@ -92,9 +112,9 @@ namespace GadgetBox.Tiles
 			SendClient(TEClientMsg.ToggleOn);
 		}
 
-		private void SendServer(TEServerMsg serverMsg)
+		private void SendServer(TEServerMsg serverMsg = TEServerMsg.SyncAll)
 		{
-			if (Main.netMode != NetmodeID.Server || serverMsg == TEServerMsg.None)
+			if (Main.netMode != NetmodeID.Server)
 				return;
 			ServerMsg = serverMsg;
 			NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, ID);
@@ -116,12 +136,14 @@ namespace GadgetBox.Tiles
 			ServerMsg = TEServerMsg.None;
 		}
 
-		internal static void SyncPlayerExtractorIndex(BinaryReader reader, int whoAmI)
+		internal static void SyncExtractorPlayerIndex(BinaryReader reader, int whoAmI)
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 				return;
-			Player player = Main.player[reader.ReadByte()];
-			player.GetModPlayer<GadgetPlayer>().extractor = reader.ReadInt16();
+			ChlorophyteExtractorTE extractorTE = ExtractorByID(reader.ReadInt32());
+			if (extractorTE == null)
+				return;
+			extractorTE.CurrentPlayer = reader.ReadByte();
 		}
 
 		public override void NetReceive(BinaryReader reader, bool lightReceive)
@@ -136,35 +158,34 @@ namespace GadgetBox.Tiles
 				Mud = reader.ReadInt16();
 			if (receiveAll || serverMsg == TEServerMsg.SyncChlorophyte)
 				Chlorophyte = reader.ReadInt16();
+			if (!OldIsWorking && IsWorking)
+				FrameYOffset = (byte)Main.tileFrame[TileID.Extractinator];
+			OldIsWorking = IsWorking;
 		}
 
 		internal void ProvidePower()
 		{
-			if (Main.netMode != NetmodeID.Server && Main.mouseItem != null && Main.mouseItem.stack > 0 && Main.mouseItem.type == ItemID.LihzahrdPowerCell)
-			{
-				if (--Main.mouseItem.stack <= 0)
-					Main.mouseItem.TurnToAir();
-				Power = MaxResources;
-				if (Main.netMode == NetmodeID.MultiplayerClient)
-					SendClient(TEClientMsg.FillPower);
+			if (Main.mouseItem == null || Main.mouseItem.stack <= 0 || Main.mouseItem.type != ItemID.LihzahrdPowerCell)
 				return;
-			}
+			if (--Main.mouseItem.stack <= 0)
+				Main.mouseItem.TurnToAir();
 			Power = MaxResources;
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				SendClient(TEClientMsg.FillPower);
+			return;
 		}
 
 		internal void ProvideMud(short addAmount = 0)
 		{
-			if (Main.netMode != NetmodeID.Server && Main.mouseItem != null && Main.mouseItem.stack > 0 && Main.mouseItem.type == ItemID.MudBlock)
-			{
-				addAmount = (short)Math.Min(Main.mouseItem.stack, MaxResources - Mud);
-				if ((Main.mouseItem.stack -= addAmount) <= 0)
-					Main.mouseItem.TurnToAir();
-				Mud += addAmount;
-				if (Main.netMode == NetmodeID.MultiplayerClient)
-					SendClient(TEClientMsg.AddMud, addAmount);
+			if (Main.mouseItem == null || Main.mouseItem.stack <= 0 || Main.mouseItem.type != ItemID.MudBlock)
 				return;
-			}
+			addAmount = (short)Math.Min(Main.mouseItem.stack, MaxResources - Mud);
+			if ((Main.mouseItem.stack -= addAmount) <= 0)
+				Main.mouseItem.TurnToAir();
 			Mud += addAmount;
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				SendClient(TEClientMsg.AddMud, addAmount);
+			return;
 		}
 
 		internal void ExtractChloro()
@@ -175,6 +196,7 @@ namespace GadgetBox.Tiles
 				return;
 			}
 			Item.NewItem(new Rectangle((Position.X - 1) * 16, (Position.Y - 1) * 16, 54, 54), ItemID.ChlorophyteOre, Chlorophyte);
+			Chlorophyte = 0;
 		}
 
 		internal void RecieveMessage(BinaryReader reader, int whoAmI)
@@ -191,96 +213,78 @@ namespace GadgetBox.Tiles
 			SendServer((TEServerMsg)clientMsg);
 		}
 
-		internal static void RequestOpen(Point16 extractorPos)
-		{
-			ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.RequestExtractorOpen, 8);
-			packet.Write(extractorPos.X);
-			packet.Write(extractorPos.Y);
-			packet.Send();
-		}
-
 		internal static void ReceiveRequestOpen(BinaryReader reader, int whoAmI)
 		{
 			if (Main.netMode != NetmodeID.Server)
 				return;
-			Point16 position = new Point16(reader.ReadInt16(), reader.ReadInt16());
-			TileEntity extractorTE;
-			if (!ByPosition.TryGetValue(position, out extractorTE))
+			int curID = reader.ReadInt32();
+			ChlorophyteExtractorTE extractorTE = ExtractorByID(curID);
+			if (extractorTE == null || extractorTE.CurrentPlayer != byte.MaxValue)
 				return;
 
-			short curID = (short)extractorTE.ID;
-			if (UsingExtractor(curID) == -1)
-			{
-				ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.SyncPlayerExtractor, 12);
-				packet.Write(curID);
-				packet.Write(position.X);
-				packet.Write(position.Y);
-				packet.Send(whoAmI);
-				Main.player[whoAmI].GetModPlayer<GadgetPlayer>().extractor = curID;
-				packet = GadgetBox.Instance.GetPacket(MessageType.SyncPlayerExtractorIndex, 5);
-				packet.Write((byte)whoAmI);
-				packet.Write(curID);
-				packet.Send(-1, whoAmI);
-			}
+			extractorTE.CurrentPlayer = (byte)whoAmI;
+			ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.SyncExtractorPlayer, 8);
+			packet.Write(curID);
+			packet.Write(extractorTE.Position.X);
+			packet.Write(extractorTE.Position.Y);
+			packet.Send(whoAmI);
+			packet = GadgetBox.Instance.GetPacket(MessageType.SyncExtractorPlayerIndex, 5);
+			packet.Write(curID);
+			packet.Write((byte)whoAmI);
+			packet.Send(-1, whoAmI);
 		}
 
-		internal static void SyncPlayerExtractor(BinaryReader reader, int whoAmI)
+		internal static void SyncExtractorPlayer(BinaryReader reader, int whoAmI)
 		{
-			short curID = reader.ReadInt16();
+			int curID = reader.ReadInt32();
+			if (curID == -1 && Main.netMode == NetmodeID.MultiplayerClient && ChlorophyteExtractorUI.ExtractorTE.CurrentPlayer == Main.myPlayer)
+			{
+				ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE, false, true);
+				return;
+			}
+			ChlorophyteExtractorTE extractorTE = ExtractorByID(curID);
+			if (extractorTE == null)
+				return;
 			if (Main.netMode == NetmodeID.Server)
 			{
-				Main.player[whoAmI].GetModPlayer<GadgetPlayer>().extractor = curID;
-				ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.SyncPlayerExtractorIndex, 5);
-				packet.Write((byte)whoAmI);
+				extractorTE.CurrentPlayer = (byte)whoAmI;
+				ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.SyncExtractorPlayerIndex, 5);
 				packet.Write(curID);
+				packet.Write((byte)whoAmI);
 				packet.Send(-1, whoAmI);
 				return;
 			}
-			Point16 position = new Point16(reader.ReadInt16(), reader.ReadInt16());
-			GadgetPlayer gadgetPlayer = Main.LocalPlayer.GetModPlayer<GadgetPlayer>();
-			if (gadgetPlayer.extractor == -1)
-			{
-				Main.playerInventory = true;
-				Main.PlaySound(SoundID.MenuOpen);
-			}
-			else if (gadgetPlayer.extractor != curID && curID != -1)
-			{
-				Main.playerInventory = true;
-				Main.PlaySound(SoundID.MenuTick);
-				Main.recBigList = false;
-			}
-			else if (gadgetPlayer.extractor != -1 && curID == -1)
-			{
-				Main.PlaySound(SoundID.MenuClose);
-				Main.recBigList = false;
-			}
-			gadgetPlayer.extractor = curID;
-			gadgetPlayer.extractorPos = position;
+			Main.LocalPlayer.GetModPlayer<GadgetPlayer>().extractorPos = new Point16(reader.ReadInt16(), reader.ReadInt16());
+			extractorTE.CurrentPlayer = (byte)Main.myPlayer;
+			ChlorophyteExtractorUI.OpenUI(extractorTE, true);
 			return;
-		}
-
-		private static int UsingExtractor(int ID)
-		{
-			for (int i = 0; i < 255; i++)
-			{
-				if (!Main.player[i].active || Main.player[i].dead)
-					continue;
-				if (Main.player[i].GetModPlayer<GadgetPlayer>().extractor != ID)
-					continue;
-				return i;
-			}
-			return -1;
 		}
 
 		void SendClient(TEClientMsg msgType, short extraData = 0)
 		{
 			bool AddMud = msgType == TEClientMsg.AddMud;
-			ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.ExtractorMessage, AddMud ? 5 : 1);
-			packet.Write((short)ID);
+			ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.ExtractorMessage, AddMud ? 7 : 5);
+			packet.Write(ID);
 			packet.Write((byte)msgType);
 			if (AddMud)
 				packet.Write(extraData);
 			packet.Send();
+		}
+
+		public static ChlorophyteExtractorTE ExtractorByID(int ID)
+		{
+			TileEntity tempTE;
+			if (!ByID.TryGetValue(ID, out tempTE))
+				return null;
+			return tempTE as ChlorophyteExtractorTE;
+		}
+
+		public static ChlorophyteExtractorTE ExtractorByPosition(Point16 position)
+		{
+			TileEntity tempTE;
+			if (!ByPosition.TryGetValue(position, out tempTE))
+				return null;
+			return tempTE as ChlorophyteExtractorTE;
 		}
 
 		public override bool ValidTile(int i, int j)
@@ -293,11 +297,11 @@ namespace GadgetBox.Tiles
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
-				NetMessage.SendTileSquare(Main.myPlayer, i, j, 3);
-				NetMessage.SendData(MessageID.TileEntityPlacement, -1, -1, null, i, j, Type);
+				NetMessage.SendTileSquare(Main.myPlayer, i, j - 1, 3);
+				NetMessage.SendData(MessageID.TileEntityPlacement, -1, -1, null, i, j - 1, Type);
 				return -1;
 			}
-			return Place(i, j);
+			return Place(i, j - 1);
 		}
 
 		public override TagCompound Save()

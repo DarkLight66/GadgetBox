@@ -12,7 +12,7 @@ using Terraria.UI;
 
 namespace GadgetBox.GadgetUI
 {
-	class ChlorophyteExtractorUI : UIState
+	internal class ChlorophyteExtractorUI : UIState
 	{
 		internal static bool visible = false;
 		internal static ChlorophyteExtractorTE ExtractorTE = new ChlorophyteExtractorTE();
@@ -36,35 +36,35 @@ namespace GadgetBox.GadgetUI
 			extractorPanel.Width.Set(220, 0);
 			extractorPanel.Height.Set(120, 0);
 
-			powerCellSlot = new UIPowerSlot(mod.GetTexture("GadgetUI/PowerSlot_Open"), mod.GetTexture("GadgetUI/PowerSlot_Closed"), () => ExtractorTE.Power > 0);
+			powerCellSlot = new UIPowerSlot(mod.GetTexture("GadgetUI/PowerSlot_Closed"), mod.GetTexture("GadgetUI/PowerSlot_Open"), () => ExtractorTE.Power > 0);
 			powerCellSlot.Top.Set(8, 0);
 			powerCellSlot.Left.Set(8, 0);
-			powerCellSlot.OnClick += (a,b) => ExtractorTE.ProvidePower();
+			powerCellSlot.OnClick += (a, b) => ExtractorTE.ProvidePower();
 			extractorPanel.Append(powerCellSlot);
 
-			powerButton = new UIDelayedPowerButton(mod.GetTexture("GadgetUI/PowerButton_ON"), mod.GetTexture("GadgetUI/PowerButton_OFF"), 240, () => ExtractorTE.IsON == true, () => ExtractorTE.Power > 0);
-			powerButton.Top.Set(16, 0);
+			powerButton = new UIDelayedPowerButton(mod.GetTexture("GadgetUI/PowerButton_ON"), mod.GetTexture("GadgetUI/PowerButton_OFF"), 240, () => ExtractorTE.IsON, () => ExtractorTE.CanTurnOn);
+			powerButton.Top.Set(-16, 0);
 			powerButton.Left.Set(10, 0);
 			powerButton.VAlign = 1f;
 			powerButton.OnClick += (a, b) => ExtractorTE.TogglePower();
 			extractorPanel.Append(powerButton);
 
 			powerBar = new UIPowerBar(mod.GetTexture("GadgetUI/PowerBar"), mod.GetTexture("GadgetUI/PowerBarFill"), 6, 4);
-			powerBar.Top.Set(22, 0);
-			powerBar.Left.Set(18, 0);
+			powerBar.Top.Set(14, 0);
+			powerBar.Left.Set(-12, 0);
 			powerBar.HAlign = 1f;
 			extractorPanel.Append(powerBar);
 
-			mudSlot = new UIExtractorSlot(mod.GetTexture("GadgetUI/ExtractorSlot"), Main.itemTexture[ItemID.MudBlock], () => ExtractorTE.Mud > 0);
-			mudSlot.Top.Set(8, 0);
+			mudSlot = new UIExtractorSlot(mod.GetTexture("GadgetUI/ExtractorSlot"), Main.itemTexture[ItemID.MudBlock], () => ExtractorTE.Mud > 0, () => ExtractorTE.Mud < ChlorophyteExtractorTE.MaxResources);
+			mudSlot.Top.Set(-8, 0);
 			mudSlot.Left.Set(52, 0);
-			mudSlot.OnClick += (a,b) => ExtractorTE.ProvideMud();
+			mudSlot.OnClick += (a, b) => ExtractorTE.ProvideMud();
 			mudSlot.VAlign = 1;
 			extractorPanel.Append(mudSlot);
 
-			chloroSlot = new UIExtractorSlot(mod.GetTexture("GadgetUI/ExtractorSlot"), Main.itemTexture[ItemID.ChlorophyteOre], () => ExtractorTE.Chlorophyte < ChlorophyteExtractorTE.MaxResources);
-			chloroSlot.Top.Set(8, 0);
-			chloroSlot.Left.Set(12, 0);
+			chloroSlot = new UIExtractorSlot(mod.GetTexture("GadgetUI/ExtractorSlot"), Main.itemTexture[ItemID.ChlorophyteOre], () => ExtractorTE.Chlorophyte > 0);
+			chloroSlot.Top.Set(-8, 0);
+			chloroSlot.Left.Set(-10, 0);
 			chloroSlot.OnClick += (a, b) => ExtractorTE.ExtractChloro();
 			chloroSlot.VAlign = chloroSlot.HAlign = 1;
 			extractorPanel.Append(chloroSlot);
@@ -74,31 +74,68 @@ namespace GadgetBox.GadgetUI
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
-			if (ContainsPoint(Main.MouseScreen))
+			if (extractorPanel.ContainsPoint(Main.MouseScreen))
 				Main.LocalPlayer.mouseInterface = true;
-			powerBar.SetProgress(ExtractorTE.Power / ChlorophyteExtractorTE.MaxResources);
+			float progress = (float)ExtractorTE.Power / ChlorophyteExtractorTE.MaxResources;
+			powerBar.SetProgress(progress);
+			powerBar.HoverText = (int)(progress * 100) + "%";
+			mudSlot.HoverText = (ExtractorTE.Mud > 0 ? ExtractorTE.Mud + "" : "Needs") + " Mud";
+			chloroSlot.HoverText = (ExtractorTE.Chlorophyte < ChlorophyteExtractorTE.MaxResources ? ExtractorTE.Chlorophyte > 0 ? ExtractorTE.Chlorophyte + "" : "No" : "Full of") + " Chlorophyte"; 
 		}
 
-		internal static void OpenUI(GadgetPlayer gadgetPlayer)
+		internal static void OpenUI(ChlorophyteExtractorTE extractorTE, bool fromNet = false)
 		{
+			bool switching = ExtractorTE.CurrentPlayer != byte.MaxValue;
+			if (switching)
+				ExtractorTE.CurrentPlayer = byte.MaxValue;
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				ModPacket packet;
+				if (!fromNet)
+				{
+					Main.stackSplit = 600;
+					packet = GadgetBox.Instance.GetPacket(MessageType.RequestExtractorOpen, 4);
+					packet.Write(extractorTE.ID);
+					packet.Send();
+				}
+				if (switching)
+				{
+					packet = GadgetBox.Instance.GetPacket(MessageType.SyncExtractorPlayer, 5);
+					packet.Write(ExtractorTE.ID);
+					packet.Write(byte.MaxValue);
+					packet.Send();
+				}
+				return;
+			}
+			Main.stackSplit = 600;
 			if (PlayerInput.GrappleAndInteractAreShared)
 				PlayerInput.Triggers.JustPressed.Grapple = false;
 			visible = true;
-			ExtractorTE = (ChlorophyteExtractorTE)TileEntity.ByID[gadgetPlayer.extractor];
+			ExtractorTE = extractorTE;
 			Main.playerInventory = true;
 			Main.recBigList = false;
-			Main.PlaySound(SoundID.MenuOpen);
+			Main.PlaySound(switching ? SoundID.MenuTick : SoundID.MenuOpen);
 		}
 
-		internal static void CloseUI(GadgetPlayer gadgetPlayer, bool silent = false)
+		internal static void CloseUI(ChlorophyteExtractorTE extractorTE, bool silent = false, bool fromNet = false)
 		{
+			if (!fromNet)
+			{
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.SyncExtractorPlayer, 5);
+					packet.Write(extractorTE.ID);
+					packet.Write(byte.MaxValue);
+					packet.Send();
+				}
+				else
+					Main.stackSplit = 600;
+			}
 			visible = false;
-			gadgetPlayer.extractor = -1;
+			extractorTE.CurrentPlayer = byte.MaxValue;
 			ExtractorTE = new ChlorophyteExtractorTE();
 			if (silent) return;
-			if (PlayerInput.GrappleAndInteractAreShared)
-				PlayerInput.Triggers.JustPressed.Grapple = false;
-			Main.PlaySound(SoundID.MenuTick);
+			Main.PlaySound(SoundID.MenuClose);
 		}
 	}
 }

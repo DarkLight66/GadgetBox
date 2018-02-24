@@ -20,7 +20,6 @@ namespace GadgetBox
         public byte speedShine = 0;
 
 		public Point16 extractorPos = Point16.NegativeOne;
-		public int extractor = -1;
 
 		public override void ResetEffects()
         {
@@ -34,40 +33,25 @@ namespace GadgetBox
 
 		public override void UpdateDead()
 		{
-			if (extractor > -1)
-				ChlorophyteExtractorUI.CloseUI(this, true);
-		}
-
-		public override void clientClone(ModPlayer clientClone)
-		{
-			GadgetPlayer gadgetClone = clientClone as GadgetPlayer;
-			gadgetClone.extractor = extractor;
-		}
-
-		public override void SendClientChanges(ModPlayer clientPlayer)
-		{
-			GadgetPlayer gadgetCient = clientPlayer as GadgetPlayer;
-			if (gadgetCient.extractor != extractor && extractor == -1)
-			{
-				ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.SyncPlayerExtractor, 4);
-				packet.Write((short)-1);
-				packet.Send();
-			}
+			if (Main.netMode == NetmodeID.Server)
+				return;
+			if (ChlorophyteExtractorUI.ExtractorTE.CurrentPlayer == player.whoAmI)
+				ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE, true);
 		}
 
 		public override void PreUpdate()
 		{
 			if (Main.myPlayer != player.whoAmI || !ChlorophyteExtractorUI.visible)
 				return;
-			if (!Main.playerInventory || player.chest != -1 || Main.npcShop != 0 || player.talkNPC != -1 || ChlorophyteExtractorUI.ExtractorTE.ID == -1)
-				ChlorophyteExtractorUI.CloseUI(this, true);
+			if (!Main.playerInventory || player.chest != -1 || Main.npcShop != 0 || player.talkNPC != -1)
+				ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE, true);
 			else
 			{
 				int playerX = (int)(player.Center.X / 16);
 				int playerY = (int)(player.Center.Y / 16);
 				if (playerX < extractorPos.X - Player.tileRangeX || playerX > extractorPos.X + Player.tileRangeX + 1 ||
 					playerY < extractorPos.Y - Player.tileRangeY || playerY > extractorPos.Y + Player.tileRangeY + 1)
-					ChlorophyteExtractorUI.CloseUI(this);
+					ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE);
 			}
 		}
 

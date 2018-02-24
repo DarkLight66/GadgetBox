@@ -7,16 +7,18 @@ using Terraria.UI;
 
 namespace GadgetBox.GadgetUI
 {
-	internal class UIExtractorSlot : UIElement
+	internal class UIExtractorSlot : UIHoverText
 	{
 		public delegate bool ItemCheck();
 		Texture2D _slotTexture;
 		Texture2D _itemTexture;
-		ItemCheck _itemCheck;
-		
-		public UIExtractorSlot(Texture2D slotTexture, Texture2D itemTexture, ItemCheck itemCheck)
+		ItemCheck _hasItem;
+		ItemCheck _canClick;
+
+		public UIExtractorSlot(Texture2D slotTexture, Texture2D itemTexture, ItemCheck hasItem, ItemCheck canClick = null)
 		{
-			_itemCheck = itemCheck;
+			_hasItem = hasItem;
+			_canClick = canClick ?? hasItem;
 			_slotTexture = slotTexture;
 			_itemTexture = itemTexture;
 			Width.Set(_slotTexture.Width, 0f);
@@ -28,8 +30,14 @@ namespace GadgetBox.GadgetUI
 			CalculatedStyle dimensions = GetDimensions();
 			Vector2 drawOrigin = _itemTexture.Size() * .5f;
 			spriteBatch.Draw(_slotTexture, dimensions.ToRectangle(), null, Color.White);
-			if (_itemCheck())
+			if (_hasItem())
 				spriteBatch.Draw(_itemTexture, dimensions.Center() - _itemTexture.Size() * .5f, null, Color.White);
+		}
+
+		public override void Click(UIMouseEvent evt)
+		{
+			if (_canClick())
+				base.Click(evt);
 		}
 	}
 }

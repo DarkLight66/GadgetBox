@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -59,6 +59,7 @@
     <Compile Include="GadgetNPC.cs" />
     <Compile Include="GadgetTile.cs" />
     <Compile Include="GadgetUI\ChlorophyteExtractorUI.cs" />
+    <Compile Include="GadgetUI\UIHoverText.cs" />
     <Compile Include="GadgetUI\UIPowerBar.cs" />
     <Compile Include="GadgetUI\UIPowerButton.cs" />
     <Compile Include="GadgetUI\UIExtractorSlot.cs" />
@@ -87,6 +88,13 @@
     <Content Include="Buffs\ShinyEquipment.png" />
     <Content Include="build.txt" />
     <Content Include="description.txt" />
+    <Content Include="GadgetUI\ExtractorSlot.png" />
+    <Content Include="GadgetUI\PowerBar.png" />
+    <Content Include="GadgetUI\PowerBarFill.png" />
+    <Content Include="GadgetUI\PowerButton_OFF.png" />
+    <Content Include="GadgetUI\PowerButton_ON.png" />
+    <Content Include="GadgetUI\PowerSlot_Closed.png" />
+    <Content Include="GadgetUI\PowerSlot_Open.png" />
     <Content Include="icon.png" />
     <Content Include="Items\Accessories\CritterNetAttachment.png" />
     <Content Include="Items\Placeable\ChlorophyteExtractor.png" />
