@@ -50,8 +50,8 @@ namespace GadgetBox.GadgetUI
 			extractorPanel.Append(powerButton);
 
 			powerBar = new UIPowerBar(mod.GetTexture("GadgetUI/PowerBar"), mod.GetTexture("GadgetUI/PowerBarFill"), 6, 4);
-			powerBar.Top.Set(14, 0);
-			powerBar.Left.Set(-12, 0);
+			powerBar.Top.Set(8, 0);
+			powerBar.Left.Set(-10, 0);
 			powerBar.HAlign = 1f;
 			extractorPanel.Append(powerBar);
 
@@ -78,7 +78,7 @@ namespace GadgetBox.GadgetUI
 				Main.LocalPlayer.mouseInterface = true;
 			float progress = (float)ExtractorTE.Power / ChlorophyteExtractorTE.MaxResources;
 			powerBar.SetProgress(progress);
-			powerBar.HoverText = (int)(progress * 100) + "%";
+			powerBar.HoverText = (int)(progress * 100) + "% Power";
 			mudSlot.HoverText = (ExtractorTE.Mud > 0 ? ExtractorTE.Mud + "" : "Needs") + " Mud";
 			chloroSlot.HoverText = (ExtractorTE.Chlorophyte < ChlorophyteExtractorTE.MaxResources ? ExtractorTE.Chlorophyte > 0 ? ExtractorTE.Chlorophyte + "" : "No" : "Full of") + " Chlorophyte"; 
 		}

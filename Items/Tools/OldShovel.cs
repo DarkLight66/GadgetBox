@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Microsoft.Xna.Framework;
+using Terraria.ID;
 
 namespace GadgetBox.Items.Tools
 {
@@ -16,6 +17,7 @@ namespace GadgetBox.Items.Tools
 			item.value = Item.buyPrice(silver: 10);
 			item.autoReuse = true;
 			item.useTurn = true;
+			item.UseSound = SoundID.Item1;
 			shovel = 50;
 		}
 	}

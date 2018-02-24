@@ -27,6 +27,7 @@ namespace GadgetBox.GadgetUI
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
+			base.DrawSelf(spriteBatch);
 			CalculatedStyle dimensions = GetDimensions();
 			Vector2 drawOrigin = _itemTexture.Size() * .5f;
 			spriteBatch.Draw(_slotTexture, dimensions.ToRectangle(), null, Color.White);

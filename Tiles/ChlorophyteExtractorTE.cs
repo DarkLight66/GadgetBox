@@ -104,6 +104,7 @@ namespace GadgetBox.Tiles
 
 		internal void TogglePower()
 		{
+			Main.PlaySound(SoundID.Mech);
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				IsON = !IsON;
@@ -170,6 +171,7 @@ namespace GadgetBox.Tiles
 			if (--Main.mouseItem.stack <= 0)
 				Main.mouseItem.TurnToAir();
 			Power = MaxResources;
+			Main.PlaySound(SoundID.Grab);
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 				SendClient(TEClientMsg.FillPower);
 			return;
@@ -183,6 +185,7 @@ namespace GadgetBox.Tiles
 			if ((Main.mouseItem.stack -= addAmount) <= 0)
 				Main.mouseItem.TurnToAir();
 			Mud += addAmount;
+			Main.PlaySound(SoundID.Grab);
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 				SendClient(TEClientMsg.AddMud, addAmount);
 			return;

@@ -20,6 +20,7 @@ namespace GadgetBox.Items.Tools
 			item.rare = 1;
 			item.autoReuse = true;
 			item.useTurn = true;
+			item.UseSound = SoundID.Item1;
 			shovel = 75;
 		}
 
