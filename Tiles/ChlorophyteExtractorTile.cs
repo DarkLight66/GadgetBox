@@ -1,22 +1,20 @@
-﻿using System;
+﻿using GadgetBox.GadgetUI;
+using GadgetBox.Items.Placeable;
 using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using GadgetBox.Items.Placeable;
-using Terraria.ObjectData;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using System.Collections.Generic;
+using Terraria.ID;
 using Terraria.Localization;
-using GadgetBox.GadgetUI;
+using Terraria.ModLoader;
+using Terraria.ObjectData;
 
 namespace GadgetBox.Tiles
 {
 	public class ChlorophyteExtractorTile : ModTile
-    {
-        public override void SetDefaults()
-        {
+	{
+		public override void SetDefaults()
+		{
 			TileID.Sets.HasOutlines[Type] = true;
 			Main.tileFrameImportant[Type] = true;
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
@@ -89,7 +87,9 @@ namespace GadgetBox.Tiles
 		}
 
 		public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
+
 		public override bool HasSmartInteract() => true;
+
 		Point16 TEPosition(int i, int j) => new Point16(i - Main.tile[i, j].frameX / 18 + 1, j - Main.tile[i, j].frameY % animationFrameHeight / 18 + 1);
 	}
 }

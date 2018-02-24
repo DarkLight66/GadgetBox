@@ -95,7 +95,6 @@
     <Content Include="GadgetUI\PowerButton_ON.png" />
     <Content Include="GadgetUI\PowerSlot_Closed.png" />
     <Content Include="GadgetUI\PowerSlot_Open.png" />
-    <Content Include="icon.png" />
     <Content Include="Items\Accessories\CritterNetAttachment.png" />
     <Content Include="Items\Placeable\ChlorophyteExtractor.png" />
     <Content Include="Items\Placeable\ReflectorBlock.png" />

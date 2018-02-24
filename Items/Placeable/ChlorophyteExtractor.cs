@@ -1,10 +1,7 @@
-﻿using System;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.DataStructures;
+﻿using GadgetBox.Tiles;
 using Microsoft.Xna.Framework;
-using GadgetBox.Tiles;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace GadgetBox.Items.Placeable
 {
@@ -26,7 +23,6 @@ namespace GadgetBox.Items.Placeable
 
 		public override void AddRecipes()
 		{
-
 		}
 	}
 }

@@ -1,9 +1,9 @@
-﻿using Terraria;
+﻿using System.Collections.Generic;
+using GadgetBox.Items.Tools;
+using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Utilities;
-using GadgetBox.Items.Tools;
-using System.Collections.Generic;
-using Terraria.Localization;
 
 namespace GadgetBox.Prefixes
 {
@@ -19,7 +19,7 @@ namespace GadgetBox.Prefixes
 				ToolPrefixes.RemoveAll(p => p.tileBoost < 0);
 			if (item.noUseGraphic)
 				ToolPrefixes.RemoveAll(p => p.useTimeMult != 1);
-			return rand.Next(ToolPrefixes).Type;
+			return ToolPrefixes.Count > 0 ? rand.Next(ToolPrefixes).Type : -1;
 		}
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
@@ -28,7 +28,7 @@ namespace GadgetBox.Prefixes
 				return;
 			if (item.tileBoost != Main.cpItem.tileBoost)
 			{
-				int ttindex = tooltips.FindLastIndex(t => (t.mod == "Terraria" || t.mod == mod.Name) && (t.isModifier || t.Name.StartsWith("Tooltip") 
+				int ttindex = tooltips.FindLastIndex(t => (t.mod == "Terraria" || t.mod == mod.Name) && (t.isModifier || t.Name.StartsWith("Tooltip")
 				|| t.Name.StartsWith("Material") || t.Name.StartsWith("TileBoost") || t.Name.EndsWith("Power")));
 				if (ttindex != -1)
 				{

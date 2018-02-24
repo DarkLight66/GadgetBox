@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
 namespace GadgetBox.GadgetUI
@@ -25,6 +23,12 @@ namespace GadgetBox.GadgetUI
 			Height.Set(_slotTexture.Height, 0f);
 		}
 
+		public override void Click(UIMouseEvent evt)
+		{
+			if (_canClick())
+				base.Click(evt);
+		}
+
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			base.DrawSelf(spriteBatch);
@@ -33,12 +37,6 @@ namespace GadgetBox.GadgetUI
 			spriteBatch.Draw(_slotTexture, dimensions.ToRectangle(), null, Color.White);
 			if (_hasItem())
 				spriteBatch.Draw(_itemTexture, dimensions.Center() - _itemTexture.Size() * .5f, null, Color.White);
-		}
-
-		public override void Click(UIMouseEvent evt)
-		{
-			if (_canClick())
-				base.Click(evt);
 		}
 	}
 }

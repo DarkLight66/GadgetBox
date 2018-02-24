@@ -7,7 +7,7 @@ namespace GadgetBox.GadgetUI
 	internal class UIHoverText : UIElement
 	{
 		public string HoverText { get; internal set; }
-		
+
 		public UIHoverText()
 		{
 			HoverText = "";

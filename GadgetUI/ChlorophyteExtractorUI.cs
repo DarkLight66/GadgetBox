@@ -1,9 +1,7 @@
-﻿using System;
-using GadgetBox.Tiles;
+﻿using GadgetBox.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -72,17 +70,6 @@ namespace GadgetBox.GadgetUI
 			Append(extractorPanel);
 		}
 
-		protected override void DrawSelf(SpriteBatch spriteBatch)
-		{
-			if (extractorPanel.ContainsPoint(Main.MouseScreen))
-				Main.LocalPlayer.mouseInterface = true;
-			float progress = (float)ExtractorTE.Power / ChlorophyteExtractorTE.MaxResources;
-			powerBar.SetProgress(progress);
-			powerBar.HoverText = (int)(progress * 100) + "% Power";
-			mudSlot.HoverText = (ExtractorTE.Mud > 0 ? ExtractorTE.Mud + "" : "Needs") + " Mud";
-			chloroSlot.HoverText = (ExtractorTE.Chlorophyte < ChlorophyteExtractorTE.MaxResources ? ExtractorTE.Chlorophyte > 0 ? ExtractorTE.Chlorophyte + "" : "No" : "Full of") + " Chlorophyte"; 
-		}
-
 		internal static void OpenUI(ChlorophyteExtractorTE extractorTE, bool fromNet = false)
 		{
 			bool switching = ExtractorTE.CurrentPlayer != byte.MaxValue;
@@ -136,6 +123,17 @@ namespace GadgetBox.GadgetUI
 			ExtractorTE = new ChlorophyteExtractorTE();
 			if (silent) return;
 			Main.PlaySound(SoundID.MenuClose);
+		}
+
+		protected override void DrawSelf(SpriteBatch spriteBatch)
+		{
+			if (extractorPanel.ContainsPoint(Main.MouseScreen))
+				Main.LocalPlayer.mouseInterface = true;
+			float progress = (float)ExtractorTE.Power / ChlorophyteExtractorTE.MaxResources;
+			powerBar.SetProgress(progress);
+			powerBar.HoverText = (int)(progress * 100) + "% Power";
+			mudSlot.HoverText = (ExtractorTE.Mud > 0 ? ExtractorTE.Mud + "" : "Needs") + " Mud";
+			chloroSlot.HoverText = (ExtractorTE.Chlorophyte < ChlorophyteExtractorTE.MaxResources ? ExtractorTE.Chlorophyte > 0 ? ExtractorTE.Chlorophyte + "" : "No" : "Full of") + " Chlorophyte";
 		}
 	}
 }

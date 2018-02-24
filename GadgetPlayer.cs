@@ -1,35 +1,34 @@
 ﻿using System.Collections.Generic;
-using GadgetBox.Items.Accessories;
 using GadgetBox.GadgetUI;
+using GadgetBox.Items.Accessories;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using GadgetBox.Tiles;
 
 namespace GadgetBox
 {
-	class GadgetPlayer : ModPlayer
-    {
-        public bool etherMagnet = false;
-        public bool shinyEquips = false;
+	internal class GadgetPlayer : ModPlayer
+	{
+		public bool etherMagnet = false;
+		public bool shinyEquips = false;
 		public bool critterCatch = false;
-        
-        public byte critShine = 0;
-        public byte speedShine = 0;
+
+		public byte critShine = 0;
+		public byte speedShine = 0;
 
 		public Point16 extractorPos = Point16.NegativeOne;
 
 		public override void ResetEffects()
-        {
-            etherMagnet = false;
-            shinyEquips = false;
+		{
+			etherMagnet = false;
+			shinyEquips = false;
 			critterCatch = false;
-            
-            critShine = 0;
-            speedShine = 0;
-        }
+
+			critShine = 0;
+			speedShine = 0;
+		}
 
 		public override void UpdateDead()
 		{
@@ -91,27 +90,27 @@ namespace GadgetBox
 		}
 
 		public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
-        {
-            if (shinyEquips && crit && critShine > 0)
-                damage += (int)(damage * (critShine * 0.01f));
-        }
+		{
+			if (shinyEquips && crit && critShine > 0)
+				damage += (int)(damage * (critShine * 0.01f));
+		}
 
 		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-        {
-            if (shinyEquips && crit && critShine > 0)
-                damage += (int)(damage * (critShine * 0.01f));
-        }
+		{
+			if (shinyEquips && crit && critShine > 0)
+				damage += (int)(damage * (critShine * 0.01f));
+		}
 
-        public override void PostUpdateRunSpeeds()
-        {
-            if (player.mount.Active || !shinyEquips || speedShine == 0)
-                return;
-            int jumpHeight = speedShine;
-            if (player.sticky)
-                jumpHeight /= 10;
-            if (player.dazed)
-                jumpHeight /= 5;
-            Player.jumpHeight += speedShine;
-        }
-    }
+		public override void PostUpdateRunSpeeds()
+		{
+			if (player.mount.Active || !shinyEquips || speedShine == 0)
+				return;
+			int jumpHeight = speedShine;
+			if (player.sticky)
+				jumpHeight /= 10;
+			if (player.dazed)
+				jumpHeight /= 5;
+			Player.jumpHeight += speedShine;
+		}
+	}
 }

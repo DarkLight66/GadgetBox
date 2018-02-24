@@ -1,20 +1,17 @@
-﻿using Terraria;
+﻿using System.Collections.Generic;
+using Terraria;
 using Terraria.ModLoader;
-using System.Collections.Generic;
 
 namespace GadgetBox.Prefixes
 {
 	public class ToolPrefix : ModPrefix
 	{
+		internal static List<ToolPrefix> ToolPrefixes = new List<ToolPrefix>();
+		internal int critBonus = 0;
 		internal float damageMult = 1f;
 		internal float knockbackMult = 1f;
-		internal float useTimeMult = 1f;
-		internal int critBonus = 0;
 		internal int tileBoost = 0;
-
-		internal static List<ToolPrefix> ToolPrefixes = new List<ToolPrefix>();
-
-		public ToolPrefix() { }
+		internal float useTimeMult = 1f;
 
 		public ToolPrefix(float damageMult = 1f, float knockbackMult = 1f, float useTimeMult = 1f, int critBonus = 0, int tileBoost = 0)
 		{
@@ -24,6 +21,8 @@ namespace GadgetBox.Prefixes
 			this.critBonus = critBonus;
 			this.tileBoost = tileBoost;
 		}
+
+		public override void Apply(Item item) => item.tileBoost += item.tileBoost == 0 && tileBoost < 0 ? -1 : tileBoost;
 
 		public override bool Autoload(ref string name)
 		{
@@ -41,6 +40,8 @@ namespace GadgetBox.Prefixes
 			return false;
 		}
 
+		public override void ModifyValue(ref float valueMult) => valueMult *= 1 + tileBoost * 0.04f;
+
 		public override void SetStats(ref float damageMult, ref float knockbackMult, ref float useTimeMult, ref float scaleMult, ref float shootSpeedMult, ref float manaMult, ref int critBonus)
 		{
 			damageMult = this.damageMult;
@@ -48,9 +49,6 @@ namespace GadgetBox.Prefixes
 			useTimeMult = this.useTimeMult;
 			critBonus = this.critBonus;
 		}
-		public override void Apply(Item item) => item.tileBoost += item.tileBoost == 0 && tileBoost < 0 ? -1 : tileBoost;
-
-		public override void ModifyValue(ref float valueMult) => valueMult *= 1 + tileBoost * 0.04f;
 	}
 
 	public enum ToolPrefixType : byte

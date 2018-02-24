@@ -1,38 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using GadgetBox.GadgetUI;
+using GadgetBox.Tiles;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
-using GadgetBox.GadgetUI;
-using GadgetBox.Tiles;
-using Terraria.DataStructures;
 
 namespace GadgetBox
 {
-    class GadgetBox : Mod
-    {
-        internal static GadgetBox Instance;
+	internal class GadgetBox : Mod
+	{
+		internal static GadgetBox Instance;
 		internal static string AnyGoldBar;
 
 		internal static UserInterface chloroExtractInterface;
 		internal ChlorophyteExtractorUI chlorophyteExtractorUI;
 
+		int lastSeenScreenWidth;
+
+		int lastSeenScreenHeight;
+
 		public GadgetBox()
-        {
-            Properties = new ModProperties()
-            {
-                Autoload = true,
-                AutoloadGores = true,
-                AutoloadSounds = true
-            };
+		{
+			Properties = new ModProperties()
+			{
+				Autoload = true,
+				AutoloadGores = true,
+				AutoloadSounds = true
+			};
 		}
-        
-        public override void Load()
-        {
-            Instance = this;
+
+		public override void Load()
+		{
+			Instance = this;
 			if (!Main.dedServ)
 			{
 				chlorophyteExtractorUI = new ChlorophyteExtractorUI();
@@ -40,17 +43,14 @@ namespace GadgetBox
 				chloroExtractInterface = new UserInterface();
 				chloroExtractInterface.SetState(chlorophyteExtractorUI);
 			}
-        }
+		}
 
-        public override void Unload()
-        {
+		public override void Unload()
+		{
 			ChlorophyteExtractorUI.ExtractorTE = null;
 			chloroExtractInterface = null;
 			Instance = null;
 		}
-
-		int lastSeenScreenWidth;
-		int lastSeenScreenHeight;
 
 		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 		{
@@ -109,33 +109,33 @@ namespace GadgetBox
 				case MessageType.SyncExtractorPlayerIndex:
 					ChlorophyteExtractorTE.SyncExtractorPlayerIndex(reader, whoAmI);
 					break;
-				case MessageType.ExtractorMessage:
+				case MessageType.SendExtractorMessage:
 					ChlorophyteExtractorTE.ExtractorByID(reader.ReadInt32())?.RecieveMessage(reader, whoAmI);
 					break;
 			}
 		}
 
+		internal static void Log(object message)
+			=> ErrorLogger.Log(string.Format("[{0}][{1}] {2}", Instance, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), message));
+
+		internal static void Log(string message, params object[] formatData)
+			=> ErrorLogger.Log(string.Format("[{0}][{1}] {2}", Instance, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), string.Format(message, formatData)));
+
 		internal ModPacket GetPacket(MessageType type, int capacity)
-        {
-            ModPacket packet = GetPacket(capacity + 1);
-            packet.Write((byte)type);
-            return packet;
-        }
-
-        internal static void Log(object message)
-            => ErrorLogger.Log(string.Format("[{0}][{1}] {2}", Instance, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), message));
-
-        internal static void Log(string message, params object[] formatData)
-            => ErrorLogger.Log(string.Format("[{0}][{1}] {2}", Instance, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), string.Format(message, formatData)));
+		{
+			ModPacket packet = GetPacket(capacity + 1);
+			packet.Write((byte)type);
+			return packet;
+		}
 	}
 
 	internal enum MessageType
-    {
-        CatchNPC,
+	{
+		CatchNPC,
 		RequestExtractorOpen,
 		SyncExtractorPlayer,
+		SyncExtractorPlayerIndex,
 		CloseExtractor,
-		ExtractorMessage,
-		SyncExtractorPlayerIndex
+		SendExtractorMessage
 	}
 }
