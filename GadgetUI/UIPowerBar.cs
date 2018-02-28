@@ -9,7 +9,7 @@ namespace GadgetBox.GadgetUI
 		Texture2D _barTexture;
 		Texture2D _fillTexture;
 		float _powerPercentage;
-		//float _targetPercentage;
+		float _targetPercentage;
 
 		public UIPowerBar(Texture2D barTexture, Texture2D fillTexture, int HPadding, int VPadding)
 		{
@@ -21,17 +21,12 @@ namespace GadgetBox.GadgetUI
 			PaddingBottom = PaddingTop = VPadding;
 		}
 
-		public void SetProgress(float value)
+		public void SetPercentage(float value, bool transition)
 		{
-			_powerPercentage = value;
+			_targetPercentage = value;
+			if (!transition)
+				_powerPercentage = value;
 		}
-
-		//public void SetTargetProgress(float value)
-		//{
-		//	_targetPercentage = value;
-		//	if (value < _powerPercentage)
-		//		_powerPercentage = value;
-		//}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
@@ -47,7 +42,7 @@ namespace GadgetBox.GadgetUI
 				spriteBatch.Draw(_fillTexture, dimensions.Position(), sourceRect, Color.Gray);
 				dimensions.X += _fillTexture.Width;
 			}
-			//_powerPercentage = _powerPercentage * 0.95f + 0.05f * _targetPercentage;
+			_powerPercentage = _powerPercentage * 0.95f + 0.05f * _targetPercentage;
 			if (_powerPercentage > 0)
 			{
 				dimensions.X = GetInnerDimensions().X;

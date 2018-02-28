@@ -1,24 +1,24 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace GadgetBox.Items
+namespace GadgetBox.Items.Consumables
 {
-	public class ReforgingKit : ModItem
+	public class LesserReforgingKit : ModItem
 	{
 		public override void SetDefaults()
 		{
-			item.width = 32;
-			item.height = 38;
+			item.width = 30;
+			item.height = 34;
 			item.consumable = true;
 			item.maxStack = 99;
-			item.rare = 4;
+			item.rare = 1;
 			item.value = 0;
 		}
 
 		public override bool CanRightClick()
 		{
 			Item toPrefix = Main.LocalPlayer.HeldItem;
-			return toPrefix != null && toPrefix.Prefix(-3) && ItemLoader.PreReforge(toPrefix);
+			return toPrefix != null && toPrefix.prefix == 0 && toPrefix.Prefix(-3) && ItemLoader.PreReforge(toPrefix);
 		}
 
 		public override void RightClick(Player player)

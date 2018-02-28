@@ -3,7 +3,6 @@ using GadgetBox.Items.Placeable;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.Enums;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -19,9 +18,8 @@ namespace GadgetBox.Tiles
 			Main.tileFrameImportant[Type] = true;
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(mod.GetTileEntity<ChlorophyteExtractorTE>().Hook_AfterPlacement, -1, 0, false);
-			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-			TileObjectData.newTile.FlattenAnchors = true;
-			TileObjectData.newTile.UsesCustomCanPlace = true;
+			TileObjectData.newTile.DrawYOffset = 2;
+			TileObjectData.newTile.LavaDeath = false;
 			TileObjectData.addTile(Type);
 			ModTranslation name = CreateMapEntryName();
 			AddMapEntry(new Color(152, 76, 26), name);
@@ -41,7 +39,17 @@ namespace GadgetBox.Tiles
 			ChlorophyteExtractorTE extractorTE = ChlorophyteExtractorTE.ExtractorByPosition(TEPosition(i, j));
 			if (extractorTE == null)
 				return;
-			frameYOffset = !extractorTE.IsWorking ? 0 : (Main.tileFrame[TileID.Extractinator] - extractorTE.FrameYOffset + 10) % 10 * animationFrameHeight;
+			if (extractorTE.Animating && !extractorTE.IsWorking && (Main.tileFrame[TileID.Extractinator] - extractorTE.FrameYOffset + 10) % 10 == 0)
+			{
+				extractorTE.Animating = false;
+				extractorTE.FrameYOffset = 0;
+			}
+			else if (!extractorTE.Animating && extractorTE.IsWorking)
+			{
+				extractorTE.Animating = true;
+				extractorTE.FrameYOffset = (byte)Main.tileFrame[TileID.Extractinator];
+			}
+			frameYOffset = !extractorTE.Animating ? 0 : (Main.tileFrame[TileID.Extractinator] - extractorTE.FrameYOffset + 10) % 10 * animationFrameHeight;
 		}
 
 		public override void RightClick(int i, int j)

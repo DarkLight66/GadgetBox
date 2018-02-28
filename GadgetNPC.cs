@@ -1,5 +1,5 @@
-﻿using GadgetBox.Items;
-using GadgetBox.Items.Accessories;
+﻿using GadgetBox.Items.Accessories;
+using GadgetBox.Items.Consumables;
 using GadgetBox.Items.Tools;
 using Terraria;
 using Terraria.ID;

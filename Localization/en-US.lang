@@ -4,6 +4,7 @@ BuffDescription.ShinyEquipment=Equipment grants extra effects depending on their
 ItemTooltip.CritterNetAttachment=Critters hit by all weapons will be catched\nIncreases pickup range for catched critters
 ItemTooltip.EtherealVortex=Increases pickup range for floating items
 
+ItemTooltip.ChlorophyteExtractor=Automatically extracts Chlorophyte from a small area bellow itself\nRequires power from a Lihzahrd Power Cell and Mud Blocks to function
 ItemTooltip.ReflectorBlock=Reflects most projectiles
 
 ItemTooltip.OldShovel=Good for digging soft land
@@ -13,6 +14,8 @@ ItemTooltip.EnchantedPolish=Polishes your equipment temporarily\nPolished equipm
 ItemTooltip.LesserReforgingKit=Grants a random prefix to your held item\nOnly works on unprefixed items\n<right> to use
 ItemTooltip.MasterKey=Opens any lock
 ItemTooltip.ReforgingKit=Grants a random prefix to your held item\n<right> to use
+
+MapObject.ChlorophyteExtractorTile=Chlorophyte Extractor
 
 ShovelPower=% shovel power
 CriticalDamage=% critical damage

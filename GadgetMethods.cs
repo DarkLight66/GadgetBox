@@ -62,7 +62,7 @@ namespace GadgetBox
 			int stack = toPrefix.stack;
 			Item item = new Item();
 			item.netDefaults(toPrefix.netID);
-			item = item.CloneWithModdedData(Main.reforgeItem);
+			item = item.CloneWithModdedDataFrom(toPrefix);
 			item.Prefix(-2);
 			toPrefix = player.inventory[player.selectedItem] = item.Clone();
 			toPrefix.Center = player.Center;
@@ -112,12 +112,6 @@ namespace GadgetBox
 				}
 			}
 			return tiles;
-		}
-
-		internal static void AddToolPrefix(this Mod mod, ToolPrefixType prefixType, float damageMult = 1f, float knockbackMult = 1f, float useTimeMult = 1f, int critBonus = 0, int tileBoost = 0)
-		{
-			mod.AddPrefix(prefixType.ToString(), new ToolPrefix(damageMult, knockbackMult, useTimeMult, critBonus, tileBoost));
-			ToolPrefix.ToolPrefixes.Add((ToolPrefix)mod.GetPrefix(prefixType.ToString()));
 		}
 	}
 }

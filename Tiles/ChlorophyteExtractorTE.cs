@@ -13,30 +13,43 @@ namespace GadgetBox.Tiles
 	public class ChlorophyteExtractorTE : ModTileEntity
 	{
 		public const int MaxResources = 999;
+		private bool _isON = false;
 
-		public bool IsON { get; private set; }
+		public bool IsON
+		{
+			get
+			{
+				return _isON;
+			}
+			private set
+			{
+				if (value != _isON)
+					DigDelay = (short)(value ? Main.rand.Next(540, 1080) : 0);
+				_isON = value;
+			}
+		}
+
+		public bool Animating { get; internal set; }
 		public byte CurrentPlayer { get; internal set; }
 		public short Power { get; private set; }
 		public short Mud { get; private set; }
 		public short Chlorophyte { get; private set; }
 
-		public byte FrameYOffset { get; private set; }
+		public byte FrameYOffset { get; internal set; }
 		public bool CanTurnOn => Power > 0 && Mud > 0 && Chlorophyte < MaxResources;
 		public bool IsWorking => IsON && CanTurnOn;
 
-		bool OldIsWorking { get; set; }
 		short DigDelay { get; set; }
 		TEMessage ServerMsg { get; set; } = TEMessage.None;
 
 		public ChlorophyteExtractorTE()
 		{
-			IsON = false;
 			Power = 0;
 			Mud = 0;
 			Chlorophyte = 0;
 			FrameYOffset = 0;
 			CurrentPlayer = 255;
-			OldIsWorking = IsWorking;
+			Animating = false;
 			DigDelay = 0;
 		}
 
@@ -78,14 +91,7 @@ namespace GadgetBox.Tiles
 
 		public override void Update()
 		{
-			if (IsWorking != OldIsWorking)
-			{
-				FrameYOffset = (byte)(IsWorking ? Main.tileFrame[TileID.Extractinator] : 0);
-				DigDelay = (short)(IsWorking ? Main.rand.Next(540, 1080) : 0);
-				OldIsWorking = IsWorking;
-			}
-			if (DigDelay > 0)
-				DigDelay--;
+			DigDelay--;
 			if (DigDelay > 0 || !IsWorking)
 				return;
 			DigDelay = (short)Main.rand.Next(360, 720);
@@ -123,7 +129,7 @@ namespace GadgetBox.Tiles
 		public override void NetSend(BinaryWriter writer, bool lightSend)
 		{
 			writer.Write(lightSend ? (byte)ServerMsg : CurrentPlayer);
-			bool sendAll = ServerMsg == TEMessage.SyncAll || !lightSend;
+			bool sendAll = !lightSend || ServerMsg == TEMessage.SyncAll;
 			if (sendAll || ServerMsg == TEMessage.SyncOn)
 				writer.Write(IsON);
 			if (sendAll || ServerMsg == TEMessage.SyncPower)
@@ -142,7 +148,7 @@ namespace GadgetBox.Tiles
 				serverMsg = (TEMessage)reader.ReadByte();
 			else
 				CurrentPlayer = reader.ReadByte();
-			bool receiveAll = serverMsg == TEMessage.SyncAll || !lightReceive;
+			bool receiveAll = !lightReceive || serverMsg == TEMessage.SyncAll;
 			if (receiveAll || serverMsg == TEMessage.SyncOn)
 				IsON = reader.ReadBoolean();
 			if (receiveAll || serverMsg == TEMessage.SyncPower)
@@ -151,11 +157,6 @@ namespace GadgetBox.Tiles
 				Mud = reader.ReadInt16();
 			if (receiveAll || serverMsg == TEMessage.SyncChlorophyte)
 				Chlorophyte = reader.ReadInt16();
-			if (IsWorking != OldIsWorking)
-			{
-				FrameYOffset = (byte)(IsWorking ? Main.tileFrame[TileID.Extractinator] : 0);
-				OldIsWorking = IsWorking;
-			}
 		}
 
 		public override bool ValidTile(int i, int j)

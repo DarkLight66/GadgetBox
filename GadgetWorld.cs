@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using GadgetBox.Items;
+using GadgetBox.Items.Consumables;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -12,7 +12,7 @@ namespace GadgetBox
 	{
 		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
 		{
-			var LastIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Final Cleanup"));
+			int LastIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Final Cleanup"));
 			if (LastIndex != -1)
 			{
 				tasks.Insert(LastIndex, new PassLegacy("Adding More Loot", delegate (GenerationProgress progress)

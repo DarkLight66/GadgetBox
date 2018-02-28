@@ -25,13 +25,14 @@
     <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -68,12 +69,12 @@
     <Compile Include="Items\Accessories\CritterNetAttachment.cs" />
     <Compile Include="Items\Placeable\ChlorophyteExtractor.cs" />
     <Compile Include="Items\Placeable\ReflectorBlock.cs" />
-    <Compile Include="Items\EnchantedPolish.cs" />
+    <Compile Include="Items\Consumables\EnchantedPolish.cs" />
     <Compile Include="Items\Accessories\EtherealVortex.cs" />
     <Compile Include="GadgetPlayer.cs" />
-    <Compile Include="Items\ReforgingKit.cs" />
+    <Compile Include="Items\Consumables\ReforgingKit.cs" />
     <Compile Include="Items\MasterKey.cs" />
-    <Compile Include="Items\LesserReforgingKit.cs" />
+    <Compile Include="Items\Consumables\LesserReforgingKit.cs" />
     <Compile Include="Items\Tools\BaseShovel.cs" />
     <Compile Include="Items\Tools\PlatedShovel.cs" />
     <Compile Include="Items\Tools\OldShovel.cs" />
@@ -98,11 +99,11 @@
     <Content Include="Items\Accessories\CritterNetAttachment.png" />
     <Content Include="Items\Placeable\ChlorophyteExtractor.png" />
     <Content Include="Items\Placeable\ReflectorBlock.png" />
-    <Content Include="Items\EnchantedPolish.png" />
+    <Content Include="Items\Consumables\EnchantedPolish.png" />
     <Content Include="Items\Accessories\EtherealVortex.png" />
     <Content Include="Items\MasterKey.png" />
-    <Content Include="Items\LesserReforgingKit.png" />
-    <Content Include="Items\ReforgingKit.png" />
+    <Content Include="Items\Consumables\LesserReforgingKit.png" />
+    <Content Include="Items\Consumables\ReforgingKit.png" />
     <Content Include="Items\Tools\PlatedShovel.png" />
     <Content Include="Items\Tools\OldShovel.png" />
     <Content Include="Tiles\ChlorophyteExtractorTile.png" />

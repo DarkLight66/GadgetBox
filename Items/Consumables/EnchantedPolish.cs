@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace GadgetBox.Items
+namespace GadgetBox.Items.Consumables
 {
 	public class EnchantedPolish : ModItem
 	{

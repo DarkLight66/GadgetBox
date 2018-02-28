@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using GadgetBox.Items;
 using GadgetBox.Items.Accessories;
+using GadgetBox.Items.Consumables;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;

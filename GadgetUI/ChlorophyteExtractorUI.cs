@@ -21,10 +21,13 @@ namespace GadgetBox.GadgetUI
 		internal UIExtractorSlot mudSlot;
 		internal UIExtractorSlot chloroSlot;
 		internal Mod mod;
+		int oldExtractorID;
 
 		public override void OnInitialize()
 		{
 			mod = GadgetBox.Instance;
+			oldExtractorID = -1;
+
 			extractorPanel = new UIPanel();
 			extractorPanel.SetPadding(4);
 			extractorPanel.BorderColor = new Color(18, 0, 26);
@@ -78,13 +81,6 @@ namespace GadgetBox.GadgetUI
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
 				ModPacket packet;
-				if (!fromNet)
-				{
-					Main.stackSplit = 600;
-					packet = GadgetBox.Instance.GetPacket(MessageType.RequestExtractorOpen, 4);
-					packet.Write(extractorTE.ID);
-					packet.Send();
-				}
 				if (switching)
 				{
 					packet = GadgetBox.Instance.GetPacket(MessageType.SyncExtractorPlayer, 5);
@@ -92,7 +88,14 @@ namespace GadgetBox.GadgetUI
 					packet.Write(byte.MaxValue);
 					packet.Send();
 				}
-				return;
+				if (!fromNet)
+				{
+					Main.stackSplit = 600;
+					packet = GadgetBox.Instance.GetPacket(MessageType.RequestExtractorOpen, 4);
+					packet.Write(extractorTE.ID);
+					packet.Send();
+					return;
+				}
 			}
 			Main.stackSplit = 600;
 			if (PlayerInput.GrappleAndInteractAreShared)
@@ -121,8 +124,8 @@ namespace GadgetBox.GadgetUI
 			visible = false;
 			extractorTE.CurrentPlayer = byte.MaxValue;
 			ExtractorTE = new ChlorophyteExtractorTE();
-			if (silent) return;
-			Main.PlaySound(SoundID.MenuClose);
+			if (!silent)
+				Main.PlaySound(SoundID.MenuClose);
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -130,7 +133,8 @@ namespace GadgetBox.GadgetUI
 			if (extractorPanel.ContainsPoint(Main.MouseScreen))
 				Main.LocalPlayer.mouseInterface = true;
 			float progress = (float)ExtractorTE.Power / ChlorophyteExtractorTE.MaxResources;
-			powerBar.SetProgress(progress);
+			powerBar.SetPercentage(progress, oldExtractorID == ExtractorTE.ID);
+			oldExtractorID = ExtractorTE.ID;
 			powerBar.HoverText = (int)(progress * 100) + "% Power";
 			mudSlot.HoverText = (ExtractorTE.Mud > 0 ? ExtractorTE.Mud + "" : "Needs") + " Mud";
 			chloroSlot.HoverText = (ExtractorTE.Chlorophyte < ChlorophyteExtractorTE.MaxResources ? ExtractorTE.Chlorophyte > 0 ? ExtractorTE.Chlorophyte + "" : "No" : "Full of") + " Chlorophyte";

@@ -1,9 +1,13 @@
 ﻿This mod aims to add random useful items and features to the game. It'll be mostly items or features that give some kind of QoL improvement.
 
 Adds Shovels, a new tool type that can dig soft soils very quickly, notably they can dig all grass types in one hit.
-Adds Tool Prefixes, these have a 50% chance of being applied to any pickaxe, axe, hammer or shovel. 
+Adds Tool Prefixes, these have a 33% chance of being applied to any pickaxe, axe, hammer or shovel.
 
 Changelog:
+0.0.3.0 : Updates and New Stuff:
+- Updated to TModLoader 0.10.1.3
+- Reduced chance of getting a tool prefix from 50% to 33.33%.
+- Added new machine: The Chlorophyte Extractor (WIP).
 0.0.2.2 : Even More Fixes:
 - Fixes the mod sometimes (or all the time?) failing to load... yeah, i'm very sorry for that.
 - Spanish translation file being wrongly encoded (making it show an * for accented letters in-game).

@@ -1,6 +1,7 @@
 ﻿using GadgetBox.Tiles;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace GadgetBox.Items.Placeable
@@ -9,7 +10,7 @@ namespace GadgetBox.Items.Placeable
 	{
 		public override void SetDefaults()
 		{
-			item.Size = new Vector2(46);
+			item.Size = new Vector2(34, 38);
 			item.maxStack = 99;
 			item.useTurn = true;
 			item.autoReuse = true;
@@ -23,6 +24,14 @@ namespace GadgetBox.Items.Placeable
 
 		public override void AddRecipes()
 		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.LihzahrdBrick, 10);
+			recipe.AddIngredient(ItemID.Wire, 20);
+			recipe.AddIngredient(ItemID.Cog, 20);
+			recipe.AddTile(TileID.LihzahrdFurnace);
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
 		}
 	}
 }

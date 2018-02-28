@@ -35,6 +35,12 @@ namespace GadgetBox
 
 		public override void Load()
 		{
+			Version targetVersion = new Version(0, 10, 1, 3);
+			if (ModLoader.version < targetVersion)
+			{
+				throw new Exception(string.Format("\nThis mod uses functionality only present in versions {0} or newer of tModLoader. Please update tModLoader to use this mod\n\n", targetVersion));
+			}
+
 			Instance = this;
 			if (!Main.dedServ)
 			{

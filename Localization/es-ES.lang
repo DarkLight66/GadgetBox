@@ -6,6 +6,8 @@ ItemTooltip.CritterNetAttachment=Bichos golpeados por cualquier arma serán atra
 ItemName.EtherealVortex=Vórtice etéreo
 ItemTooltip.EtherealVortex=Aumenta el alcance de recolección de objetos flotantes
 
+ItemName.ChlorophyteExtractor=Extractor de clorofita
+ItemTooltip.ChlorophyteExtractor=Extrae minerales de clorofita automáticamente en un área pequeña debajo de si mismo\nRequiere de una célula de poder de lihzahrd y de bloques de lodo para funcionar
 ItemName.ReflectorBlock=Bloque Reflector
 ItemTooltip.ReflectorBlock=Refleja la mayoría de los projectiles
 
@@ -22,6 +24,8 @@ ItemName.MasterKey=Llave maestra
 ItemTooltip.MasterKey=Abre cualquier cerradura
 ItemName.ReforgingKit=Equipo de refuerzo
 ItemTooltip.ReforgingKit=Le da un sufijo al azar a tu objeto en mano\n<right> para usar
+
+MapObject.ChlorophyteExtractorTile=Extractor de clorofita
 
 Prefix.Trashed=(Destrozado)
 Prefix.Shortened=(Acortado)
