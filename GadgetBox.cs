@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using GadgetBox.GadgetUI;
 using GadgetBox.Tiles;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -58,6 +59,11 @@ namespace GadgetBox
 			Instance = null;
 		}
 
+		public override void UpdateUI(GameTime gameTime)
+		{
+			chloroExtractInterface.Update(gameTime);
+		}
+
 		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 		{
 			int invIndex = layers.FindIndex(l => l.Name.Equals("Vanilla: Inventory"));
@@ -75,11 +81,8 @@ namespace GadgetBox
 								lastSeenScreenWidth = Main.screenWidth;
 								lastSeenScreenHeight = Main.screenHeight;
 							}
-							chloroExtractInterface.Update(Main._drawInterfaceGameTime);
 							chlorophyteExtractorUI.Draw(Main.spriteBatch);
 						}
-						else
-							chlorophyteExtractorUI.powerButton.Update(Main._drawInterfaceGameTime);
 						return true;
 					},
 					InterfaceScaleType.UI)
@@ -115,8 +118,11 @@ namespace GadgetBox
 				case MessageType.SyncExtractorPlayerIndex:
 					ChlorophyteExtractorTE.SyncExtractorPlayerIndex(reader, whoAmI);
 					break;
-				case MessageType.SendExtractorMessage:
-					ChlorophyteExtractorTE.ExtractorByID(reader.ReadInt32())?.RecieveMessage(reader, whoAmI);
+				case MessageType.ExtractorClientMessage:
+					ChlorophyteExtractorTE.ExtractorByID(reader.ReadInt32())?.RecieveClientMessage(reader, whoAmI);
+					break;
+				case MessageType.ExtractorServerMessage:
+					ChlorophyteExtractorTE.ExtractorByID(reader.ReadInt32())?.RecieveServerMessage(reader, whoAmI);
 					break;
 			}
 		}
@@ -142,6 +148,7 @@ namespace GadgetBox
 		SyncExtractorPlayer,
 		SyncExtractorPlayerIndex,
 		CloseExtractor,
-		SendExtractorMessage
+		ExtractorClientMessage,
+		ExtractorServerMessage
 	}
 }

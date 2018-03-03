@@ -23,7 +23,7 @@ namespace GadgetBox.Tiles
 			}
 			private set
 			{
-				if (value != _isON)
+				if (Main.netMode != NetmodeID.MultiplayerClient && value != _isON)
 					DigDelay = (short)(value ? Main.rand.Next(540, 1080) : 0);
 				_isON = value;
 			}
@@ -40,17 +40,16 @@ namespace GadgetBox.Tiles
 		public bool IsWorking => IsON && CanTurnOn;
 
 		short DigDelay { get; set; }
-		TEMessage ServerMsg { get; set; } = TEMessage.None;
 
 		public ChlorophyteExtractorTE()
 		{
+			IsON = false;
 			Power = 0;
 			Mud = 0;
 			Chlorophyte = 0;
 			FrameYOffset = 0;
 			CurrentPlayer = 255;
 			Animating = false;
-			DigDelay = 0;
 		}
 
 		public static ChlorophyteExtractorTE ExtractorByID(int ID)
@@ -123,40 +122,25 @@ namespace GadgetBox.Tiles
 			Chlorophyte++;
 			if (!CanTurnOn)
 				IsON = false;
-			SendServer();
+			SendServerMessage();
 		}
 
 		public override void NetSend(BinaryWriter writer, bool lightSend)
 		{
-			writer.Write(lightSend ? (byte)ServerMsg : CurrentPlayer);
-			bool sendAll = !lightSend || ServerMsg == TEMessage.SyncAll;
-			if (sendAll || ServerMsg == TEMessage.SyncOn)
-				writer.Write(IsON);
-			if (sendAll || ServerMsg == TEMessage.SyncPower)
-				writer.Write(Power);
-			if (sendAll || ServerMsg == TEMessage.SyncMud)
-				writer.Write(Mud);
-			if (sendAll || ServerMsg == TEMessage.SyncChlorophyte)
-				writer.Write(Chlorophyte);
-			ServerMsg = TEMessage.None;
+			writer.Write(IsON);
+			writer.Write(CurrentPlayer);
+			writer.Write(Power);
+			writer.Write(Mud);
+			writer.Write(Chlorophyte);
 		}
 
 		public override void NetReceive(BinaryReader reader, bool lightReceive)
 		{
-			TEMessage serverMsg = TEMessage.None;
-			if (lightReceive)
-				serverMsg = (TEMessage)reader.ReadByte();
-			else
-				CurrentPlayer = reader.ReadByte();
-			bool receiveAll = !lightReceive || serverMsg == TEMessage.SyncAll;
-			if (receiveAll || serverMsg == TEMessage.SyncOn)
-				IsON = reader.ReadBoolean();
-			if (receiveAll || serverMsg == TEMessage.SyncPower)
-				Power = reader.ReadInt16();
-			if (receiveAll || serverMsg == TEMessage.SyncMud)
-				Mud = reader.ReadInt16();
-			if (receiveAll || serverMsg == TEMessage.SyncChlorophyte)
-				Chlorophyte = reader.ReadInt16();
+			IsON = reader.ReadBoolean();
+			CurrentPlayer = reader.ReadByte();
+			Power = reader.ReadInt16();
+			Mud = reader.ReadInt16();
+			Chlorophyte = reader.ReadInt16();
 		}
 
 		public override bool ValidTile(int i, int j)
@@ -239,10 +223,13 @@ namespace GadgetBox.Tiles
 				return;
 			if (Main.netMode == NetmodeID.Server)
 			{
-				extractorTE.CurrentPlayer = (byte)whoAmI;
+				byte toSet = reader.ReadByte();
+				if (toSet != byte.MaxValue && toSet != whoAmI)
+					return;
+				extractorTE.CurrentPlayer = toSet;
 				ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.SyncExtractorPlayerIndex, 5);
 				packet.Write(curID);
-				packet.Write((byte)whoAmI);
+				packet.Write(toSet);
 				packet.Send(-1, whoAmI);
 				return;
 			}
@@ -260,7 +247,7 @@ namespace GadgetBox.Tiles
 				IsON = !IsON;
 				return;
 			}
-			SendClient(TEMessage.SyncOn);
+			SendClientMessage(TEMessage.SyncOn);
 		}
 
 		internal void ProvidePower()
@@ -272,21 +259,21 @@ namespace GadgetBox.Tiles
 			Power = MaxResources;
 			Main.PlaySound(SoundID.Grab);
 			if (Main.netMode == NetmodeID.MultiplayerClient)
-				SendClient(TEMessage.SyncPower);
+				SendClientMessage(TEMessage.SyncPower);
 			return;
 		}
 
-		internal void ProvideMud(short addAmount = 0)
+		internal void ProvideMud()
 		{
 			if (Main.mouseItem == null || Main.mouseItem.stack <= 0 || Main.mouseItem.type != ItemID.MudBlock)
 				return;
-			addAmount = (short)Math.Min(Main.mouseItem.stack, MaxResources - Mud);
+			short addAmount = (short)Math.Min(Main.mouseItem.stack, MaxResources - Mud);
 			if ((Main.mouseItem.stack -= addAmount) <= 0)
 				Main.mouseItem.TurnToAir();
 			Mud += addAmount;
 			Main.PlaySound(SoundID.Grab);
 			if (Main.netMode == NetmodeID.MultiplayerClient)
-				SendClient(TEMessage.SyncMud, addAmount);
+				SendClientMessage(TEMessage.SyncMud, addAmount);
 			return;
 		}
 
@@ -294,14 +281,30 @@ namespace GadgetBox.Tiles
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
-				SendClient(TEMessage.SyncChlorophyte);
+				SendClientMessage(TEMessage.SyncChlorophyte);
 				return;
 			}
 			Item.NewItem(new Rectangle((Position.X - 1) * 16, (Position.Y - 1) * 16, 54, 54), ItemID.ChlorophyteOre, Chlorophyte);
 			Chlorophyte = 0;
 		}
 
-		internal void RecieveMessage(BinaryReader reader, int whoAmI)
+		internal void RecieveServerMessage(BinaryReader reader, int whoAmI)
+		{
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+				return;
+			TEMessage serverMsg = (TEMessage)reader.ReadByte();
+			bool syncAll = serverMsg == TEMessage.SyncAll;
+			if (serverMsg == TEMessage.SyncOn || syncAll)
+				IsON = reader.ReadBoolean();
+			if (serverMsg == TEMessage.SyncPower || syncAll)
+				Power = reader.ReadInt16();
+			if (serverMsg == TEMessage.SyncMud || syncAll)
+				Mud = reader.ReadInt16();
+			if (serverMsg == TEMessage.SyncChlorophyte || syncAll)
+				Chlorophyte = reader.ReadInt16();
+		}
+
+		internal void RecieveClientMessage(BinaryReader reader, int whoAmI)
 		{
 			TEMessage clientMsg = (TEMessage)reader.ReadByte();
 			if (clientMsg == TEMessage.SyncOn)
@@ -312,21 +315,32 @@ namespace GadgetBox.Tiles
 				Mud += reader.ReadInt16();
 			else if (clientMsg == TEMessage.SyncChlorophyte)
 				ExtractChloro();
-			SendServer(clientMsg);
+			SendServerMessage(clientMsg);
 		}
 
-		void SendServer(TEMessage serverMsg = TEMessage.SyncAll)
+		void SendServerMessage(TEMessage serverMsg = TEMessage.SyncAll)
 		{
 			if (Main.netMode != NetmodeID.Server)
 				return;
-			ServerMsg = serverMsg;
-			NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, ID);
+			bool syncAll = serverMsg == TEMessage.SyncAll;
+			ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.ExtractorServerMessage, syncAll ? 12 : serverMsg == TEMessage.SyncOn ? 6 : 7);
+			packet.Write(ID);
+			packet.Write((byte)serverMsg);
+			if (serverMsg == TEMessage.SyncOn || syncAll)
+				packet.Write(IsON);
+			if (serverMsg == TEMessage.SyncPower || syncAll)
+				packet.Write(Power);
+			if (serverMsg == TEMessage.SyncMud || syncAll)
+				packet.Write(Mud);
+			if (serverMsg == TEMessage.SyncChlorophyte || syncAll)
+				packet.Write(Chlorophyte);
+			packet.Send();
 		}
 
-		void SendClient(TEMessage msgType, short extraData = 0)
+		void SendClientMessage(TEMessage msgType, short extraData = 0)
 		{
 			bool AddMud = msgType == TEMessage.SyncMud;
-			ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.SendExtractorMessage, AddMud ? 7 : 5);
+			ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.ExtractorClientMessage, AddMud ? 7 : 5);
 			packet.Write(ID);
 			packet.Write((byte)msgType);
 			if (AddMud)
