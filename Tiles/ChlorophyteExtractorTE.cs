@@ -233,7 +233,7 @@ namespace GadgetBox.Tiles
 				packet.Send(-1, whoAmI);
 				return;
 			}
-			Main.LocalPlayer.GetModPlayer<GadgetPlayer>().extractorPos = new Point16(reader.ReadInt16(), reader.ReadInt16());
+			Main.LocalPlayer.GetModPlayer<GadgetPlayer>().machinePos = new Point16(reader.ReadInt16(), reader.ReadInt16());
 			extractorTE.CurrentPlayer = (byte)Main.myPlayer;
 			ChlorophyteExtractorUI.OpenUI(extractorTE, true);
 			return;

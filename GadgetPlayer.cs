@@ -9,16 +9,16 @@ using Terraria.ModLoader;
 
 namespace GadgetBox
 {
-	internal class GadgetPlayer : ModPlayer
+	public class GadgetPlayer : ModPlayer
 	{
 		public bool etherMagnet = false;
 		public bool shinyEquips = false;
 		public bool critterCatch = false;
-
+		
 		public byte critShine = 0;
 		public byte speedShine = 0;
 
-		public Point16 extractorPos = Point16.NegativeOne;
+		public Point16 machinePos = Point16.NegativeOne;
 
 		public override void ResetEffects()
 		{
@@ -40,17 +40,27 @@ namespace GadgetBox
 
 		public override void PreUpdate()
 		{
-			if (Main.myPlayer != player.whoAmI || !ChlorophyteExtractorUI.visible)
+			if (Main.myPlayer != player.whoAmI || (!ChlorophyteExtractorUI.visible && !ReforgeMachineUI.visible))
 				return;
 			if (!Main.playerInventory || player.chest != -1 || Main.npcShop != 0 || player.talkNPC != -1)
-				ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE, true);
+			{
+				if (ChlorophyteExtractorUI.visible)
+					ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE, true);
+				if (ReforgeMachineUI.visible)
+					GadgetBox.Instance.reforgeMachineUI.ToggleUI(false, Point16.Zero, true);
+			}
 			else
 			{
 				int playerX = (int)(player.Center.X / 16);
 				int playerY = (int)(player.Center.Y / 16);
-				if (playerX < extractorPos.X - Player.tileRangeX || playerX > extractorPos.X + Player.tileRangeX + 1 ||
-					playerY < extractorPos.Y - Player.tileRangeY || playerY > extractorPos.Y + Player.tileRangeY + 1)
-					ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE);
+				if (playerX < machinePos.X - Player.tileRangeX || playerX > machinePos.X + Player.tileRangeX + 1 ||
+					playerY < machinePos.Y - Player.tileRangeY || playerY > machinePos.Y + Player.tileRangeY + 1)
+				{
+					if (ChlorophyteExtractorUI.visible)
+						ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE, true);
+					if (ReforgeMachineUI.visible)
+						GadgetBox.Instance.reforgeMachineUI.ToggleUI(false, Point16.Zero);
+				}
 			}
 		}
 

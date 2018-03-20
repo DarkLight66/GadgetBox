@@ -36,13 +36,13 @@ namespace GadgetBox
 				else if (item.prefix == PrefixID.Arcane)
 					text = "-2" + Language.GetTextValue("LegacyTooltip.42");
 				else if (item.prefix <= PrefixID.Lucky)
-					text = "+" + (item.prefix - PrefixID.Precise + 1) + Language.GetTextValue("Mods.GadgetBox.CriticalDamage");
+					text = "+" + (item.prefix - PrefixID.Precise + 1) + mod.GetTextValue("CriticalDamage");
 				else if (item.prefix <= PrefixID.Menacing)
-					text = "+" + ((item.prefix - PrefixID.Jagged + 2) / 2) + Language.GetTextValue("Mods.GadgetBox.ArmorPenetration");
+					text = "+" + ((item.prefix - PrefixID.Jagged + 2) / 2) + mod.GetTextValue("ArmorPenetration");
 				else if (item.prefix <= PrefixID.Quick2)
-					text = "+" + (item.prefix - PrefixID.Brisk + 1) + " " + Language.GetTextValue("Mods.GadgetBox.JumpHeight");
+					text = "+" + (item.prefix - PrefixID.Brisk + 1) + " " + mod.GetTextValue("JumpHeight");
 				else
-					text = "+" + (item.prefix - PrefixID.Wild + 1) + " " + Language.GetTextValue("Mods.GadgetBox.MiningSpeed");
+					text = "+" + (item.prefix - PrefixID.Wild + 1) + " " + mod.GetTextValue("MiningSpeed");
 				TooltipLine tt = new TooltipLine(mod, "ShinyAcc", text);
 				tt.isModifier = true;
 				tooltips.Insert(index + 1, tt);

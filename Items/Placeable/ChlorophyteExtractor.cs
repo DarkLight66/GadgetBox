@@ -26,6 +26,7 @@ namespace GadgetBox.Items.Placeable
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(ItemID.LihzahrdBrick, 10);
+			recipe.AddIngredient(ItemID.LunarTabletFragment, 5);
 			recipe.AddIngredient(ItemID.Wire, 20);
 			recipe.AddIngredient(ItemID.Cog, 20);
 			recipe.AddTile(TileID.LihzahrdFurnace);

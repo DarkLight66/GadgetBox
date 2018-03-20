@@ -4,6 +4,12 @@ Adds Shovels, a new tool type that can dig soft soils very quickly, notably they
 Adds Tool Prefixes, these have a 33% chance of being applied to any pickaxe, axe, hammer or shovel.
 
 Changelog:
+0.0.4.0 : New Additions, Changes and Bugfixes:
+- Added the Boulder Traps.
+- Changed how Reforging Kits work, now you have to take them with your mouse and right click the item you want to reforge.
+- Made Reforging Kits more common in chests.
+0.0.3.3 : Fixes crash when reloading the mod, and also fixes an UI bug with the Chlorophyte Extractor.
+0.0.3.2 : Fixes Reflector Blocks being unobtainable. Still working on some other stuff for the mod.
 0.0.3.1 : Just fixes the Chlorophyte Extractor in Multiplayer.
 0.0.3.0 : Updates and New Stuff:
 - Updated to TModLoader 0.10.1.3

@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using GadgetBox.GadgetUI;
+using GadgetBox.Items;
+using GadgetBox.Items.Consumables;
 using GadgetBox.Tiles;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -17,20 +20,19 @@ namespace GadgetBox
 		internal static GadgetBox Instance;
 		internal static string AnyGoldBar;
 
-		internal static UserInterface chloroExtractInterface;
+		internal UserInterface chloroExtractInterface;
 		internal ChlorophyteExtractorUI chlorophyteExtractorUI;
+		internal UserInterface reforgeMachineInterface;
+		internal ReforgeMachineUI reforgeMachineUI;
 
 		int lastSeenScreenWidth;
-
 		int lastSeenScreenHeight;
 
 		public GadgetBox()
 		{
 			Properties = new ModProperties()
 			{
-				Autoload = true,
-				AutoloadGores = true,
-				AutoloadSounds = true
+				Autoload = true
 			};
 		}
 
@@ -43,25 +45,36 @@ namespace GadgetBox
 			}
 
 			Instance = this;
+			ChlorophyteExtractorUI.ExtractorTE = new ChlorophyteExtractorTE();
+
 			if (!Main.dedServ)
 			{
 				chlorophyteExtractorUI = new ChlorophyteExtractorUI();
 				chlorophyteExtractorUI.Activate();
 				chloroExtractInterface = new UserInterface();
 				chloroExtractInterface.SetState(chlorophyteExtractorUI);
+				reforgeMachineUI = new ReforgeMachineUI();
+				reforgeMachineUI.Activate();
+				reforgeMachineInterface = new UserInterface();
+				reforgeMachineInterface.SetState(reforgeMachineUI);
 			}
 		}
 
 		public override void Unload()
 		{
 			ChlorophyteExtractorUI.ExtractorTE = null;
-			chloroExtractInterface = null;
 			Instance = null;
 		}
 
 		public override void UpdateUI(GameTime gameTime)
 		{
-			chloroExtractInterface.Update(gameTime);
+			if (ChlorophyteExtractorUI.visible)
+				chloroExtractInterface.Update(gameTime);
+			else
+				chlorophyteExtractorUI.powerButton.Update(gameTime);
+
+			if (ReforgeMachineUI.visible)
+				reforgeMachineInterface.Update(gameTime);
 		}
 
 		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -69,11 +82,11 @@ namespace GadgetBox
 			int invIndex = layers.FindIndex(l => l.Name.Equals("Vanilla: Inventory"));
 			if (invIndex != -1)
 			{
-				layers.Insert(invIndex, new LegacyGameInterfaceLayer(
-					Name + ": Chlorophyte Extractor UI",
-					delegate
+				layers.Insert(invIndex++, new LegacyGameInterfaceLayer(Name + ": RightClick Hacks", RightClickHacks));
+
+				layers.Insert(invIndex, new LegacyGameInterfaceLayer(Name + ": Machine UI", () =>
 					{
-						if (ChlorophyteExtractorUI.visible && !Main.recBigList)
+						if (Main.playerInventory && !Main.recBigList)
 						{
 							if (lastSeenScreenWidth != Main.screenWidth || lastSeenScreenHeight != Main.screenHeight)
 							{
@@ -81,7 +94,10 @@ namespace GadgetBox
 								lastSeenScreenWidth = Main.screenWidth;
 								lastSeenScreenHeight = Main.screenHeight;
 							}
-							chlorophyteExtractorUI.Draw(Main.spriteBatch);
+							if (ChlorophyteExtractorUI.visible)
+								chlorophyteExtractorUI.Draw(Main.spriteBatch);
+							if (ReforgeMachineUI.visible)
+								reforgeMachineUI.Draw(Main.spriteBatch);
 						}
 						return true;
 					},
@@ -92,7 +108,7 @@ namespace GadgetBox
 
 		public override void AddRecipeGroups()
 		{
-			RecipeGroup group = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " " + Language.GetTextValue("ItemName.GoldBar"), new int[]
+			RecipeGroup group = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " " + Lang.GetItemNameValue(ItemID.GoldBar), new int[]
 			{
 				ItemID.GoldBar,
 				ItemID.PlatinumBar
@@ -138,6 +154,58 @@ namespace GadgetBox
 			ModPacket packet = GetPacket(capacity + 1);
 			packet.Write((byte)type);
 			return packet;
+		}
+
+		bool RightClickHacks()
+		{
+			if (!Main.playerInventory || PlayerInput.IgnoreMouseInterface || !Main.mouseRight || !Main.mouseRightRelease)
+				return true;
+			Player player = Main.player[Main.myPlayer];
+
+			float scale = 0.85f;
+			int x, y, slot;
+
+			for (int i = 0; i < 10; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+					x = (int)(20f + i * 56 * scale);
+					y = (int)(20f + j * 56 * scale);
+					if (Main.mouseX < x || Main.mouseX > x + Main.inventoryBackTexture.Width * scale || Main.mouseY < y || Main.mouseY > y + Main.inventoryBackTexture.Height * scale)
+						continue;
+
+					slot = i + j * 10;
+					Item item = player.inventory[slot];
+					if (item.IsAir)
+						return true;
+
+					if (item.type == ItemID.LockBox)
+					{
+						if (player.HasItem(ItemID.GoldenKey) || !player.HasItem(ItemType<MasterKey>()))
+							return true;
+
+						item.Consume(1, false);
+						Main.PlaySound(SoundID.Grab);
+						Main.stackSplit = 30;
+						player.openLockBox();
+					}
+					else if(Main.mouseItem.type == ItemType<ReforgingKit>() || Main.mouseItem.type == ItemType<LesserReforgingKit>())
+					{
+						if (Main.mouseItem.type == ItemType<LesserReforgingKit>() && item.prefix != 0 || !item.Prefix(-3) || !ItemLoader.PreReforge(item))
+							return true;
+
+						GadgetMethods.PrefixItem(ref player.inventory[slot]);
+
+						Main.mouseItem.Consume();
+						player.inventory[58] = Main.mouseItem.Clone();
+					}
+
+					Main.mouseRightRelease = false;
+					Recipe.FindRecipes();
+					return true;
+				}
+			}
+			return true;
 		}
 	}
 

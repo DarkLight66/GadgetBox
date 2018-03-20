@@ -16,14 +16,12 @@ namespace GadgetBox.Items.Consumables
 		}
 
 		public override bool CanRightClick()
-		{
-			Item toPrefix = Main.LocalPlayer.HeldItem;
-			return toPrefix != null && toPrefix.Prefix(-3) && ItemLoader.PreReforge(toPrefix);
-		}
+			=> Main.mouseItem != null && !Main.mouseItem.IsAir && Main.mouseItem.Prefix(-3) && ItemLoader.PreReforge(Main.mouseItem);
 
 		public override void RightClick(Player player)
 		{
-			player.PrefixHeldItem();
+			GadgetMethods.PrefixItem(ref Main.mouseItem);
+			player.inventory[58] = Main.mouseItem.Clone();
 		}
 	}
 }

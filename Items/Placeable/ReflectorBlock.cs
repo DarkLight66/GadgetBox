@@ -1,4 +1,5 @@
 ﻿using GadgetBox.Tiles;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -10,6 +11,7 @@ namespace GadgetBox.Items.Placeable
 		{
 			item.CloneDefaults(ItemID.TeamBlockWhite);
 			item.createTile = mod.TileType<ReflectorBlockTile>();
+			item.value = Item.buyPrice(silver: 10);
 		}
 	}
 }

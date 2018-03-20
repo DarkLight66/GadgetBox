@@ -1,5 +1,6 @@
 ﻿using GadgetBox.Items.Accessories;
 using GadgetBox.Items.Consumables;
+using GadgetBox.Items.Placeable;
 using GadgetBox.Items.Tools;
 using Terraria;
 using Terraria.ID;
@@ -46,6 +47,8 @@ namespace GadgetBox
 					slot = ++nextSlot;
 				}
 			}
+			if (type == NPCID.Wizard)
+				shop.item[nextSlot++].SetDefaults(mod.ItemType<ReflectorBlock>());
 		}
 
 		public override void SetupTravelShop(int[] shop, ref int nextSlot)

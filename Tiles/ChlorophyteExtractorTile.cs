@@ -56,42 +56,31 @@ namespace GadgetBox.Tiles
 		{
 			Main.mouseRightRelease = false;
 			Point16 extractorPos = TEPosition(i, j);
-			TileEntity tempTE;
-			if (!TileEntity.ByPosition.TryGetValue(extractorPos, out tempTE))
-				return;
-			ChlorophyteExtractorTE extractorTE = tempTE as ChlorophyteExtractorTE;
-			if (tempTE == null)
+			ChlorophyteExtractorTE extractorTE = ChlorophyteExtractorTE.ExtractorByPosition(extractorPos);
+			if (extractorTE == null)
 				return;
 			Player player = Main.LocalPlayer;
 			GadgetPlayer gadgetPlayer = player.GetModPlayer<GadgetPlayer>();
 
-			if (player.sign >= 0 || player.talkNPC >= 0)
-				Main.CloseNPCChatOrSign();
-			if (Main.editChest)
-			{
-				Main.PlaySound(SoundID.MenuTick);
-				Main.editChest = false;
-				Main.npcChatText = "";
-			}
-			if (player.editedChestName)
-			{
-				NetMessage.SendData(MessageID.SyncPlayerChest, -1, -1, NetworkText.FromLiteral(Main.chest[player.chest].name), player.chest, 1f);
-				player.editedChestName = false;
-			}
-			if (player.chest != -1)
-			{
-				player.chest = -1;
-				player.flyingPigChest = -1;
-				Recipe.FindRecipes();
-			}
+			player.CloseVanillaUIs();
+			if (ReforgeMachineUI.visible)
+				GadgetBox.Instance.reforgeMachineUI.ToggleUI(false, Point16.Zero, true);
 			if (extractorTE.CurrentPlayer == player.whoAmI)
 				ChlorophyteExtractorUI.CloseUI(extractorTE);
 			else
 			{
 				extractorTE.CurrentPlayer = (byte)player.whoAmI;
-				gadgetPlayer.extractorPos = extractorPos;
+				gadgetPlayer.machinePos = extractorPos;
 				ChlorophyteExtractorUI.OpenUI(extractorTE);
 			}
+		}
+
+		public override void MouseOver(int i, int j)
+		{
+			Player player = Main.LocalPlayer;
+			player.noThrow = 2;
+			player.showItemIcon = true;
+			player.showItemIcon2 = mod.ItemType<ChlorophyteExtractor>();
 		}
 
 		public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;

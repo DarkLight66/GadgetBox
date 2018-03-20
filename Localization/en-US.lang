@@ -11,9 +11,9 @@ ItemTooltip.OldShovel=Good for digging soft land
 ItemTooltip.PlatedShovel=Cuts through land like butter
 
 ItemTooltip.EnchantedPolish=Polishes your equipment temporarily\nPolished equipment grants extra effects depending on their prefix
-ItemTooltip.LesserReforgingKit=Grants a random prefix to your held item\nOnly works on unprefixed items\n<right> to use
+ItemTooltip.LesserReforgingKit=Grants a random prefix to an item\nOnly works on unprefixed items\nTake it and <right> over another item to use
 ItemTooltip.MasterKey=Opens any lock
-ItemTooltip.ReforgingKit=Grants a random prefix to your held item\n<right> to use
+ItemTooltip.ReforgingKit=Grants a random prefix to an item\nTake it and <right> over another item to use
 
 MapObject.ChlorophyteExtractorTile=Chlorophyte Extractor
 
