@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.UI;
 
@@ -6,12 +7,11 @@ namespace GadgetBox.GadgetUI
 {
 	internal class UIPowerSlot : UIElement
 	{
-		public delegate bool PowerCheck();
 		private Texture2D _hasPowerTexture;
 		private Texture2D _noPowerTexture;
-		private PowerCheck _hasPower;
+		private Func<bool> _hasPower;
 
-		public UIPowerSlot(Texture2D hasPowerTexture, Texture2D noPowerTexture, PowerCheck hasPower)
+		public UIPowerSlot(Texture2D hasPowerTexture, Texture2D noPowerTexture, Func<bool> hasPower)
 		{
 			_hasPower = hasPower;
 			_hasPowerTexture = hasPowerTexture;
@@ -20,10 +20,10 @@ namespace GadgetBox.GadgetUI
 			Height.Set(_hasPowerTexture.Height, 0f);
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void MouseDown(UIMouseEvent evt)
 		{
 			if (!_hasPower())
-				base.Click(evt);
+				base.MouseDown(evt);
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)

@@ -6,9 +6,13 @@ ItemTooltip.CritterNetAttachment=Bichos golpeados por cualquier arma serán atra
 ItemName.EtherealVortex=Vórtice etéreo
 ItemTooltip.EtherealVortex=Aumenta el alcance de recolección de objetos flotantes
 
+ItemName.AutoReforgeMachine=Máquina de auto refuerzo
+ItemTooltip.AutoReforgeMachine=Permite el auto refuerzo de objetos
 ItemName.BoulderTrap=Trampa de rocas
 ItemName.ChlorophyteExtractor=Extractor de clorofita
 ItemTooltip.ChlorophyteExtractor=Extrae minerales de clorofita automáticamente en un área pequeña debajo de si mismo\nRequiere de una célula de poder de lihzahrd y de bloques de lodo para funcionar
+ItemName.LihzahrdWorkshop=Taller de lihzahrd
+ItemTooltip.LihzahrdWorkshop=Permite crear aparatos utilizando la antigua tecnología lihzahrd
 ItemName.ReflectorBlock=Bloque Reflector
 ItemTooltip.ReflectorBlock=Refleja la mayoría de los projectiles
 
@@ -26,7 +30,9 @@ ItemTooltip.MasterKey=Abre cualquier cerradura
 ItemName.ReforgingKit=Equipo de refuerzo
 ItemTooltip.ReforgingKit=Le da un sufijo al azar a un objeto\nTómalo y <right> sobre un objeto para usarlo
 
+MapObject.AutoReforgeMachineTile=Máquina de auto refuerzo
 MapObject.ChlorophyteExtractorTile=Extractor de clorofita
+MapObject.LihzahrdWorkshopTile=Taller de lihzahrd
 
 Prefix.Trashed=(Destrozado)
 Prefix.Shortened=(Acortado)
@@ -37,8 +43,11 @@ Prefix.Enlarged=(Agrandado)
 Prefix.Extended=(Extendido)
 Prefix.Engineered=(Diseñado)
 
-ShovelPower=% potencia de pala
-CriticalDamage=% de daño crítico
-MiningSpeed=% velocidad de minería
-ArmorPenetration=penetración de armadura
-JumpHeight=altura de salto
+TweakName.Malleable=Maleable
+TweakTooltip.Malleable=-25% costo de refuerzo
+
+Misc.ShovelPower=% potencia de pala
+Misc.CriticalDamage=% de daño crítico
+Misc.MiningSpeed=% velocidad de minería
+Misc.ArmorPenetration=penetración de armadura
+Misc.JumpHeight=altura de salto

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.UI;
@@ -7,13 +8,12 @@ namespace GadgetBox.GadgetUI
 {
 	internal class UIExtractorSlot : UIHoverText
 	{
-		public delegate bool ItemCheck();
 		Texture2D _slotTexture;
 		Texture2D _itemTexture;
-		ItemCheck _hasItem;
-		ItemCheck _canClick;
+		Func<bool> _hasItem;
+		Func<bool> _canClick;
 
-		public UIExtractorSlot(Texture2D slotTexture, Texture2D itemTexture, ItemCheck hasItem, ItemCheck canClick = null)
+		public UIExtractorSlot(Texture2D slotTexture, Texture2D itemTexture, Func<bool> hasItem, Func<bool> canClick = null)
 		{
 			_hasItem = hasItem;
 			_canClick = canClick ?? hasItem;
@@ -23,10 +23,10 @@ namespace GadgetBox.GadgetUI
 			Height.Set(_slotTexture.Height, 0f);
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void MouseDown(UIMouseEvent evt)
 		{
 			if (_canClick())
-				base.Click(evt);
+				base.MouseDown(evt);
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)

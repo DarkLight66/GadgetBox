@@ -4,7 +4,9 @@ BuffDescription.ShinyEquipment=Equipment grants extra effects depending on their
 ItemTooltip.CritterNetAttachment=Critters hit by all weapons will be catched\nIncreases pickup range for catched critters
 ItemTooltip.EtherealVortex=Increases pickup range for floating items
 
+ItemTooltip.AutoReforgeMachine=Allows auto reforging items
 ItemTooltip.ChlorophyteExtractor=Automatically extracts Chlorophyte from a small area bellow itself\nRequires power from a Lihzahrd Power Cell and Mud Blocks to function
+ItemTooltip.LihzahrdWorkshop=Allows creating gadgets using ancient lihzahrd technology
 ItemTooltip.ReflectorBlock=Reflects most projectiles
 
 ItemTooltip.OldShovel=Good for digging soft land
@@ -15,10 +17,15 @@ ItemTooltip.LesserReforgingKit=Grants a random prefix to an item\nOnly works on 
 ItemTooltip.MasterKey=Opens any lock
 ItemTooltip.ReforgingKit=Grants a random prefix to an item\nTake it and <right> over another item to use
 
+MapObject.AutoReforgeMachineTile=Auto Reforge Machine
 MapObject.ChlorophyteExtractorTile=Chlorophyte Extractor
+MapObject.LihzahrdWorkshopTile=Lihzahrd Workshop
 
-ShovelPower=% shovel power
-CriticalDamage=% critical damage
-MiningSpeed=% mining speed
-ArmorPenetration=armor penetration
-JumpHeight=jump height
+TweakName.Malleable=Malleable
+TweakTooltip.Malleable=-25% reforge cost
+
+Misc.ShovelPower=% shovel power
+Misc.CriticalDamage=% critical damage
+Misc.MiningSpeed=% mining speed
+Misc.ArmorPenetration=armor penetration
+Misc.JumpHeight=jump height

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using GadgetBox.GadgetUI;
 using GadgetBox.Items.Accessories;
+using GadgetBox.Tiles;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -14,7 +15,7 @@ namespace GadgetBox
 		public bool etherMagnet = false;
 		public bool shinyEquips = false;
 		public bool critterCatch = false;
-		
+
 		public byte critShine = 0;
 		public byte speedShine = 0;
 
@@ -35,33 +36,38 @@ namespace GadgetBox
 			if (Main.netMode == NetmodeID.Server)
 				return;
 			if (ChlorophyteExtractorUI.ExtractorTE.CurrentPlayer == player.whoAmI)
-				ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE, true);
+				ChlorophyteExtractorUI.ExtractorTE.CloseUI(true);
+			if (ReforgeMachineUI.visible)
+				GadgetBox.Instance.reforgeMachineUI.ToggleUI(false, Point16.NegativeOne, true);
 		}
 
 		public override void PreUpdate()
 		{
 			if (Main.myPlayer != player.whoAmI || (!ChlorophyteExtractorUI.visible && !ReforgeMachineUI.visible))
 				return;
+			bool closeUIs = false, silent = false;
 			if (!Main.playerInventory || player.chest != -1 || Main.npcShop != 0 || player.talkNPC != -1)
 			{
-				if (ChlorophyteExtractorUI.visible)
-					ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE, true);
-				if (ReforgeMachineUI.visible)
-					GadgetBox.Instance.reforgeMachineUI.ToggleUI(false, Point16.Zero, true);
+				closeUIs = true;
+				silent = true;
 			}
+			else if (ReforgeMachineUI.visible && Framing.GetTileSafely(machinePos).type != mod.TileType<AutoReforgeMachineTile>())
+				closeUIs = true;
 			else
 			{
 				int playerX = (int)(player.Center.X / 16);
 				int playerY = (int)(player.Center.Y / 16);
 				if (playerX < machinePos.X - Player.tileRangeX || playerX > machinePos.X + Player.tileRangeX + 1 ||
 					playerY < machinePos.Y - Player.tileRangeY || playerY > machinePos.Y + Player.tileRangeY + 1)
-				{
-					if (ChlorophyteExtractorUI.visible)
-						ChlorophyteExtractorUI.CloseUI(ChlorophyteExtractorUI.ExtractorTE, true);
-					if (ReforgeMachineUI.visible)
-						GadgetBox.Instance.reforgeMachineUI.ToggleUI(false, Point16.Zero);
-				}
+					closeUIs = true;
 			}
+			if (!closeUIs)
+				return;
+
+			if (ChlorophyteExtractorUI.visible)
+				ChlorophyteExtractorUI.ExtractorTE.CloseUI(silent);
+			if (ReforgeMachineUI.visible)
+				GadgetBox.Instance.reforgeMachineUI.ToggleUI(false, Point16.NegativeOne, silent);
 		}
 
 		public override bool? CanHitNPCWithProj(Projectile proj, NPC target)

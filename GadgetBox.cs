@@ -27,6 +27,7 @@ namespace GadgetBox
 
 		int lastSeenScreenWidth;
 		int lastSeenScreenHeight;
+		bool lastFocus;
 
 		public GadgetBox()
 		{
@@ -41,27 +42,32 @@ namespace GadgetBox
 			Version targetVersion = new Version(0, 10, 1, 3);
 			if (ModLoader.version < targetVersion)
 			{
-				throw new Exception(string.Format("\nThis mod uses functionality only present in versions {0} or newer of tModLoader. Please update tModLoader to use this mod\n\n", targetVersion));
+				throw new Exception($"\nThis mod uses functionality only present in versions {targetVersion} or newer of tModLoader. Please update tModLoader to use this mod\n\n");
 			}
 
 			Instance = this;
-			ChlorophyteExtractorUI.ExtractorTE = new ChlorophyteExtractorTE();
 
 			if (!Main.dedServ)
 			{
+				chloroExtractInterface = new UserInterface();
 				chlorophyteExtractorUI = new ChlorophyteExtractorUI();
 				chlorophyteExtractorUI.Activate();
-				chloroExtractInterface = new UserInterface();
 				chloroExtractInterface.SetState(chlorophyteExtractorUI);
+				reforgeMachineInterface = new UserInterface();
 				reforgeMachineUI = new ReforgeMachineUI();
 				reforgeMachineUI.Activate();
-				reforgeMachineInterface = new UserInterface();
 				reforgeMachineInterface.SetState(reforgeMachineUI);
 			}
 		}
 
+		public override void PostSetupContent()
+		{
+			ModCompat.Load();
+		}
+
 		public override void Unload()
 		{
+			ModCompat.Unload();
 			ChlorophyteExtractorUI.ExtractorTE = null;
 			Instance = null;
 		}
@@ -84,16 +90,21 @@ namespace GadgetBox
 			{
 				layers.Insert(invIndex++, new LegacyGameInterfaceLayer(Name + ": RightClick Hacks", RightClickHacks));
 
-				layers.Insert(invIndex, new LegacyGameInterfaceLayer(Name + ": Machine UI", () =>
+				layers.Insert(invIndex + 1, new LegacyGameInterfaceLayer(Name + ": Machine UI", () =>
 					{
 						if (Main.playerInventory && !Main.recBigList)
 						{
-							if (lastSeenScreenWidth != Main.screenWidth || lastSeenScreenHeight != Main.screenHeight)
+							if (lastSeenScreenWidth != Main.screenWidth || lastSeenScreenHeight != Main.screenHeight || !lastFocus && Main.hasFocus)
 							{
 								chlorophyteExtractorUI.Recalculate();
+								reforgeMachineUI.Recalculate();
 								lastSeenScreenWidth = Main.screenWidth;
 								lastSeenScreenHeight = Main.screenHeight;
 							}
+
+							if (lastFocus != Main.hasFocus)
+								lastFocus = Main.hasFocus;
+
 							if (ChlorophyteExtractorUI.visible)
 								chlorophyteExtractorUI.Draw(Main.spriteBatch);
 							if (ReforgeMachineUI.visible)
@@ -117,6 +128,11 @@ namespace GadgetBox
 			RecipeGroup.RegisterGroup(AnyGoldBar, group);
 		}
 
+		public override void AddRecipes()
+		{
+			GadgetRecipes.AddRecipes(this);
+		}
+
 		public override void HandlePacket(BinaryReader reader, int whoAmI)
 		{
 			MessageType message = (MessageType)reader.ReadByte();
@@ -125,20 +141,8 @@ namespace GadgetBox
 				case MessageType.CatchNPC:
 					GadgetMethods.CatchNPC(reader.ReadByte(), whoAmI, reader.ReadBoolean()); // fixes catching of npcs with projectiles
 					break;
-				case MessageType.RequestExtractorOpen:
-					ChlorophyteExtractorTE.ReceiveRequestOpen(reader, whoAmI);
-					break;
-				case MessageType.SyncExtractorPlayer:
-					ChlorophyteExtractorTE.SyncExtractorPlayer(reader, whoAmI);
-					break;
-				case MessageType.SyncExtractorPlayerIndex:
-					ChlorophyteExtractorTE.SyncExtractorPlayerIndex(reader, whoAmI);
-					break;
-				case MessageType.ExtractorClientMessage:
-					ChlorophyteExtractorTE.ExtractorByID(reader.ReadInt32())?.RecieveClientMessage(reader, whoAmI);
-					break;
-				case MessageType.ExtractorServerMessage:
-					ChlorophyteExtractorTE.ExtractorByID(reader.ReadInt32())?.RecieveServerMessage(reader, whoAmI);
+				case MessageType.ExtractorMessage:
+					this.GetTileEntity<ChlorophyteExtractorTE>(reader.ReadInt32())?.ReceiveExtractorMessage(reader, whoAmI);
 					break;
 			}
 		}
@@ -189,7 +193,7 @@ namespace GadgetBox
 						Main.stackSplit = 30;
 						player.openLockBox();
 					}
-					else if(Main.mouseItem.type == ItemType<ReforgingKit>() || Main.mouseItem.type == ItemType<LesserReforgingKit>())
+					else if (Main.mouseItem.type == ItemType<ReforgingKit>() || Main.mouseItem.type == ItemType<LesserReforgingKit>())
 					{
 						if (Main.mouseItem.type == ItemType<LesserReforgingKit>() && item.prefix != 0 || !item.Prefix(-3) || !ItemLoader.PreReforge(item))
 							return true;
@@ -212,11 +216,6 @@ namespace GadgetBox
 	internal enum MessageType
 	{
 		CatchNPC,
-		RequestExtractorOpen,
-		SyncExtractorPlayer,
-		SyncExtractorPlayerIndex,
-		CloseExtractor,
-		ExtractorClientMessage,
-		ExtractorServerMessage
+		ExtractorMessage
 	}
 }

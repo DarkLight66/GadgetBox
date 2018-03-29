@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using GadgetBox.Items.Tools;
 using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.Utilities;
 
 namespace GadgetBox.Prefixes
 {

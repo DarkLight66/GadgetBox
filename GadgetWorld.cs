@@ -64,16 +64,16 @@ namespace GadgetBox
 							if (i < 2)
 								break;
 							chest.item[i].SetDefaults(itemid);
-							chest.item[i].stack = WorldGen.genRand.Next(1,5);
+							chest.item[i].stack = WorldGen.genRand.Next(1, 5);
 							break;
 						}
 					}
 				}));
-
-				genIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Lihzahrd Altars"));
-				if (genIndex != -1)
-					tasks.Insert(genIndex + 1, new PassLegacy("Boulder Traps", GenerateTrap));
 			}
+
+			genIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Lihzahrd Altars"));
+			if (genIndex != -1)
+				tasks.Insert(genIndex + 1, new PassLegacy("Boulder Traps", GenerateTrap));
 		}
 
 		public static void GenerateTrap(GenerationProgress progress)
@@ -131,14 +131,14 @@ namespace GadgetBox
 			{
 				trapY = plateY + 1;
 
-				if ((Main.tile[x - 1 + ((trapX ^ 1) * 2), plateY].type != TileID.LihzahrdBrick && 
-					Main.tile[x - 1 + ((trapX ^ 1) * 2), plateY].type != TileID.WoodenSpikes && 
-					Main.tile[x - 1 + ((trapX ^ 1) * 2), plateY].type != TileID.LihzahrdAltar) && 
+				if ((Main.tile[x - 1 + ((trapX ^ 1) * 2), plateY].type != TileID.LihzahrdBrick &&
+					Main.tile[x - 1 + ((trapX ^ 1) * 2), plateY].type != TileID.WoodenSpikes &&
+					Main.tile[x - 1 + ((trapX ^ 1) * 2), plateY].type != TileID.LihzahrdAltar) &&
 					GadgetMethods.TileAreaCheck(x - trapX, trapY, 2, 2, true, TileID.LihzahrdBrick, true, WallID.LihzahrdBrickUnsafe))
 					trapX = x - trapX;
-				else if ((Main.tile[x - 1 + (trapX * 2), plateY].type != TileID.LihzahrdBrick && 
-					Main.tile[x - 1 + (trapX * 2), plateY].type != TileID.WoodenSpikes && 
-					Main.tile[x - 1 + (trapX * 2), plateY].type != TileID.LihzahrdAltar) && 
+				else if ((Main.tile[x - 1 + (trapX * 2), plateY].type != TileID.LihzahrdBrick &&
+					Main.tile[x - 1 + (trapX * 2), plateY].type != TileID.WoodenSpikes &&
+					Main.tile[x - 1 + (trapX * 2), plateY].type != TileID.LihzahrdAltar) &&
 					GadgetMethods.TileAreaCheck(x - (trapX ^ 1), trapY, 2, 2, true, TileID.LihzahrdBrick, true, WallID.LihzahrdBrickUnsafe))
 					trapX = x - (trapX ^ 1);
 				else
@@ -189,7 +189,7 @@ namespace GadgetBox
 						return false;
 				}
 
-				bool unoccupiedt = GadgetMethods.TileAreaCheck(x, trapY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) && 
+				bool unoccupiedt = GadgetMethods.TileAreaCheck(x, trapY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) &&
 					(GadgetMethods.TileAreaCheck(x + 1, trapY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) ||
 					GadgetMethods.TileAreaCheck(x - 1, trapY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe));
 
@@ -203,8 +203,8 @@ namespace GadgetBox
 				while (unoccupiedb && (plateY - trapY) > 7)
 				{
 					trapY++;
-					unoccupiedb = GadgetMethods.TileAreaCheck(x, trapY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) && 
-						(GadgetMethods.TileAreaCheck(x + 1, trapY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) || 
+					unoccupiedb = GadgetMethods.TileAreaCheck(x, trapY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) &&
+						(GadgetMethods.TileAreaCheck(x + 1, trapY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) ||
 						GadgetMethods.TileAreaCheck(x - 1, trapY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe));
 
 					if (!unoccupiedb)
@@ -217,8 +217,8 @@ namespace GadgetBox
 				while (unoccupiedt)
 				{
 					maxY--;
-					unoccupiedt = GadgetMethods.TileAreaCheck(x, maxY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) && 
-						(GadgetMethods.TileAreaCheck(x + 1, maxY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) || 
+					unoccupiedt = GadgetMethods.TileAreaCheck(x, maxY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) &&
+						(GadgetMethods.TileAreaCheck(x + 1, maxY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) ||
 						GadgetMethods.TileAreaCheck(x - 1, maxY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe));
 
 					if (!unoccupiedt)

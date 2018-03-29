@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
@@ -36,7 +35,7 @@ namespace GadgetBox.Tiles
 
 		public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset)
 		{
-			ChlorophyteExtractorTE extractorTE = ChlorophyteExtractorTE.ExtractorByPosition(TEPosition(i, j));
+			ChlorophyteExtractorTE extractorTE = mod.GetTileEntity<ChlorophyteExtractorTE>(TEPosition(i, j));
 			if (extractorTE == null)
 				return;
 			if (extractorTE.Animating && !extractorTE.IsWorking && (Main.tileFrame[TileID.Extractinator] - extractorTE.FrameYOffset + 10) % 10 == 0)
@@ -56,7 +55,7 @@ namespace GadgetBox.Tiles
 		{
 			Main.mouseRightRelease = false;
 			Point16 extractorPos = TEPosition(i, j);
-			ChlorophyteExtractorTE extractorTE = ChlorophyteExtractorTE.ExtractorByPosition(extractorPos);
+			ChlorophyteExtractorTE extractorTE = mod.GetTileEntity<ChlorophyteExtractorTE>(extractorPos);
 			if (extractorTE == null)
 				return;
 			Player player = Main.LocalPlayer;
@@ -64,14 +63,14 @@ namespace GadgetBox.Tiles
 
 			player.CloseVanillaUIs();
 			if (ReforgeMachineUI.visible)
-				GadgetBox.Instance.reforgeMachineUI.ToggleUI(false, Point16.Zero, true);
+				GadgetBox.Instance.reforgeMachineUI.ToggleUI(false, Point16.NegativeOne, true);
 			if (extractorTE.CurrentPlayer == player.whoAmI)
-				ChlorophyteExtractorUI.CloseUI(extractorTE);
+				extractorTE.CloseUI();
 			else
 			{
 				extractorTE.CurrentPlayer = (byte)player.whoAmI;
 				gadgetPlayer.machinePos = extractorPos;
-				ChlorophyteExtractorUI.OpenUI(extractorTE);
+				extractorTE.OpenUI();
 			}
 		}
 

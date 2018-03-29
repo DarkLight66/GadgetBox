@@ -6,11 +6,12 @@ using Terraria.ModLoader;
 
 namespace GadgetBox.Items.Placeable
 {
-	public class ChlorophyteExtractor : ModItem
+	// Credits to AdipemDragon for the item an tile sprites
+	public class LihzahrdWorkshop : ModItem
 	{
 		public override void SetDefaults()
 		{
-			item.Size = new Vector2(34, 38);
+			item.Size = new Vector2(24);
 			item.maxStack = 99;
 			item.useTurn = true;
 			item.autoReuse = true;
@@ -18,19 +19,17 @@ namespace GadgetBox.Items.Placeable
 			item.useTime = 10;
 			item.useStyle = 1;
 			item.consumable = true;
-			item.rare = 3;
 			item.value = Item.sellPrice(gold: 2);
-			item.createTile = mod.TileType<ChlorophyteExtractorTile>();
+			item.createTile = mod.TileType<LihzahrdWorkshopTile>();
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(ItemID.LihzahrdBrick, 25);
-			recipe.AddIngredient(ItemID.LunarTabletFragment, 20);
-			recipe.AddIngredient(ItemID.Wire, 20);
-			recipe.AddIngredient(ItemID.Cog, 20);
-			recipe.AddTile(mod.TileType<LihzahrdWorkshopTile>());
+			recipe.AddIngredient(ItemID.LihzahrdFurnace);
+			recipe.AddIngredient(ItemID.TinkerersWorkshop);
+			recipe.AddIngredient(ItemID.LunarTabletFragment, 10);
+			recipe.AddTile(TileID.MythrilAnvil);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}

@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
@@ -19,6 +18,13 @@ namespace GadgetBox.GadgetUI
 		{
 			_reforgeItem = reforgeItem;
 			_reforgePrice = reforgePrice;
+			Recalculate();
+		}
+
+		public override void Recalculate()
+		{
+			Width.Set(Math.Max(Main.fontMouseText.MeasureString(Language.GetTextValue("LegacyInterface.20")).X + 90, 320), 0);
+			base.Recalculate();
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -26,17 +32,18 @@ namespace GadgetBox.GadgetUI
 			base.DrawSelf(spriteBatch);
 			CalculatedStyle style = GetDimensions();
 			string priceText;
-			Vector2 priceOffset = new Vector2(style.X + 68, style.Y + 26);
+			Vector2 priceOffset = new Vector2(style.X + 68, style.Y + 28);
 			if (!_reforgeItem().IsAir)
 			{
-				priceOffset += new Vector2(36, -12);
+				priceOffset += new Vector2(36, -14);
 				priceText = Language.GetTextValue("LegacyInterface.46");
-				ItemSlot.DrawMoney(spriteBatch, "", priceOffset.X + 10, priceOffset.Y - 42, Utils.CoinsSplit(Math.Max(_reforgePrice(), 1)), true);
-				ItemSlot.DrawSavings(spriteBatch, priceOffset.X, priceOffset.Y - 12, true);
+				float xOffset = Main.fontMouseText.MeasureString(priceText).X - 20;
+				ItemSlot.DrawMoney(spriteBatch, "", priceOffset.X + xOffset, priceOffset.Y - 42, Utils.CoinsSplit(Math.Max(_reforgePrice(), 1)), true);
+				ItemSlot.DrawSavings(spriteBatch, priceOffset.X, priceOffset.Y - 14, true);
 			}
 			else
 				priceText = Language.GetTextValue("LegacyInterface.20");
-			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, Main.fontMouseText, priceText, priceOffset, new Color(Main.mouseTextColor, Main.mouseTextColor, Main.mouseTextColor, Main.mouseTextColor), 0f, Vector2.Zero, Vector2.One, -1f, 2f);
+			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Main.fontMouseText, priceText, priceOffset, new Color(Main.mouseTextColor, Main.mouseTextColor, Main.mouseTextColor, Main.mouseTextColor), 0f, Vector2.Zero, Vector2.One, -1f, 2f);
 		}
 	}
 }

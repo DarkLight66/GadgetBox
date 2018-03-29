@@ -5,7 +5,6 @@ using Terraria;
 using Terraria.GameContent.Achievements;
 using Terraria.GameInput;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace GadgetBox.Items.Tools
@@ -207,7 +206,22 @@ namespace GadgetBox.Items.Tools
 				return;
 			int ttindex = tooltips.FindLastIndex(t => t.mod == "Terraria" && (t.Name == "Knockback" || t.Name == "Speed"));
 			if (ttindex != -1)
-				tooltips.Insert(ttindex + 1, new TooltipLine(mod, "ShovelPower", shovel + Language.GetTextValue("Mods.GadgetBox.ShovelPower")));
+				tooltips.Insert(ttindex + 1, new TooltipLine(mod, "ShovelPower", shovel + mod.GetTextValue("Misc.ShovelPower")));
+		}
+	}
+
+	public class AShovelSmartCursor : ModPlayer
+	{
+		// Reset effects happens almost right after the vanilla SmarCursorLookup
+		public override void ResetEffects() => ShovelMethods.SmartCursorLookup(player);
+	}
+
+	public class AShovelSmartSelect : GlobalTile
+	{
+		public override bool AutoSelect(int i, int j, int type, Item item)
+		{
+			BaseShovel myShovel = item.modItem as BaseShovel;
+			return myShovel != null && ShovelMethods.DigPower((ushort)type, myShovel.shovel) >= 100;
 		}
 	}
 
@@ -419,21 +433,6 @@ namespace GadgetBox.Items.Tools
 			{
 				Main.SmartCursorEnabled = false;
 			}
-		}
-	}
-
-	public class AShovelSmartCursor : ModPlayer
-	{
-		// Reset effects happens almost right after the vanilla SmarCursorLookup
-		public override void ResetEffects() => ShovelMethods.SmartCursorLookup(player);
-	}
-
-	public class AShovelSmartSelect : GlobalTile
-	{
-		public override bool AutoSelect(int i, int j, int type, Item item)
-		{
-			BaseShovel myShovel = item.modItem as BaseShovel;
-			return myShovel != null && ShovelMethods.DigPower((ushort)type, myShovel.shovel) >= 100;
 		}
 	}
 }

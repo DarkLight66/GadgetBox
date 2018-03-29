@@ -1,15 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using GadgetBox.Items.Accessories;
 using GadgetBox.Items.Consumables;
+using GadgetBox.Tiles;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace GadgetBox
 {
 	public class GadgetItem : GlobalItem
 	{
+		internal TweakType tweak = TweakType.None;
+
+		public override bool InstancePerEntity => true;
+
+		public override bool CloneNewInstances => true;
+
 		public override void GrabRange(Item item, Player player, ref int grabRange)
 		{
 			if (ItemID.Sets.ItemNoGravity[item.type] && player.GetModPlayer<GadgetPlayer>().etherMagnet)
@@ -20,6 +31,29 @@ namespace GadgetBox
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
+			int index;
+
+			if (item.accessory && tweak != TweakType.None)
+			{
+				index = tooltips.FindIndex(tt => tt.mod == "Terraria" && tt.Name == "Equipable");
+				if (index != -1)
+				{
+					TooltipLine tooltip = new TooltipLine(mod, "TweakName", mod.GetTextValue($"TweakName.{tweak}"));
+					tooltip.overrideColor = new Color(152, 76, 26);
+					tooltips.Insert(index + 1, tooltip);
+
+					tooltip = new TooltipLine(mod, "TweakTooltip", mod.GetTextValue($"TweakTooltip.{tweak}"));
+					tooltip.isModifier = true;
+
+					index = tooltips.FindIndex(tt => tt.mod == "Terraria" && (tt.Name == "SetBonus" ||
+					tt.Name == "Expert" || tt.Name == "SpecialPrice" || tt.Name == "Price"));
+					if (index != -1)
+						tooltips.Insert(index, tooltip);
+					else
+						tooltips.Add(tooltip);
+				}
+			}
+
 			if (item.prefix < PrefixID.Hard || item.prefix > PrefixID.Violent)
 				return;
 
@@ -27,7 +61,7 @@ namespace GadgetBox
 			if (!modPlayer.shinyEquips)
 				return;
 
-			int index = tooltips.FindLastIndex(tt => tt.mod == "Terraria" && tt.Name.StartsWith("PrefixAcc"));
+			index = tooltips.FindLastIndex(tt => tt.mod == "Terraria" && tt.Name.StartsWith("PrefixAcc"));
 			if (index > -1)
 			{
 				string text = "";
@@ -36,13 +70,13 @@ namespace GadgetBox
 				else if (item.prefix == PrefixID.Arcane)
 					text = "-2" + Language.GetTextValue("LegacyTooltip.42");
 				else if (item.prefix <= PrefixID.Lucky)
-					text = "+" + (item.prefix - PrefixID.Precise + 1) + mod.GetTextValue("CriticalDamage");
+					text = "+" + (item.prefix - PrefixID.Precise + 1) + mod.GetTextValue("Misc.CriticalDamage");
 				else if (item.prefix <= PrefixID.Menacing)
-					text = "+" + ((item.prefix - PrefixID.Jagged + 2) / 2) + mod.GetTextValue("ArmorPenetration");
+					text = "+" + ((item.prefix - PrefixID.Jagged + 2) / 2) + mod.GetTextValue("Misc.ArmorPenetration");
 				else if (item.prefix <= PrefixID.Quick2)
-					text = "+" + (item.prefix - PrefixID.Brisk + 1) + " " + mod.GetTextValue("JumpHeight");
+					text = "+" + (item.prefix - PrefixID.Brisk + 1) + " " + mod.GetTextValue("Misc.JumpHeight");
 				else
-					text = "+" + (item.prefix - PrefixID.Wild + 1) + " " + mod.GetTextValue("MiningSpeed");
+					text = "+" + (item.prefix - PrefixID.Wild + 1) + " " + mod.GetTextValue("Misc.MiningSpeed");
 				TooltipLine tt = new TooltipLine(mod, "ShinyAcc", text);
 				tt.isModifier = true;
 				tooltips.Insert(index + 1, tt);
@@ -88,6 +122,37 @@ namespace GadgetBox
 				modPlayer.speedShine += (byte)(item.prefix - PrefixID.Brisk + 1);
 			else
 				player.pickSpeed -= (item.prefix - PrefixID.Wild + 1) * 0.01f;
+		}
+
+		public override bool ReforgePrice(Item item, ref int reforgePrice, ref bool canApplyDiscount)
+		{
+			if (tweak == TweakType.Malleable)
+				reforgePrice = (int)Math.Ceiling(reforgePrice * 0.75);
+			return true;
+		}
+
+		public override void OnCraft(Item item, Recipe recipe)
+		{
+			int workshop = mod.TileType<LihzahrdWorkshopTile>();
+			if (item.accessory && Main.LocalPlayer.adjTile[workshop] &&
+				Array.Exists(recipe.requiredTile, x => x == TileID.TinkerersWorkbench || x == workshop))
+				tweak = TweakType.Malleable;
+		}
+
+		public override bool NeedsSaving(Item item) => tweak != TweakType.None;
+
+		public override TagCompound Save(Item item) => new TagCompound { ["Tweak"] = (byte)tweak };
+
+		public override void Load(Item item, TagCompound tag) => tweak = (TweakType)tag.GetByte("Tweak");
+
+		public override void NetSend(Item item, BinaryWriter writer) => writer.Write((byte)tweak);
+
+		public override void NetReceive(Item item, BinaryReader reader) => tweak = (TweakType)reader.ReadByte();
+
+		internal enum TweakType : byte
+		{
+			None,
+			Malleable
 		}
 	}
 }

@@ -1,16 +1,13 @@
-﻿using System;
-using GadgetBox.Tiles;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
-using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
-using Terraria.UI.Chat;
 
 namespace GadgetBox.GadgetUI
 {
@@ -20,8 +17,15 @@ namespace GadgetBox.GadgetUI
 		internal UIPanel reforgePanel;
 		internal UIItemSlot reforgeSlot;
 		internal UIFancyButton reforgeButton;
+		internal UIPanel reforgeListPanel;
+		internal UIList reforgeList;
 		internal Mod mod;
-		int reforgePrice = 0;
+
+		List<byte> selectedPrefixes = new List<byte>();
+		int reforgePrice;
+		bool autoReforge;
+		int reforgeTries;
+		byte tickCounter;
 
 		public override void OnInitialize()
 		{
@@ -29,50 +33,83 @@ namespace GadgetBox.GadgetUI
 
 			reforgePanel = new UIReforgePanel(() => reforgeSlot.item, () => reforgePrice);
 			reforgePanel.SetPadding(4);
-			reforgePanel.Top.Set(Main.instance.invBottom + 60f, 0);
-			reforgePanel.Left.Set(140, 0);
-			reforgePanel.Width.Set(320, 0);
-			reforgePanel.Height.Set(140, 0);
+			reforgePanel.Top.Pixels = Main.instance.invBottom + 60;
+			reforgePanel.Left.Pixels = 154;
+			reforgePanel.MinHeight.Pixels = 260;
 
 			reforgeSlot = new UIItemSlot(0.85f);
-			reforgeSlot.Top.Set(12, 0);
-			reforgeSlot.Left.Set(12, 0);
+			reforgeSlot.Top.Pixels = reforgeSlot.Left.Pixels = 12;
 			reforgeSlot.CanClick += () => Main.mouseItem.type == 0 || Main.mouseItem.Prefix(-3);
-			reforgeSlot.OnMouseDown += (a, b) => reforgePrice = reforgeSlot.item.ReforgePrice();
+			reforgeSlot.OnMouseDown += (a, b) => { selectedPrefixes.Clear(); OnItemChanged(); };
 			reforgePanel.Append(reforgeSlot);
 
 			reforgeButton = new UIFancyButton(Main.reforgeTexture[0], Main.reforgeTexture[1]);
-			reforgeButton.Top.Set(20, 0);
-			reforgeButton.Left.Set(64, 0);
-			reforgeButton.CanClick += () => !reforgeSlot.item.IsAir && Main.LocalPlayer.CanBuyItem(reforgePrice, -1) && ItemLoader.PreReforge(reforgeSlot.item);
-			reforgeButton.OnMouseDown += ReforgeItem;
+			reforgeButton.Top.Pixels = 20;
+			reforgeButton.Left.Pixels = 64;
+			reforgeButton.CanClick += CanReforgeItem;
+			reforgeButton.OnMouseDown += OnReforgeButtonClick;
 			reforgeButton.HoverText = Language.GetTextValue("LegacyInterface.19");
 			reforgePanel.Append(reforgeButton);
+
+			reforgeListPanel = new UIPanel();
+			reforgeListPanel.Top.Pixels = 70;
+			reforgeListPanel.Left.Pixels = 12;
+			reforgeListPanel.Width.Set(-24, 1);
+			reforgeListPanel.Height.Set(-82, 1);
+			reforgeListPanel.SetPadding(6);
+			reforgeListPanel.BackgroundColor = Color.CadetBlue;
+			reforgePanel.Append(reforgeListPanel);
+
+			reforgeList = new UIList();
+			reforgeList.Width.Precent = reforgeList.Height.Precent = 1f;
+			reforgeList.Width.Pixels = -24;
+			reforgeList.ListPadding = 2;
+			reforgeListPanel.Append(reforgeList);
+
+			var reforgeListScrollbar = new FixedUIScrollbar(GadgetBox.Instance.reforgeMachineInterface);
+			reforgeListScrollbar.SetView(100f, 1000f);
+			reforgeListScrollbar.Top.Pixels = 4;
+			reforgeListScrollbar.Height.Set(-8, 1f);
+			reforgeListScrollbar.Left.Set(-20, 1f);
+			reforgeListPanel.Append(reforgeListScrollbar);
+			reforgeList.SetScrollbar(reforgeListScrollbar);
 
 			Append(reforgePanel);
 		}
 
-		void ReforgeItem(UIMouseEvent evt, UIElement listeningElement)
+		public override void Update(GameTime gameTime)
 		{
-			Main.LocalPlayer.BuyItem(reforgePrice, -1);
-			GadgetMethods.PrefixItem(ref reforgeSlot.item);
 			reforgePrice = reforgeSlot.item.ReforgePrice();
-		}
-
-		protected override void DrawSelf(SpriteBatch spriteBatch)
-		{
-			if (reforgePanel.ContainsPoint(Main.MouseScreen))
-				Main.LocalPlayer.mouseInterface = true;
-			reforgeButton.visible = !reforgeSlot.item.IsAir;
+			if (autoReforge)
+			{
+				if (selectedPrefixes.Count == 0 || selectedPrefixes.Contains(reforgeSlot.item.prefix) || !CanReforgeItem())
+				{
+					autoReforge = false;
+					reforgeTries = tickCounter = 0;
+				}
+				else if (++tickCounter > 9)
+				{
+					tickCounter = 0;
+					ReforgeItem();
+					if (selectedPrefixes.Contains(reforgeSlot.item.prefix) || ++reforgeTries > 200)
+					{
+						autoReforge = false;
+						reforgeTries = tickCounter = 0;
+					}
+				}
+			}
+			base.Update(gameTime);
 		}
 
 		internal void ToggleUI(bool showUI, Point16 centerPos, bool silent = false)
 		{
+			Player player = Main.LocalPlayer;
+			GadgetPlayer gadgetPlayer = player.Gadget();
+			bool switching = visible && centerPos != Point16.NegativeOne && centerPos != gadgetPlayer.machinePos;
 			if (visible)
 			{
 				if (reforgeSlot.item?.type > 0)
 				{
-					Player player = Main.LocalPlayer;
 					reforgeSlot.item.position = player.Center;
 					Item item = player.GetItem(player.whoAmI, reforgeSlot.item, false, true);
 					if (item.stack > 0)
@@ -85,9 +122,11 @@ namespace GadgetBox.GadgetUI
 					}
 					reforgeSlot.item = new Item();
 					reforgePrice = 0;
+					selectedPrefixes.Clear();
+					OnItemChanged();
 				}
 				if (!silent)
-					Main.PlaySound(showUI ? SoundID.MenuTick : SoundID.MenuClose);
+					Main.PlaySound(switching ? SoundID.MenuTick : SoundID.MenuClose);
 			}
 			else if (showUI)
 			{
@@ -96,9 +135,89 @@ namespace GadgetBox.GadgetUI
 				if (!silent)
 					Main.PlaySound(SoundID.MenuOpen);
 			}
-			visible = showUI;
+
+			if (!switching)
+				visible = showUI;
 			if (visible)
-				Main.LocalPlayer.GetModPlayer<GadgetPlayer>().machinePos = centerPos;
+				gadgetPlayer.machinePos = centerPos;
+		}
+
+		protected override void DrawSelf(SpriteBatch spriteBatch)
+		{
+			if (reforgePanel.ContainsPoint(Main.MouseScreen))
+			{
+				Main.LocalPlayer.mouseInterface = true;
+				Main.HoverItem.TurnToAir();
+				Main.hoverItemName = "";
+			}
+			reforgeButton.visible = !reforgeSlot.item.IsAir;
+		}
+
+		void OnReforgeButtonClick(UIMouseEvent evt, UIElement listeningElement)
+		{
+			if (autoReforge)
+			{
+				autoReforge = false;
+				reforgeTries = tickCounter = 0;
+			}
+			else if (selectedPrefixes.Count > 0)
+				autoReforge = true;
+			else
+				ReforgeItem();
+		}
+
+		bool CanReforgeItem() => !reforgeSlot.item.IsAir && Main.LocalPlayer.CanBuyItem(reforgePrice, -1) && ItemLoader.PreReforge(reforgeSlot.item);
+
+		void OnItemChanged()
+		{
+			reforgeList.Clear();
+			if (reforgeSlot.item.IsAir || !ItemLoader.PreReforge(reforgeSlot.item))
+				return;
+			Item controlItem = new Item();
+			UIReforgeLabel reforgeLabel;
+			List<byte> tempSelected = new List<byte>();
+			bool isArmor = false;
+			for (byte i = 1; i < ModPrefix.PrefixCount; i++)
+			{
+				controlItem.SetDefaults(reforgeSlot.item.type, true);
+				isArmor = ModCompat.ArmorPrefix(controlItem);
+				if (isArmor && !controlItem.accessory)
+					controlItem.accessory = true;
+				if (!controlItem.CanApplyPrefix(i))
+					continue;
+				controlItem.Prefix(i);
+				if (isArmor)
+					ModCompat.ApplyArmorPrefix(controlItem, i);
+				if (controlItem.prefix != i)
+					continue;
+				reforgeLabel = new UIReforgeLabel(i, controlItem.expert ? -12 : controlItem.rare, controlItem.value);
+				reforgeLabel.OnMouseDown += ChoseReforge;
+				reforgeLabel.SetPadding(10);
+				if (selectedPrefixes.Contains(i))
+				{
+					reforgeLabel.selected = true;
+					tempSelected.Add(i);
+				}
+				reforgeList.Add(reforgeLabel);
+			}
+			selectedPrefixes = tempSelected;
+		}
+
+		void ChoseReforge(UIMouseEvent evt, UIElement listeningElement)
+		{
+			UIReforgeLabel element = ((UIReforgeLabel)listeningElement);
+			element.selected = !element.selected;
+			if (!selectedPrefixes.Remove(element.prefix))
+				selectedPrefixes.Add(element.prefix);
+			reforgeList.UpdateOrder();
+			Main.PlaySound(SoundID.MenuTick);
+		}
+
+		void ReforgeItem()
+		{
+			Main.LocalPlayer.BuyItem(reforgePrice, -1);
+			GadgetMethods.PrefixItem(ref reforgeSlot.item);
+			OnItemChanged();
 		}
 	}
 }

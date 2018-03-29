@@ -13,7 +13,7 @@ namespace GadgetBox.Prefixes
 		internal float knockbackMult = 1f;
 		internal int tileBoost = 0;
 		internal float useTimeMult = 1f;
-		
+
 		public override PrefixCategory Category => PrefixCategory.AnyWeapon;
 
 		public ToolPrefix() { }

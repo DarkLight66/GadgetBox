@@ -33,22 +33,29 @@ namespace GadgetBox
 		{
 			if (nextSlot > 38)
 				return;
-			if (type == NPCID.Merchant)
+
+			switch (type)
 			{
-				int slot = 0;
-				while (slot < nextSlot)
-				{
-					if (shop.item[++slot - 1].type != ItemID.CopperAxe && slot != nextSlot)
-						continue;
-					for (int i = nextSlot; i > slot; i--)
-						shop.item[i] = shop.item[i - 1];
-					shop.item[slot] = new Item();
-					shop.item[slot].SetDefaults(mod.ItemType<OldShovel>());
-					slot = ++nextSlot;
-				}
+				case NPCID.Merchant:
+					int slot = 0;
+					while (slot < nextSlot)
+					{
+						if (shop.item[++slot - 1].type != ItemID.CopperAxe && slot != nextSlot)
+							continue;
+						for (int i = nextSlot; i > slot; i--)
+							shop.item[i] = shop.item[i - 1];
+						shop.item[slot] = new Item();
+						shop.item[slot].SetDefaults(mod.ItemType<OldShovel>());
+						slot = ++nextSlot;
+					}
+					break;
+				case NPCID.Wizard:
+					shop.item[nextSlot++].SetDefaults(mod.ItemType<ReflectorBlock>());
+					break;
+				case NPCID.Steampunker:
+					shop.item[nextSlot++].SetDefaults(mod.ItemType<AutoReforgeMachine>());
+					break;
 			}
-			if (type == NPCID.Wizard)
-				shop.item[nextSlot++].SetDefaults(mod.ItemType<ReflectorBlock>());
 		}
 
 		public override void SetupTravelShop(int[] shop, ref int nextSlot)
