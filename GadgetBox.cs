@@ -192,6 +192,8 @@ namespace GadgetBox
 						Main.PlaySound(SoundID.Grab);
 						Main.stackSplit = 30;
 						player.openLockBox();
+						Main.mouseRightRelease = false;
+						Recipe.FindRecipes();
 					}
 					else if (Main.mouseItem.type == ItemType<ReforgingKit>() || Main.mouseItem.type == ItemType<LesserReforgingKit>())
 					{
@@ -202,10 +204,9 @@ namespace GadgetBox
 
 						Main.mouseItem.Consume();
 						player.inventory[58] = Main.mouseItem.Clone();
+						Main.mouseRightRelease = false;
+						Recipe.FindRecipes();
 					}
-
-					Main.mouseRightRelease = false;
-					Recipe.FindRecipes();
 					return true;
 				}
 			}
