@@ -16,16 +16,14 @@ namespace GadgetBox
 	public class GadgetItem : GlobalItem
 	{
 		internal TweakType tweak = TweakType.None;
-
 		public override bool InstancePerEntity => true;
-
 		public override bool CloneNewInstances => true;
 
 		public override void GrabRange(Item item, Player player, ref int grabRange)
 		{
-			if (ItemID.Sets.ItemNoGravity[item.type] && player.GetModPlayer<GadgetPlayer>().etherMagnet)
+			if (ItemID.Sets.ItemNoGravity[item.type] && player.Gadget().etherMagnet)
 				grabRange += grabRange > Player.defaultItemGrabRange ? 100 : 500;
-			if (item.makeNPC > 0 && player.GetModPlayer<GadgetPlayer>().critterCatch)
+			if (item.makeNPC > 0 && player.Gadget().critterCatch)
 				grabRange += grabRange > Player.defaultItemGrabRange ? 70 : 300;
 		}
 
@@ -54,11 +52,7 @@ namespace GadgetBox
 				}
 			}
 
-			if (item.prefix < PrefixID.Hard || item.prefix > PrefixID.Violent)
-				return;
-
-			GadgetPlayer modPlayer = Main.LocalPlayer.GetModPlayer<GadgetPlayer>();
-			if (!modPlayer.shinyEquips)
+			if (item.prefix < PrefixID.Hard || item.prefix > PrefixID.Violent ||!Main.LocalPlayer.Gadget().shinyEquips)
 				return;
 
 			index = tooltips.FindLastIndex(tt => tt.mod == "Terraria" && tt.Name.StartsWith("PrefixAcc"));
@@ -72,11 +66,11 @@ namespace GadgetBox
 				else if (item.prefix <= PrefixID.Lucky)
 					text = "+" + (item.prefix - PrefixID.Precise + 1) + mod.GetTextValue("Misc.CriticalDamage");
 				else if (item.prefix <= PrefixID.Menacing)
-					text = "+" + ((item.prefix - PrefixID.Jagged + 2) / 2) + mod.GetTextValue("Misc.ArmorPenetration");
+					text = "+" + ((item.prefix - PrefixID.Jagged + 2) / 2) + " " + mod.GetTextValue("Misc.ArmorPenetration");
 				else if (item.prefix <= PrefixID.Quick2)
 					text = "+" + (item.prefix - PrefixID.Brisk + 1) + " " + mod.GetTextValue("Misc.JumpHeight");
 				else
-					text = "+" + (item.prefix - PrefixID.Wild + 1) + " " + mod.GetTextValue("Misc.MiningSpeed");
+					text = "+" + (item.prefix - PrefixID.Wild + 1) + mod.GetTextValue("Misc.MiningSpeed");
 				TooltipLine tt = new TooltipLine(mod, "ShinyAcc", text);
 				tt.isModifier = true;
 				tooltips.Insert(index + 1, tt);
@@ -106,7 +100,7 @@ namespace GadgetBox
 			if (item.prefix < PrefixID.Hard || item.prefix > PrefixID.Violent)
 				return;
 
-			GadgetPlayer modPlayer = player.GetModPlayer<GadgetPlayer>();
+			GadgetPlayer modPlayer = player.Gadget();
 			if (!modPlayer.shinyEquips)
 				return;
 
@@ -119,7 +113,10 @@ namespace GadgetBox
 			else if (item.prefix <= PrefixID.Menacing)
 				player.armorPenetration += (item.prefix - PrefixID.Jagged + 2) / 2;
 			else if (item.prefix <= PrefixID.Quick2)
+			{
 				modPlayer.speedShine += (byte)(item.prefix - PrefixID.Brisk + 1);
+				player.jumpSpeedBoost += (item.prefix - PrefixID.Brisk + 1) * 0.1f;
+			}
 			else
 				player.pickSpeed -= (item.prefix - PrefixID.Wild + 1) * 0.01f;
 		}
@@ -140,13 +137,9 @@ namespace GadgetBox
 		}
 
 		public override bool NeedsSaving(Item item) => tweak != TweakType.None;
-
 		public override TagCompound Save(Item item) => new TagCompound { ["Tweak"] = (byte)tweak };
-
 		public override void Load(Item item, TagCompound tag) => tweak = (TweakType)tag.GetByte("Tweak");
-
 		public override void NetSend(Item item, BinaryWriter writer) => writer.Write((byte)tweak);
-
 		public override void NetReceive(Item item, BinaryReader reader) => tweak = (TweakType)reader.ReadByte();
 
 		internal enum TweakType : byte

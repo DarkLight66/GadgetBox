@@ -26,7 +26,7 @@ namespace GadgetBox.Items.Consumables
 
 		public override bool CanUseItem(Player player)
 		{
-			return !player.GetModPlayer<GadgetPlayer>().shinyEquips;
+			return !player.Gadget().shinyEquips;
 		}
 	}
 }

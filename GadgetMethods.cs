@@ -110,7 +110,7 @@ namespace GadgetBox
 		{
 			if (checkConsumable && !item.consumable)
 				return;
-			if ((item.stack -= amount) <= 0)
+			if (ItemLoader.ConsumeItem(item, Main.LocalPlayer) && (item.stack -= amount) <= 0)
 				item.TurnToAir();
 		}
 

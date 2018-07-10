@@ -1,6 +1,6 @@
 ﻿displayName = Box of Gadgets
 author = DarkLight
-version = 0.1.0.0
+version = 0.1.0.2
 homepage = https://forums.terraria.org/index.php?threads/box-of-gadgets.67126/
 buildIgnore = .vs\*, Properties\*, *.csproj, *.user, obj\*, bin\*, *.config, .git\*, LICENSE, README.md, .editorconfig, .gitignore, .gitattributes, excluded\*, Wiki\*
 languageVersion = 6

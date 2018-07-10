@@ -21,6 +21,8 @@ MapObject.AutoReforgeMachineTile=Auto Reforge Machine
 MapObject.ChlorophyteExtractorTile=Chlorophyte Extractor
 MapObject.LihzahrdWorkshopTile=Lihzahrd Workshop
 
+ProjectileName.ClockworkDiggerProj={$Mods.GadgetBox.ItemName.ClockworkDigger}
+
 TweakName.Malleable=Malleable
 TweakTooltip.Malleable=-25% reforge cost
 
@@ -29,3 +31,5 @@ Misc.CriticalDamage=% critical damage
 Misc.MiningSpeed=% mining speed
 Misc.ArmorPenetration=armor penetration
 Misc.JumpHeight=jump height
+Misc.CurrentlyGrants=Currently grants:
+Misc.NoEffects=No effects

@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -18,7 +17,6 @@ namespace GadgetBox
 	internal class GadgetBox : Mod
 	{
 		internal static GadgetBox Instance;
-		internal static string AnyGoldBar;
 
 		internal UserInterface chloroExtractInterface;
 		internal ChlorophyteExtractorUI chlorophyteExtractorUI;
@@ -117,21 +115,8 @@ namespace GadgetBox
 			}
 		}
 
-		public override void AddRecipeGroups()
-		{
-			RecipeGroup group = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " " + Lang.GetItemNameValue(ItemID.GoldBar), new int[]
-			{
-				ItemID.GoldBar,
-				ItemID.PlatinumBar
-			});
-			AnyGoldBar = Name + ":AnyGoldBar";
-			RecipeGroup.RegisterGroup(AnyGoldBar, group);
-		}
-
-		public override void AddRecipes()
-		{
-			GadgetRecipes.AddRecipes(this);
-		}
+		public override void AddRecipeGroups() => GadgetRecipes.AddRecipeGroups(this);
+		public override void AddRecipes() => GadgetRecipes.AddRecipes(this);
 
 		public override void HandlePacket(BinaryReader reader, int whoAmI)
 		{

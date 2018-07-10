@@ -40,7 +40,7 @@ namespace GadgetBox
 					int slot = 0;
 					while (slot < nextSlot)
 					{
-						if (shop.item[++slot - 1].type != ItemID.CopperAxe && slot != nextSlot)
+						if (shop.item[slot++].type != ItemID.CopperAxe && slot != nextSlot)
 							continue;
 						for (int i = nextSlot; i > slot; i--)
 							shop.item[i] = shop.item[i - 1];
@@ -54,6 +54,8 @@ namespace GadgetBox
 					break;
 				case NPCID.Steampunker:
 					shop.item[nextSlot++].SetDefaults(mod.ItemType<AutoReforgeMachine>());
+					if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
+						shop.item[nextSlot++].SetDefaults(mod.ItemType<ClockworkDigger>());
 					break;
 			}
 		}

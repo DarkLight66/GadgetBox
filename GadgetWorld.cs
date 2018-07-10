@@ -83,28 +83,31 @@ namespace GadgetBox
 			int minX = WorldGen.tLeft + 5, minY = WorldGen.tTop + 5;
 			int maxX = WorldGen.tRight - 5, maxY = WorldGen.tBottom - 5;
 
-			int trapsAmount = 1 + (int)(WorldGen.tRooms * (0.7f + WorldGen.genRand.Next(-15, 16) * 0.007f));
+			int trapsAmount = 1 + (int)(WorldGen.tRooms * (0.7f + WorldGen.genRand.NextFloat(-1.2f, 1.2f)));
 
 			int tileX, tileY, trapsGen = 0, genAttemps = 0;
 			progress.CurrentPassWeight = progress.TotalWeight * 0.01f;
 			progress.Set(0);
 
+			bool floorTrap = WorldGen.genRand.NextBool(), cFloorTrap;
 			while (trapsGen < trapsAmount)
 			{
 				tileX = WorldGen.genRand.Next(minX, maxX);
 				tileY = WorldGen.genRand.Next(minY, maxY);
 				Tile tile = Framing.GetTileSafely(tileX, tileY);
 
-				if (tile.wall == WallID.LihzahrdBrickUnsafe && !tile.active() && GenerateBoulderTrap(tileX, tileY) || ++genAttemps > 0)
+				cFloorTrap = genAttemps > 50 ? WorldGen.genRand.NextBool() : floorTrap;
+				if (tile.wall == WallID.LihzahrdBrickUnsafe && !tile.active() && GenerateBoulderTrap(tileX, tileY, cFloorTrap) || ++genAttemps > 100)
 				{
 					trapsGen++;
+					floorTrap = WorldGen.genRand.NextBool();
 					progress.Set((float)trapsGen / trapsAmount);
 					genAttemps = 0;
 				}
 			}
 		}
 
-		public static bool GenerateBoulderTrap(int x, int y)
+		public static bool GenerateBoulderTrap(int x, int y, bool floorTrap)
 		{
 			int plateY = y;
 
@@ -124,7 +127,7 @@ namespace GadgetBox
 				return false;
 
 			int trapY = y, trapX = WorldGen.genRand.Next(2), plateX = WorldGen.genRand.Next(2);
-			bool placePlate = true, floorTrap = WorldGen.genRand.NextBool();
+			bool placePlate = true;
 			byte wireColor = 4;
 
 			if (floorTrap)

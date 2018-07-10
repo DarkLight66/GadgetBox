@@ -16,6 +16,7 @@ ItemTooltip.LihzahrdWorkshop=Permite crear aparatos utilizando la antigua tecnol
 ItemName.ReflectorBlock=Bloque Reflector
 ItemTooltip.ReflectorBlock=Refleja la mayoría de los projectiles
 
+ItemName.ClockworkDigger=Cavador de precisíon
 ItemName.OldShovel=Pala vieja
 ItemTooltip.OldShovel=Útil para excavar tierra blanda
 ItemName.PlatedShovel=Pala Blindada
@@ -51,3 +52,5 @@ Misc.CriticalDamage=% de daño crítico
 Misc.MiningSpeed=% velocidad de minería
 Misc.ArmorPenetration=penetración de armadura
 Misc.JumpHeight=altura de salto
+Misc.CurrentlyGrants=Otorga actualmente:
+Misc.NoEffect=Ningun effecto

@@ -16,7 +16,7 @@ namespace GadgetBox.Items.Accessories
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.GetModPlayer<GadgetPlayer>().critterCatch = true;
+			player.Gadget().critterCatch = true;
 		}
 	}
 }

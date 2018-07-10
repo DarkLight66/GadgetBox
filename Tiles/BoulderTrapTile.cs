@@ -24,6 +24,7 @@ namespace GadgetBox.Tiles
 			TileObjectData.newTile.CoordinatePadding = 2;
 			TileObjectData.newTile.StyleHorizontal = true;
 			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+			TileObjectData.newAlternate.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidBottom, 2, 0);
 			TileObjectData.newAlternate.Origin = new Point16(1, 0);
 			TileObjectData.addAlternate(0);
 			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);

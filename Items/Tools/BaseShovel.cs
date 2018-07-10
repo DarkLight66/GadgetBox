@@ -11,16 +11,18 @@ namespace GadgetBox.Items.Tools
 {
 	public abstract class BaseShovel : ModItem
 	{
-		public int shovel = 0;
 		private const int UseStyleShovel = 250760; // Shovel Knight Treasure Trove steam AppID
+		public int Shovel { get; internal set; }
+        internal int Pick { get; set; }
+
 		public override bool CloneNewInstances => true;
 
 		public sealed override void SetDefaults()
 		{
 			SetShovelDefaults();
-			item.useStyle = UseStyleShovel; // Needed so the use style can actually be changed
+			if (item.useStyle == 0)
+				item.useStyle = UseStyleShovel; // Needed so the use style can actually be changed
 			item.melee = true;
-			item.pick = 0; // Shovels can't have pickaxe power
 		}
 
 		public virtual void SetShovelDefaults() { }
@@ -29,43 +31,63 @@ namespace GadgetBox.Items.Tools
 		{
 			if (player.noItems)
 				return false;
-			if (shovel > 0)
+			if (item.pick <= 0 && Shovel > 0)
 				player.toolTime = 1;
 			return true;
 		}
 
+		public override void UpdateInventory(Player player)
+		{
+			if (Pick > 0)
+			{
+				item.pick = Pick;
+				Pick = 0;
+				if (player.HeldItem == item && player.selectedItem == 58)
+					Main.mouseItem = item.Clone();
+			}
+		}
+
 		public override void HoldItem(Player player)
 		{
-			if (player.noBuilding || player.whoAmI != Main.myPlayer || shovel <= 0)
+			if (player.noBuilding || player.whoAmI != Main.myPlayer || Shovel <= 0)
 				return;
-			bool withinReach = player.position.X / 16f - Player.tileRangeX - item.tileBoost <= Player.tileTargetX && (player.position.X + player.width) / 16f + Player.tileRangeX + item.tileBoost - 1f >= Player.tileTargetX && player.position.Y / 16f - Player.tileRangeY - item.tileBoost <= Player.tileTargetY && (player.position.Y + player.height) / 16f + Player.tileRangeY + item.tileBoost - 2f >= Player.tileTargetY;
-			if (!withinReach)
+			if (player.position.X / 16f - Player.tileRangeX - item.tileBoost > Player.tileTargetX || (player.position.X + player.width) / 16f + Player.tileRangeX + item.tileBoost - 1f < Player.tileTargetX || player.position.Y / 16f - Player.tileRangeY - item.tileBoost > Player.tileTargetY || (player.position.Y + player.height) / 16f + Player.tileRangeY + item.tileBoost - 2f < Player.tileTargetY)
 				return;
+			if (item.pick > 0)
+			{
+				Pick = item.pick;
+				item.pick = 0;
+				if (player.selectedItem == 58)
+					Main.mouseItem = item.Clone();
+			}
 			if (!Main.GamepadDisableCursorItemIcon)
 			{
 				player.showItemIcon = true;
 				Main.ItemIconCacheUpdate(item.type);
 			}
 			Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
-			if (tile.active() && !Main.tileAxe[tile.type] && !Main.tileHammer[tile.type])
+			if (tile.active() && !Main.tileAxe[tile.type] && !Main.tileHammer[tile.type] &&
+				player.toolTime == 0 && player.itemAnimation > 0 && player.controlUseItem)
 			{
-				if (player.toolTime == 0 && player.itemAnimation > 0 && player.controlUseItem)
-				{
-					PickTile(player, Player.tileTargetX, Player.tileTargetY, shovel);
-					player.itemTime = (int)(item.useTime * player.pickSpeed / PlayerHooks.TotalUseTimeMultiplier(player, item));
-				}
+				PickTile(player, Player.tileTargetX, Player.tileTargetY);
+				player.itemTime = (int)(item.useTime * player.pickSpeed / PlayerHooks.TotalUseTimeMultiplier(player, item));
 			}
 		}
 
 		// Adapted from the vanilla Player class method
-		public void PickTile(Player player, int x, int y, int shovelPower)
+		public void PickTile(Player player, int x, int y)
 		{
 			int tileId = player.hitTile.HitObject(x, y, 1);
 			Tile tile = Main.tile[x, y];
-			int actualPower = ShovelMethods.DigPower(tile.type, shovelPower);
-			if (actualPower == 0)
+			int actualPower = ShovelMethods.DigPower(tile.type, Shovel);
+			if (actualPower < 100 && Pick >= Shovel)
 			{
-				player.PickTile(x, y, Math.Max(shovelPower / 8, 1));
+				player.PickTile(x, y, Pick);
+				return;
+			}
+			else if (actualPower == 0)
+			{
+				player.PickTile(x, y, Math.Max(Shovel / 8, 1));
 				return;
 			}
 			if (!WorldGen.CanKillTile(x, y))
@@ -90,6 +112,8 @@ namespace GadgetBox.Items.Tools
 
 		public override bool UseItemFrame(Player player)
 		{
+			if (item.useStyle != UseStyleShovel)
+				return false;
 			if (player.itemAnimation < player.itemAnimationMax * 0.222f)
 				player.bodyFrame.Y = player.bodyFrame.Height;
 			else if (player.itemAnimation < player.itemAnimationMax * 0.555f)
@@ -103,6 +127,8 @@ namespace GadgetBox.Items.Tools
 
 		public override void UseItemHitbox(Player player, ref Rectangle hitbox, ref bool noHitbox)
 		{
+			if (item.useStyle != UseStyleShovel)
+				return;
 			if (player.itemAnimation < player.itemAnimationMax * 0.222f)
 			{
 				hitbox.X -= (int)(hitbox.Width * (player.direction == 1 ? 0.8f : -0.7f));
@@ -133,9 +159,11 @@ namespace GadgetBox.Items.Tools
 			}
 		}
 
-		//Copied from the vanilla brodasword usestyle (1) with a few modification to make it work in reverse.
+		//Copied from the vanilla broadsword usestyle (1) with a few modification to make it work in reverse.
 		public override void UseStyle(Player player)
 		{
+			if (item.useStyle != UseStyleShovel)
+				return;
 			int mountOffset = player.mount.PlayerOffsetHitbox;
 			int width = Main.itemTexture[item.type].Width;
 			int height = Main.itemTexture[item.type].Height;
@@ -202,11 +230,11 @@ namespace GadgetBox.Items.Tools
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			if (shovel <= 0)
+			if (Shovel <= 0)
 				return;
-			int ttindex = tooltips.FindLastIndex(t => t.mod == "Terraria" && (t.Name == "Knockback" || t.Name == "Speed"));
+			int ttindex = tooltips.FindLastIndex(t => t.mod == "Terraria" && (t.Name.EndsWith("Power") || t.Name == "Knockback" || t.Name == "Speed"));
 			if (ttindex != -1)
-				tooltips.Insert(ttindex + 1, new TooltipLine(mod, "ShovelPower", shovel + mod.GetTextValue("Misc.ShovelPower")));
+				tooltips.Insert(ttindex + 1, new TooltipLine(mod, "ShovelPower", Shovel + mod.GetTextValue("Misc.ShovelPower")));
 		}
 	}
 
@@ -214,14 +242,41 @@ namespace GadgetBox.Items.Tools
 	{
 		// Reset effects happens almost right after the vanilla SmarCursorLookup
 		public override void ResetEffects() => ShovelMethods.SmartCursorLookup(player);
+
+		public override void PostItemCheck()
+		{
+			if (player.whoAmI != Main.myPlayer || player.HeldItem.modItem == null)
+				return;
+			BaseShovel shovel = player.HeldItem.modItem as BaseShovel;
+			if (shovel == null || shovel.Pick == 0)
+				return;
+			player.HeldItem.pick = shovel.Pick;
+			shovel.Pick = 0;
+			if (player.selectedItem == 58)
+				Main.mouseItem = player.HeldItem.Clone();
+		}
+
+		public override void FrameEffects()
+		{
+			if (player.whoAmI != Main.myPlayer || Main.mouseItem.IsAir || Main.mouseItem.modItem == null)
+				return;
+			BaseShovel shovel = Main.mouseItem.modItem as BaseShovel;
+			if (shovel == null || shovel.Pick == 0)
+				return;
+			Main.mouseItem.pick = shovel.Pick;
+			shovel.Pick = 0;
+			player.inventory[player.selectedItem] = Main.mouseItem.Clone();
+		}
 	}
 
 	public class AShovelSmartSelect : GlobalTile
 	{
 		public override bool AutoSelect(int i, int j, int type, Item item)
 		{
+			if (Main.SmartCursorEnabled && Main.SmartCursorShowing)
+				type = Main.tile[Player.tileTargetX, Player.tileTargetY].type;
 			BaseShovel myShovel = item.modItem as BaseShovel;
-			return myShovel != null && ShovelMethods.DigPower((ushort)type, myShovel.shovel) >= 100;
+			return myShovel != null && ShovelMethods.DigPower((ushort)type, myShovel.Shovel) >= 100;
 		}
 	}
 
@@ -251,7 +306,7 @@ namespace GadgetBox.Items.Tools
 				actualPower = shovelPower;
 			else if (type == TileID.Stone)
 				actualPower = shovelPower / 2;
-			if (TileID.Sets.Conversion.Stone[type] || TileID.Sets.Conversion.Ice[type] || TileID.Sets.Conversion.Moss[type])
+			else if (TileID.Sets.Conversion.Stone[type] || TileID.Sets.Conversion.Ice[type] || TileID.Sets.Conversion.Moss[type])
 				actualPower = shovelPower / 3;
 			return actualPower;
 		}
@@ -259,12 +314,15 @@ namespace GadgetBox.Items.Tools
 		// Adapted from the vanilla Player class method
 		public static void SmartCursorLookup(Player player)
 		{
-			if (player.whoAmI != Main.myPlayer || !Main.SmartCursorEnabled || (Main.SmartCursorShowing && !Player.SmartCursorSettings.SmartAxeAfterPickaxe) || Main.SmartInteractShowingGenuine)
+			if (player.whoAmI != Main.myPlayer || !Main.SmartCursorEnabled || Main.SmartInteractShowingGenuine)
 				return;
 			try
 			{
 				Item item = player.inventory[player.selectedItem];
-				if (!(item.modItem is BaseShovel) || ((BaseShovel)item.modItem).shovel <= 0)
+				if (Main.SmartCursorShowing && item.pick > 0)
+					return;
+				int shovel = (item.modItem as BaseShovel)?.Shovel ?? 0;
+				if (shovel <= 0)
 					return;
 				Vector2 MousePoss = Main.ReverseGravitySupport(Main.MouseScreen) + Main.screenPosition;
 				int x = Utils.Clamp((int)(MousePoss.X / 16), 10, Main.maxTilesX - 10);
@@ -273,7 +331,7 @@ namespace GadgetBox.Items.Tools
 					return;
 				bool DisableSmart = false;
 				if (Main.tile[x, y].active())
-					DisableSmart = CanDigTile(Main.tile[x, y].type);
+					DisableSmart = CanDigTile(Main.tile[x, y].type, shovel);
 				TileLoader.DisableSmartCursor(Main.tile[x, y], ref DisableSmart);
 				int tileBoost = item.tileBoost;
 				int minX = (int)(player.position.X / 16) - Player.tileRangeX - tileBoost + 1;
@@ -394,7 +452,7 @@ namespace GadgetBox.Items.Tools
 				}
 				List<Tuple<int, int>> tilesToRemove = new List<Tuple<int, int>>();
 				for (int i = 0; i < validTiles.Count; i++)
-					if (DigPower(Main.tile[validTiles[i].Item1, validTiles[i].Item2].type) < 100 || !WorldGen.CanKillTile(validTiles[i].Item1, validTiles[i].Item2))
+					if (DigPower(Main.tile[validTiles[i].Item1, validTiles[i].Item2].type, shovel) < 100 || !WorldGen.CanKillTile(validTiles[i].Item1, validTiles[i].Item2))
 						tilesToRemove.Add(validTiles[i]);
 				for (int i = 0; i < tilesToRemove.Count; i++)
 					validTiles.Remove(tilesToRemove[i]);

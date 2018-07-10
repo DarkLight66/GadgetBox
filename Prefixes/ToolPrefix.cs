@@ -47,7 +47,7 @@ namespace GadgetBox.Prefixes
 
 		public override void ModifyValue(ref float valueMult) => valueMult *= 1 + tileBoost * 0.04f;
 
-		public override bool CanRoll(Item item) => item.pick + item.axe + item.hammer + ((item.modItem as BaseShovel)?.shovel ?? 0) > 0 && item.tileBoost + tileBoost > -3 && (!item.noUseGraphic || useTimeMult == 1f);
+		public override bool CanRoll(Item item) => item.pick + item.axe + item.hammer + ((item.modItem as BaseShovel)?.Shovel ?? 0) > 0 && item.tileBoost + tileBoost > -3 && (!item.noUseGraphic || useTimeMult == 1f);
 
 		public override float RollChance(Item item) => item.noUseGraphic ? 1.15f : 3.3f; // 33.33% chance of getting a tool prefix, assuming all of them can be applied and no other modded prefixes were added. May check for other mods prefixes in the future.
 

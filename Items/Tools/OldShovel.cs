@@ -18,7 +18,7 @@ namespace GadgetBox.Items.Tools
 			item.autoReuse = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item1;
-			shovel = 50;
+			Shovel = 50;
 		}
 	}
 }

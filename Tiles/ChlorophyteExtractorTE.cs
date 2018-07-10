@@ -184,7 +184,7 @@ namespace GadgetBox.Tiles
 						}
 						else if (ID != ChlorophyteExtractorUI.ExtractorTE.ID && owner == Main.myPlayer)
 						{
-							Main.LocalPlayer.GetModPlayer<GadgetPlayer>().machinePos = Position;
+							Main.LocalPlayer.Gadget().machinePos = Position;
 							OpenUI(true);
 						}
 						CurrentPlayer = owner;

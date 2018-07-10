@@ -59,7 +59,7 @@ namespace GadgetBox.Tiles
 			if (extractorTE == null)
 				return;
 			Player player = Main.LocalPlayer;
-			GadgetPlayer gadgetPlayer = player.GetModPlayer<GadgetPlayer>();
+			GadgetPlayer gadgetPlayer = player.Gadget();
 
 			player.CloseVanillaUIs();
 			if (ReforgeMachineUI.visible)

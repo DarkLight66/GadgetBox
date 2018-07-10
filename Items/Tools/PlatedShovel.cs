@@ -21,14 +21,14 @@ namespace GadgetBox.Items.Tools
 			item.autoReuse = true;
 			item.useTurn = true;
 			item.UseSound = SoundID.Item1;
-			shovel = 75;
+			Shovel = 75;
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
 			recipe.AddIngredient(mod.ItemType<OldShovel>());
-			recipe.AddRecipeGroup(GadgetBox.AnyGoldBar, 10);
+			recipe.AddRecipeGroup(GadgetRecipes.AnyGoldBar, 10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

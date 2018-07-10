@@ -19,18 +19,15 @@ namespace GadgetBox.GadgetUI
 		internal UIFancyButton reforgeButton;
 		internal UIPanel reforgeListPanel;
 		internal UIList reforgeList;
-		internal Mod mod;
 
 		List<byte> selectedPrefixes = new List<byte>();
 		int reforgePrice;
-		bool autoReforge;
 		int reforgeTries;
+		bool autoReforge;
 		byte tickCounter;
 
 		public override void OnInitialize()
 		{
-			mod = GadgetBox.Instance;
-
 			reforgePanel = new UIReforgePanel(() => reforgeSlot.item, () => reforgePrice);
 			reforgePanel.SetPadding(4);
 			reforgePanel.Top.Pixels = Main.instance.invBottom + 60;
@@ -171,9 +168,11 @@ namespace GadgetBox.GadgetUI
 		void OnItemChanged()
 		{
 			reforgeList.Clear();
-			if (reforgeSlot.item.IsAir || !ItemLoader.PreReforge(reforgeSlot.item))
+			if (reforgeSlot.item.IsAir)
 				return;
-			Item controlItem = new Item();
+			Item controlItem = reforgeSlot.item.Clone();
+			if (!ItemLoader.PreReforge(controlItem))
+				return;
 			UIReforgeLabel reforgeLabel;
 			List<byte> tempSelected = new List<byte>();
 			bool isArmor = false;
