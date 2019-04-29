@@ -22,7 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>6</LangVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -78,11 +78,14 @@
     <Compile Include="GadgetUI\UIReforgePanel.cs" />
     <Compile Include="GadgetWorld.cs" />
     <Compile Include="GadgetRecipe.cs" />
+    <Compile Include="Items\Accessories\CrystalLens.cs" />
     <Compile Include="Items\Accessories\CritterNetAttachment.cs" />
     <Compile Include="Items\Placeable\BoulderTrap.cs" />
+    <Compile Include="Items\Placeable\CrystalClearBlockWall.cs" />
     <Compile Include="Items\Placeable\LihzahrdWorkshop.cs" />
     <Compile Include="Items\Placeable\AutoReforgeMachine.cs" />
     <Compile Include="Items\Placeable\ChlorophyteExtractor.cs" />
+    <Compile Include="Items\Placeable\CrystalClearBlock.cs" />
     <Compile Include="Items\Placeable\ReflectorBlock.cs" />
     <Compile Include="Items\Consumables\EnchantedPolish.cs" />
     <Compile Include="Items\Accessories\EtherealVortex.cs" />
@@ -90,6 +93,7 @@
     <Compile Include="Items\Consumables\ReforgingKit.cs" />
     <Compile Include="Items\MasterKey.cs" />
     <Compile Include="Items\Consumables\LesserReforgingKit.cs" />
+    <Compile Include="Items\Tools\AutoReelingRod.cs" />
     <Compile Include="Items\Tools\BaseShovel.cs" />
     <Compile Include="Items\Tools\ClockworkDigger.cs" />
     <Compile Include="Items\Tools\PlatedShovel.cs" />
@@ -97,6 +101,7 @@
     <Compile Include="ModCompat.cs" />
     <Compile Include="Prefixes\GadgetItemPrefix.cs" />
     <Compile Include="Prefixes\ToolPrefix.cs" />
+    <Compile Include="Projectiles\AutoBobber.cs" />
     <Compile Include="Projectiles\ClockworkDiggerProj.cs" />
     <Compile Include="Projectiles\TempleBoulder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -105,7 +110,9 @@
     <Compile Include="Tiles\AutoReforgeMachineTile.cs" />
     <Compile Include="Tiles\ChlorophyteExtractorTE.cs" />
     <Compile Include="Tiles\ChlorophyteExtractorTile.cs" />
+    <Compile Include="Tiles\CrystalClearBlockTile.cs" />
     <Compile Include="Tiles\ReflectorBlockTile.cs" />
+    <Compile Include="Walls\CrystalClearBlockWallWall.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Buffs\ShinyEquipment.png" />
@@ -118,20 +125,25 @@
     <Content Include="GadgetUI\PowerButton_ON.png" />
     <Content Include="GadgetUI\PowerSlot_Closed.png" />
     <Content Include="GadgetUI\PowerSlot_Open.png" />
+    <Content Include="Items\Accessories\CrystalLens.png" />
     <Content Include="Items\Accessories\CritterNetAttachment.png" />
     <Content Include="Items\Placeable\BoulderTrap.png" />
+    <Content Include="Items\Placeable\CrystalClearBlockWall.png" />
     <Content Include="Items\Placeable\LihzahrdWorkshop.png" />
     <Content Include="Items\Placeable\AutoReforgeMachine.png" />
     <Content Include="Items\Placeable\ChlorophyteExtractor.png" />
+    <Content Include="Items\Placeable\CrystalClearBlock.png" />
     <Content Include="Items\Placeable\ReflectorBlock.png" />
     <Content Include="Items\Consumables\EnchantedPolish.png" />
     <Content Include="Items\Accessories\EtherealVortex.png" />
     <Content Include="Items\MasterKey.png" />
     <Content Include="Items\Consumables\LesserReforgingKit.png" />
     <Content Include="Items\Consumables\ReforgingKit.png" />
+    <Content Include="Items\Tools\AutoReelingRod.png" />
     <Content Include="Items\Tools\ClockworkDigger.png" />
     <Content Include="Items\Tools\PlatedShovel.png" />
     <Content Include="Items\Tools\OldShovel.png" />
+    <Content Include="Projectiles\AutoBobber.png" />
     <Content Include="Projectiles\ClockworkDiggerProj.png" />
     <Content Include="Projectiles\TempleBoulder.png" />
     <Content Include="Tiles\BoulderTrapTile.png" />
@@ -140,7 +152,9 @@
     <Content Include="Tiles\AutoReforgeMachineTile_Highlight.png" />
     <Content Include="Tiles\ChlorophyteExtractorTile.png" />
     <Content Include="Tiles\ChlorophyteExtractorTile_Highlight.png" />
+    <Content Include="Tiles\CrystalClearBlockTile.png" />
     <Content Include="Tiles\ReflectorBlockTile.png" />
+    <Content Include="Walls\CrystalClearBlockWallWall.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Localization\es-ES.lang" />

@@ -4,6 +4,9 @@ Adds Shovels, a new tool type that can dig soft soils very quickly, notably they
 Adds Tool Prefixes, these have a 33% chance of being applied to any pickaxe, axe, hammer or shovel.
 
 Changelog:
+0.1.1.0 : New Placeables and Other Stuff:
+- Updated to TModLoader 0.11
+- Added Auto Reeling Rod, Crystal Lens, Crystal Clear Blocks and Walls.
 0.1.0.2 : Small Fixes and Additions:
 - Updated to TModLoader 0.10.1.4
 - Added Clockwork Digger.

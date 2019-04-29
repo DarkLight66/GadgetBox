@@ -11,7 +11,10 @@ namespace GadgetBox
 		{
 			Tile tile = Main.tile[i, j];
 			if (!TileID.Sets.BasicChest[tile.type] && tile.type != TileID.ClosedDoor)
+			{
 				return;
+			}
+
 			Player player = Main.LocalPlayer;
 			int masterKey = mod.ItemType<MasterKey>();
 			bool mayUnlock = false;
@@ -19,16 +22,26 @@ namespace GadgetBox
 			{
 				int left = i, top = j;
 				if (tile.frameX % 36 != 0)
+				{
 					left--;
+				}
 				if (tile.frameY != 0)
+				{
 					top--;
+				}
 				if (Chest.isLocked(left, top))
+				{
 					mayUnlock = true;
+				}
 			}
 			else if (WorldGen.IsLockedDoor(i, j))
+			{
 				mayUnlock = true;
+			}
 			if (mayUnlock && (player.showItemIcon2 < 0 || !player.HasItem(player.showItemIcon2)) && player.HasItem(masterKey))
+			{
 				player.showItemIcon2 = masterKey;
+			}
 		}
 
 		public override void RightClick(int i, int j, int type)
@@ -40,17 +53,25 @@ namespace GadgetBox
 			{
 				int left = i, top = j;
 				if (tile.frameX % 36 != 0)
+				{
 					left--;
+				}
 				if (tile.frameY != 0)
+				{
 					top--;
+				}
 				if (Chest.isLocked(left, top) && player.HasItem(masterKey) && Chest.Unlock(left, top) && Main.netMode == NetmodeID.MultiplayerClient)
+				{
 					NetMessage.SendData(MessageID.Unlock, -1, -1, null, player.whoAmI, 1f, left, top);
+				}
 			}
 			else if (tile.type == TileID.ClosedDoor && WorldGen.IsLockedDoor(i, j) && player.HasItem(masterKey))
 			{
 				WorldGen.UnlockDoor(i, j);
 				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
 					NetMessage.SendData(MessageID.Unlock, -1, -1, null, player.whoAmI, 2f, i, j);
+				}
 			}
 		}
 	}

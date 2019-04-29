@@ -26,7 +26,9 @@ namespace GadgetBox.GadgetUI
 		public override void MouseDown(UIMouseEvent evt)
 		{
 			if (_canClick())
+			{
 				base.MouseDown(evt);
+			}
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -36,7 +38,9 @@ namespace GadgetBox.GadgetUI
 			Vector2 drawOrigin = _itemTexture.Size() * .5f;
 			spriteBatch.Draw(_slotTexture, dimensions.ToRectangle(), null, Color.White);
 			if (_hasItem())
+			{
 				spriteBatch.Draw(_itemTexture, dimensions.Center() - _itemTexture.Size() * .5f, null, Color.White);
+			}
 		}
 	}
 }

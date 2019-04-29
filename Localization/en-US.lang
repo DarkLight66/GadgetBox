@@ -7,8 +7,10 @@ ItemTooltip.EtherealVortex=Increases pickup range for floating items
 ItemTooltip.AutoReforgeMachine=Allows auto reforging items
 ItemTooltip.ChlorophyteExtractor=Automatically extracts Chlorophyte from a small area bellow itself\nRequires power from a Lihzahrd Power Cell and Mud Blocks to function
 ItemTooltip.LihzahrdWorkshop=Allows creating gadgets using ancient lihzahrd technology
+ItemTooltip.MemorialBanner=Reminds you of the foes that you have defeated
 ItemTooltip.ReflectorBlock=Reflects most projectiles
 
+ItemTooltip.AutoReelingRod=Automatically reels in anything caught by the hook\nAutomatically releases a new hook after auto-reeling in\nIncreased bait consumption and line breaking chances
 ItemTooltip.OldShovel=Good for digging soft land
 ItemTooltip.PlatedShovel=Cuts through land like butter
 
@@ -17,9 +19,10 @@ ItemTooltip.LesserReforgingKit=Grants a random prefix to an item\nOnly works on 
 ItemTooltip.MasterKey=Opens any lock
 ItemTooltip.ReforgingKit=Grants a random prefix to an item\nTake it and <right> over another item to use
 
-MapObject.AutoReforgeMachineTile=Auto Reforge Machine
-MapObject.ChlorophyteExtractorTile=Chlorophyte Extractor
-MapObject.LihzahrdWorkshopTile=Lihzahrd Workshop
+MapObject.AutoReforgeMachineTile={$Mods.GadgetBox.ItemName.AutoReforgeMachine}
+MapObject.ChlorophyteExtractorTile={$Mods.GadgetBox.ItemName.ChlorophyteExtractor}
+MapObject.LihzahrdWorkshopTile={$Mods.GadgetBox.ItemName.LihzahrdWorkshop}
+MapObject.MemorialBannerTile={$Mods.GadgetBox.ItemName.MemorialBanner}
 
 ProjectileName.ClockworkDiggerProj={$Mods.GadgetBox.ItemName.ClockworkDigger}
 

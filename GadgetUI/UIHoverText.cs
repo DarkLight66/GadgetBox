@@ -16,7 +16,9 @@ namespace GadgetBox.GadgetUI
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			if (!string.IsNullOrEmpty(HoverText) && IsMouseHovering)
+			{
 				Main.hoverItemName = HoverText;
+			}
 		}
 	}
 }

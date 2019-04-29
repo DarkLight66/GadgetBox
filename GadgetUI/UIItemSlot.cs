@@ -34,7 +34,10 @@ namespace GadgetBox.GadgetUI
 				{
 					Utils.Swap(ref item, ref Main.mouseItem);
 					if (item.type == 0 || item.stack < 1)
+					{
 						item = new Item();
+					}
+
 					if (Main.mouseItem.IsTheSameAs(item))
 					{
 						Utils.Swap(ref item.favorited, ref Main.mouseItem.favorited);
@@ -54,7 +57,10 @@ namespace GadgetBox.GadgetUI
 						}
 					}
 					if (Main.mouseItem.type == 0 || Main.mouseItem.stack < 1)
+					{
 						Main.mouseItem = new Item();
+					}
+
 					if (Main.mouseItem.type > 0 || item.type > 0)
 					{
 						Recipe.FindRecipes();
@@ -74,9 +80,14 @@ namespace GadgetBox.GadgetUI
 				Texture2D itemTexture = Main.itemTexture[item.type];
 				Rectangle textureFrame;
 				if (Main.itemAnimations[item.type] != null)
+				{
 					textureFrame = Main.itemAnimations[item.type].GetFrame(itemTexture);
+				}
 				else
+				{
 					textureFrame = itemTexture.Frame(1, 1, 0, 0);
+				}
+
 				Color newColor = Color.White;
 				float pulseScale = 1f;
 				ItemSlot.GetItemLight(ref newColor, ref pulseScale, item, false);
@@ -87,9 +98,13 @@ namespace GadgetBox.GadgetUI
 				if (width > availableWidth || height > availableWidth)
 				{
 					if (width > height)
+					{
 						drawScale = availableWidth / width;
+					}
 					else
+					{
 						drawScale = availableWidth / height;
+					}
 				}
 				drawScale *= scale;
 				Vector2 size = backgroundTexture.Size() * scale;
@@ -107,9 +122,15 @@ namespace GadgetBox.GadgetUI
 				ItemLoader.PostDrawInInventory(item, spriteBatch, itemPosition, textureFrame, item.GetAlpha(newColor),
 					item.GetColor(Color.White), itemOrigin, drawScale * pulseScale);
 				if (ItemID.Sets.TrapSigned[item.type])
+				{
 					spriteBatch.Draw(Main.wireTexture, position + new Vector2(40f) * scale, new Rectangle(4, 58, 8, 8), Color.White, 0f, new Vector2(4f), 1f, SpriteEffects.None, 0f);
+				}
+
 				if (item.stack > 1)
+				{
 					ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Main.fontItemStack, item.stack.ToString(), position + new Vector2(10f, 26f) * scale, Color.White, 0f, Vector2.Zero, new Vector2(scale), -1f, scale);
+				}
+
 				if (IsMouseHovering)
 				{
 					Main.HoverItem = item.Clone();

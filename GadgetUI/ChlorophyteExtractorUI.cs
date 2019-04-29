@@ -76,7 +76,10 @@ namespace GadgetBox.GadgetUI
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			if (extractorPanel.ContainsPoint(Main.MouseScreen))
+			{
 				Main.LocalPlayer.mouseInterface = true;
+			}
+
 			float progress = (float)ExtractorTE.Power / ChlorophyteExtractorTE.MaxResources;
 			powerBar.SetPercentage(progress, oldExtractorID == ExtractorTE.ID);
 			oldExtractorID = ExtractorTE.ID;

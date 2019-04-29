@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GadgetBox.Tiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -13,7 +14,6 @@ namespace GadgetBox.GadgetUI
 {
 	internal class ReforgeMachineUI : UIState
 	{
-		internal static bool visible = false;
 		internal UIPanel reforgePanel;
 		internal UIItemSlot reforgeSlot;
 		internal UIFancyButton reforgeButton;
@@ -28,6 +28,9 @@ namespace GadgetBox.GadgetUI
 
 		public override void OnInitialize()
 		{
+			Main.recBigList = false;
+			Main.playerInventory = true;
+
 			reforgePanel = new UIReforgePanel(() => reforgeSlot.item, () => reforgePrice);
 			reforgePanel.SetPadding(4);
 			reforgePanel.Top.Pixels = Main.instance.invBottom + 60;
@@ -74,8 +77,45 @@ namespace GadgetBox.GadgetUI
 			Append(reforgePanel);
 		}
 
+		public override void OnDeactivate()
+		{
+			if (!reforgeSlot.item.IsAir)
+			{
+				Main.LocalPlayer.QuickSpawnClonedItem(reforgeSlot.item, reforgeSlot.item.stack);
+				reforgeSlot.item.TurnToAir();
+			}
+			Main.LocalPlayer.Gadget().machinePos = Point16.NegativeOne;
+		}
+
 		public override void Update(GameTime gameTime)
 		{
+			base.Update(gameTime);
+
+			Player player = Main.LocalPlayer;
+			Point16 machinePos = player.Gadget().machinePos;
+			bool closeUI = false, silent = false;
+			if (player.chest != -1 || Main.npcShop != 0 || player.talkNPC != -1 || player.sign >= 0)
+			{
+				closeUI = true;
+				silent = true;
+			}
+			else if (!Main.playerInventory || Framing.GetTileSafely(machinePos).type != GadgetBox.Instance.TileType<AutoReforgeMachineTile>() ||
+				player.OutTileBounds(machinePos, Player.tileRangeX + 1, Player.tileRangeY + 1, Player.tileRangeX + 2, Player.tileRangeY + 1))
+			{
+				closeUI = true;
+			}
+
+			if (closeUI)
+			{
+				if (!silent)
+				{
+					Main.PlaySound(SoundID.MenuClose);
+				}
+
+				GadgetBox.Instance.reforgeMachineInterface.SetState(null);
+				return;
+			}
+
 			reforgePrice = reforgeSlot.item.ReforgePrice();
 			if (autoReforge)
 			{
@@ -95,48 +135,6 @@ namespace GadgetBox.GadgetUI
 					}
 				}
 			}
-			base.Update(gameTime);
-		}
-
-		internal void ToggleUI(bool showUI, Point16 centerPos, bool silent = false)
-		{
-			Player player = Main.LocalPlayer;
-			GadgetPlayer gadgetPlayer = player.Gadget();
-			bool switching = visible && centerPos != Point16.NegativeOne && centerPos != gadgetPlayer.machinePos;
-			if (visible)
-			{
-				if (reforgeSlot.item?.type > 0)
-				{
-					reforgeSlot.item.position = player.Center;
-					Item item = player.GetItem(player.whoAmI, reforgeSlot.item, false, true);
-					if (item.stack > 0)
-					{
-						int index = Item.NewItem(player.getRect(), item.type, item.stack, false, reforgeSlot.item.prefix, true, false);
-						Main.item[index] = item.Clone();
-						Main.item[index].newAndShiny = false;
-						if (Main.netMode == NetmodeID.MultiplayerClient)
-							NetMessage.SendData(MessageID.SyncItem, -1, -1, null, index, 1f);
-					}
-					reforgeSlot.item = new Item();
-					reforgePrice = 0;
-					selectedPrefixes.Clear();
-					OnItemChanged();
-				}
-				if (!silent)
-					Main.PlaySound(switching ? SoundID.MenuTick : SoundID.MenuClose);
-			}
-			else if (showUI)
-			{
-				Main.playerInventory = true;
-				Main.recBigList = false;
-				if (!silent)
-					Main.PlaySound(SoundID.MenuOpen);
-			}
-
-			if (!switching)
-				visible = showUI;
-			if (visible)
-				gadgetPlayer.machinePos = centerPos;
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -158,9 +156,13 @@ namespace GadgetBox.GadgetUI
 				reforgeTries = tickCounter = 0;
 			}
 			else if (selectedPrefixes.Count > 0)
+			{
 				autoReforge = true;
+			}
 			else
+			{
 				ReforgeItem();
+			}
 		}
 
 		bool CanReforgeItem() => !reforgeSlot.item.IsAir && Main.LocalPlayer.CanBuyItem(reforgePrice, -1) && ItemLoader.PreReforge(reforgeSlot.item);
@@ -169,10 +171,16 @@ namespace GadgetBox.GadgetUI
 		{
 			reforgeList.Clear();
 			if (reforgeSlot.item.IsAir)
+			{
 				return;
+			}
+
 			Item controlItem = reforgeSlot.item.Clone();
 			if (!ItemLoader.PreReforge(controlItem))
+			{
 				return;
+			}
+
 			UIReforgeLabel reforgeLabel;
 			List<byte> tempSelected = new List<byte>();
 			bool isArmor = false;
@@ -181,14 +189,26 @@ namespace GadgetBox.GadgetUI
 				controlItem.SetDefaults(reforgeSlot.item.type, true);
 				isArmor = ModCompat.ArmorPrefix(controlItem);
 				if (isArmor && !controlItem.accessory)
+				{
 					controlItem.accessory = true;
+				}
+
 				if (!controlItem.CanApplyPrefix(i))
+				{
 					continue;
+				}
+
 				controlItem.Prefix(i);
 				if (isArmor)
+				{
 					ModCompat.ApplyArmorPrefix(controlItem, i);
+				}
+
 				if (controlItem.prefix != i)
+				{
 					continue;
+				}
+
 				reforgeLabel = new UIReforgeLabel(i, controlItem.expert ? -12 : controlItem.rare, controlItem.value);
 				reforgeLabel.OnMouseDown += ChoseReforge;
 				reforgeLabel.SetPadding(10);
@@ -207,7 +227,10 @@ namespace GadgetBox.GadgetUI
 			UIReforgeLabel element = ((UIReforgeLabel)listeningElement);
 			element.selected = !element.selected;
 			if (!selectedPrefixes.Remove(element.prefix))
+			{
 				selectedPrefixes.Add(element.prefix);
+			}
+
 			reforgeList.UpdateOrder();
 			Main.PlaySound(SoundID.MenuTick);
 		}

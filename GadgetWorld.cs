@@ -15,75 +15,100 @@ namespace GadgetBox
 			int genIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Final Cleanup"));
 			if (genIndex != -1)
 			{
-				tasks.Insert(genIndex, new PassLegacy("Adding More Loot", delegate (GenerationProgress progress)
-				{
-					progress.Message = "Adding More Loot";
-					progress.CurrentPassWeight = 1.0f;
-
-					foreach (var chest in Main.chest)
-					{
-						if (chest == null)
-							continue;
-						Tile tile = Main.tile[chest.x, chest.y];
-						if (!TileID.Sets.BasicChest[tile.type] || tile.type > TileID.Count || chest.item == null)
-							continue;
-						int chestType = tile.frameX / 36;
-						int chance = 5;
-
-						switch (chestType)
-						{
-							case 0:
-							case 17:
-								chance = 9;
-								break;
-							case 2:
-							case 8:
-							case 10:
-								chance = 4;
-								break;
-							case 4:
-							case 13:
-							case 15:
-								chance = 3;
-								break;
-						}
-
-						if (!WorldGen.genRand.NextBool(chance))
-							continue;
-
-						int itemid = mod.ItemType<LesserReforgingKit>();
-						if (chestType == 5 || chestType == 16 || chestType >= 23 && chestType <= 27 || chestType == 2 && WorldGen.genRand.NextBool(3) || WorldGen.genRand.NextBool(7))
-							itemid = mod.ItemType<ReforgingKit>();
-
-						for (int i = 0; i < chest.item.Length; i++)
-						{
-							if (chest.item[i] == null)
-								chest.item[i] = new Item();
-							if (chest.item[i].type != 0 && chest.item[i].stack > 0)
-								continue;
-							if (i < 2)
-								break;
-							chest.item[i].SetDefaults(itemid);
-							chest.item[i].stack = WorldGen.genRand.Next(1, 5);
-							break;
-						}
-					}
-				}));
+				tasks.Insert(genIndex, new PassLegacy("Adding More Loot", GenerateMoreLoot));
 			}
 
 			genIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Lihzahrd Altars"));
 			if (genIndex != -1)
+			{
 				tasks.Insert(genIndex + 1, new PassLegacy("Boulder Traps", GenerateTrap));
+			}
 		}
 
-		public static void GenerateTrap(GenerationProgress progress)
+		public void GenerateMoreLoot(GenerationProgress progress)
+		{
+			progress.Message = "Adding More Loot";
+			progress.CurrentPassWeight = 1.0f;
+
+			foreach (var chest in Main.chest)
+			{
+				if (chest == null)
+				{
+					continue;
+				}
+
+				Tile tile = Main.tile[chest.x, chest.y];
+				if (!TileID.Sets.BasicChest[tile.type] || tile.type > TileID.Count || chest.item == null)
+				{
+					continue;
+				}
+
+				int chestType = tile.frameX / 36;
+				int chance = 5;
+
+				switch (chestType)
+				{
+					case 0:
+					case 17:
+						chance = 9;
+						break;
+
+					case 2:
+					case 8:
+					case 10:
+						chance = 4;
+						break;
+
+					case 4:
+					case 13:
+					case 15:
+						chance = 3;
+						break;
+				}
+
+				if (!WorldGen.genRand.NextBool(chance))
+				{
+					continue;
+				}
+
+				int itemid = mod.ItemType<LesserReforgingKit>();
+				if (chestType == 5 || chestType == 16 || chestType >= 23 && chestType <= 27 || chestType == 2 && WorldGen.genRand.NextBool(3) || WorldGen.genRand.NextBool(7))
+				{
+					itemid = mod.ItemType<ReforgingKit>();
+				}
+
+				for (int i = 0; i < chest.item.Length; i++)
+				{
+					if (chest.item[i] == null)
+					{
+						chest.item[i] = new Item();
+					}
+
+					if (chest.item[i].type != 0 && chest.item[i].stack > 0)
+					{
+						continue;
+					}
+
+					if (i < 2)
+					{
+						break;
+					}
+
+					chest.item[i].SetDefaults(itemid);
+					chest.item[i].stack = WorldGen.genRand.Next(1, 5);
+					break;
+				}
+			}
+		}
+
+		public void GenerateTrap(GenerationProgress progress)
 		{
 			progress.Message = "Adding More Temple Traps";
 
 			int minX = WorldGen.tLeft + 5, minY = WorldGen.tTop + 5;
 			int maxX = WorldGen.tRight - 5, maxY = WorldGen.tBottom - 5;
 
-			int trapsAmount = 1 + (int)(WorldGen.tRooms * (0.7f + WorldGen.genRand.NextFloat(-1.2f, 1.2f)));
+			int trapsAmount = 1 + (int)(WorldGen.tRooms * (0.8f + WorldGen.genRand.NextFloat(-0.2f, 0.2f)));
 
 			int tileX, tileY, trapsGen = 0, genAttemps = 0;
 			progress.CurrentPassWeight = progress.TotalWeight * 0.01f;
@@ -107,7 +132,7 @@ namespace GadgetBox
 			}
 		}
 
-		public static bool GenerateBoulderTrap(int x, int y, bool floorTrap)
+		public bool GenerateBoulderTrap(int x, int y, bool floorTrap)
 		{
 			int plateY = y;
 
@@ -115,16 +140,22 @@ namespace GadgetBox
 			{
 				plateY++;
 				if (plateY > WorldGen.tBottom)
+				{
 					return false;
+				}
 			}
 
 			if (Main.tile[x, plateY].type == TileID.WoodenSpikes)
+			{
 				return false;
+			}
 
 			plateY--;
 
 			if (Main.tile[x, plateY].type == TileID.LihzahrdAltar)
+			{
 				return false;
+			}
 
 			int trapY = y, trapX = WorldGen.genRand.Next(2), plateX = WorldGen.genRand.Next(2);
 			bool placePlate = true;
@@ -138,58 +169,91 @@ namespace GadgetBox
 					Main.tile[x - 1 + ((trapX ^ 1) * 2), plateY].type != TileID.WoodenSpikes &&
 					Main.tile[x - 1 + ((trapX ^ 1) * 2), plateY].type != TileID.LihzahrdAltar) &&
 					GadgetMethods.TileAreaCheck(x - trapX, trapY, 2, 2, true, TileID.LihzahrdBrick, true, WallID.LihzahrdBrickUnsafe))
+				{
 					trapX = x - trapX;
+				}
 				else if ((Main.tile[x - 1 + (trapX * 2), plateY].type != TileID.LihzahrdBrick &&
 					Main.tile[x - 1 + (trapX * 2), plateY].type != TileID.WoodenSpikes &&
 					Main.tile[x - 1 + (trapX * 2), plateY].type != TileID.LihzahrdAltar) &&
 					GadgetMethods.TileAreaCheck(x - (trapX ^ 1), trapY, 2, 2, true, TileID.LihzahrdBrick, true, WallID.LihzahrdBrickUnsafe))
+				{
 					trapX = x - (trapX ^ 1);
+				}
 				else
+				{
 					return false;
+				}
 
 				placePlate = !(GadgetMethods.HasWire(trapX, plateY) || GadgetMethods.HasWire(trapX + 1, plateY));
 
 				if (placePlate)
 				{
 					if (WorldGen.TileEmpty(trapX + plateX, plateY))
+					{
 						plateX = trapX + plateX;
+					}
 					else if (WorldGen.TileEmpty(trapX + (plateX ^ 1), plateY))
+					{
 						plateX = trapX + (plateX ^ 1);
+					}
 					else
+					{
 						return false;
+					}
 
 					if (Main.tile[trapX + (trapX == plateX ? 1 : 0), trapY].slope() != 0)
+					{
 						Main.tile[trapX + (trapX == plateX ? 1 : 0), trapY].slope(0);
+					}
+
 					if (Main.tile[trapX + (trapX == plateX ? 1 : 0), trapY].halfBrick())
+					{
 						Main.tile[trapX + (trapX == plateX ? 1 : 0), trapY].halfBrick(false);
+					}
 				}
 				else
 				{
 					wireColor = GadgetMethods.GetRandomWireColor(trapX + plateX, plateY, 0);
 					if (wireColor == 0)
+					{
 						wireColor = GadgetMethods.GetRandomWireColor(trapX + (plateX ^ 1), plateY, 4);
+					}
 
 					if (Main.tile[trapX, trapY].slope() != 0)
+					{
 						Main.tile[trapX, trapY].slope(0);
+					}
+
 					if (Main.tile[trapX, trapY].halfBrick())
+					{
 						Main.tile[trapX, trapY].halfBrick(false);
+					}
 
 					if (Main.tile[trapX + 1, trapY].slope() != 0)
+					{
 						Main.tile[trapX + 1, trapY].slope(0);
+					}
+
 					if (Main.tile[trapX + 1, trapY].halfBrick())
+					{
 						Main.tile[trapX + 1, trapY].halfBrick(false);
+					}
 				}
 			}
 			else
 			{
 				if (!GadgetMethods.HasWire(x, plateY) && Main.tile[x, plateY].active())
+				{
 					return false;
+				}
 
 				while (plateY - trapY < 7)
 				{
 					trapY--;
 					if (trapY < WorldGen.tTop || WorldGen.SolidTile3(x, trapY))
+					{
 						return false;
+					}
 				}
 
 				bool unoccupiedt = GadgetMethods.TileAreaCheck(x, trapY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe) &&
@@ -197,7 +261,9 @@ namespace GadgetBox
 					GadgetMethods.TileAreaCheck(x - 1, trapY, 1, 2, false, 0, true, WallID.LihzahrdBrickUnsafe));
 
 				if (!unoccupiedt)
+				{
 					return false;
+				}
 
 				bool unoccupiedb = unoccupiedt;
 
@@ -228,7 +294,10 @@ namespace GadgetBox
 					{
 						maxY += 3;
 						if (trapY < maxY)
+						{
 							return false;
+						}
+
 						break;
 					}
 				}
@@ -236,18 +305,26 @@ namespace GadgetBox
 				trapY = trapY == maxY ? trapY : WorldGen.genRand.Next(maxY, trapY + 1);
 
 				if (GadgetMethods.TileAreaCheck(x - trapX, trapY, 2, 2, false, 0, true, WallID.LihzahrdBrickUnsafe))
+				{
 					trapX = x - trapX;
+				}
 				else if (GadgetMethods.TileAreaCheck(x - (trapX ^ 1), trapY, 2, 2, false, 0, true, WallID.LihzahrdBrickUnsafe))
+				{
 					trapX = x - (trapX ^ 1);
+				}
 				else
+				{
 					return false;
+				}
 
 				for (int i = trapX - 1; i < trapX + 3; i++)
 				{
 					for (int j = trapY - 1; j < trapY + 3; j++)
 					{
 						if ((i == trapX - 1 || i == trapX + 2) && (j == trapY - 1 || j == trapY + 2) || !GadgetMethods.HasWire(i, j))
+						{
 							continue;
+						}
 
 						placePlate = false;
 						plateY = trapY;
@@ -261,7 +338,9 @@ namespace GadgetBox
 					for (int j = trapY + 2; j <= plateY; j++)
 					{
 						if (!GadgetMethods.HasWire(x, j))
+						{
 							continue;
+						}
 
 						placePlate = false;
 						plateY = j;
@@ -271,12 +350,14 @@ namespace GadgetBox
 				}
 
 				for (int j = trapY + 2; j < plateY; j++)
+				{
 					GadgetMethods.PlaceWire(x, j, wireColor);
+				}
 
 				plateX = x;
 			}
 
-			ushort boulderTrap = (ushort)GadgetBox.Instance.TileType<Tiles.BoulderTrapTile>();
+			ushort boulderTrap = (ushort)mod.TileType<Tiles.BoulderTrapTile>();
 			int style = floorTrap ? 3 : 0;
 
 			Main.tile[trapX, trapY].active(true);
@@ -311,9 +392,14 @@ namespace GadgetBox
 			if (placePlate)
 			{
 				if (Main.tile[plateX, plateY + 1].slope() != 0)
+				{
 					Main.tile[plateX, plateY + 1].slope(0);
+				}
+
 				if (Main.tile[plateX, plateY + 1].halfBrick())
+				{
 					Main.tile[plateX, plateY + 1].halfBrick(false);
+				}
 
 				WorldGen.PlaceTile(plateX, plateY, TileID.PressurePlates, true, true, -1, 6);
 				GadgetMethods.PlaceWire(plateX, plateY, wireColor);

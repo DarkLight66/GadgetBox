@@ -37,7 +37,9 @@ namespace GadgetBox.GadgetUI
 		public override void Update(GameTime gameTime)
 		{
 			if (_toggleDelayCounter > 0)
+			{
 				_toggleDelayCounter--;
+			}
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)

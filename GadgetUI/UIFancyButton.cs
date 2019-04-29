@@ -28,32 +28,54 @@ namespace GadgetBox.GadgetUI
 		public override void MouseDown(UIMouseEvent evt)
 		{
 			if (!visible)
+			{
 				return;
+			}
+
 			_isClicking = true;
 			if (CanClick?.Invoke() ?? true)
+			{
 				base.MouseDown(evt);
+			}
 		}
 
 		public override void MouseUp(UIMouseEvent evt)
 		{
 			if (!visible)
+			{
 				return;
-			if (_isClicking) _isClicking = false;
+			}
+
+			if (_isClicking)
+			{
+				_isClicking = false;
+			}
+
 			base.MouseUp(evt);
 		}
 
 		public override void MouseOut(UIMouseEvent evt)
 		{
 			if (!visible)
+			{
 				return;
-			if (_isClicking) _isClicking = false;
+			}
+
+			if (_isClicking)
+			{
+				_isClicking = false;
+			}
+
 			base.MouseOut(evt);
 		}
 
 		public override void MouseOver(UIMouseEvent evt)
 		{
 			if (!visible)
+			{
 				return;
+			}
+
 			base.MouseOver(evt);
 			Main.PlaySound(SoundID.MenuTick);
 		}
@@ -61,7 +83,10 @@ namespace GadgetBox.GadgetUI
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			if (!visible)
+			{
 				return;
+			}
+
 			Texture2D texture = IsMouseHovering ? _hoverTexture : _texture;
 			float scale = _isClicking ? _clickScale : 1f;
 			Vector2 origin = texture.Size() * 0.5f * scale;

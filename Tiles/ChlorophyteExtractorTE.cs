@@ -24,7 +24,10 @@ namespace GadgetBox.Tiles
 			private set
 			{
 				if (Main.netMode != NetmodeID.MultiplayerClient && value != _isON)
+				{
 					DigDelay = (short)(value ? Main.rand.Next(540, 1080) : 0);
+				}
+
 				_isON = value;
 			}
 		}
@@ -65,26 +68,39 @@ namespace GadgetBox.Tiles
 					packet.Send(CurrentPlayer);
 				}
 				else
+				{
 					ChlorophyteExtractorUI.ExtractorTE.CloseUI();
+				}
 			}
 			Rectangle hitbox = new Rectangle((Position.X - 1) * 16, (Position.Y - 1) * 16, 54, 54);
 			if (Chlorophyte > 0)
+			{
 				Item.NewItem(hitbox, ItemID.ChlorophyteOre, Chlorophyte);
+			}
+
 			if (Mud > 0)
+			{
 				Item.NewItem(hitbox, ItemID.MudBlock, Mud);
+			}
 		}
 
 		public override void Update()
 		{
 			DigDelay--;
 			if (DigDelay > 0 || !IsWorking)
+			{
 				return;
+			}
+
 			DigDelay = (short)Main.rand.Next(360, 720);
 			short x = (short)Utils.Clamp(Main.rand.Next(-3, 4) + Position.X, 10, Main.maxTilesX - 10);
 			short y = (short)Utils.Clamp(Main.rand.Next(3, 10) + Position.Y, 10, Main.maxTilesY - 10);
 			Tile tile = Framing.GetTileSafely(x, y);
 			if (!tile.active() || tile.type != TileID.Chlorophyte)
+			{
 				return;
+			}
+
 			int nextChloro = 0;
 			for (int i = x - 1; i < x + 2; i++)
 			{
@@ -92,23 +108,37 @@ namespace GadgetBox.Tiles
 				{
 					tile = Framing.GetTileSafely(i, j);
 					if (i == x && j == y || !tile.active() || tile.type != TileID.Chlorophyte)
+					{
 						continue;
+					}
+
 					if (++nextChloro > 2)
+					{
 						break;
+					}
 				}
 			}
 			if (nextChloro < 3)
+			{
 				return;
+			}
+
 			Main.tile[x, y].type = TileID.Mud;
 			WorldGen.SquareTileFrame(x, y, true);
 			ExtractorEffect(x, y);
 			if (Main.netMode == NetmodeID.Server)
+			{
 				NetMessage.SendTileSquare(-1, x, y, 1);
+			}
+
 			Power--;
 			Mud--;
 			Chlorophyte++;
 			if (!CanTurnOn)
+			{
 				IsON = false;
+			}
+
 			SendServerMessage();
 		}
 
@@ -180,7 +210,9 @@ namespace GadgetBox.Tiles
 						{
 							CloseUI(false, true);
 							if (owner == byte.MaxValue)
+							{
 								break;
+							}
 						}
 						else if (ID != ChlorophyteExtractorUI.ExtractorTE.ID && owner == Main.myPlayer)
 						{
@@ -191,7 +223,10 @@ namespace GadgetBox.Tiles
 						break;
 					}
 					if (owner != byte.MaxValue && owner != whoAmI)
+					{
 						break;
+					}
+
 					CurrentPlayer = owner;
 					packet = GadgetBox.Instance.GetPacket(MessageType.ExtractorMessage, 6);
 					packet.Write(ID);
@@ -202,7 +237,10 @@ namespace GadgetBox.Tiles
 
 				case ExtractorMessage.RequestExtractorOpen:
 					if (Main.netMode != NetmodeID.Server || CurrentPlayer != byte.MaxValue)
+					{
 						break;
+					}
+
 					CurrentPlayer = (byte)whoAmI;
 					packet = GadgetBox.Instance.GetPacket(MessageType.ExtractorMessage, 6);
 					packet.Write(ID);
@@ -220,17 +258,30 @@ namespace GadgetBox.Tiles
 					bool isServer = Main.netMode == NetmodeID.Server;
 
 					if (message == ExtractorMessage.SyncOn || syncAll)
+					{
 						IsON = isServer ? !IsON : reader.ReadBoolean();
+					}
+
 					if (message == ExtractorMessage.SyncPower || syncAll)
+					{
 						Power = isServer ? MaxResources : reader.ReadInt16();
+					}
+
 					if (message == ExtractorMessage.SyncMud || syncAll)
+					{
 						Mud = (short)(reader.ReadInt16() + (isServer ? Mud : 0));
+					}
+
 					if (message == ExtractorMessage.SyncChlorophyte || syncAll)
 					{
 						if (isServer)
+						{
 							ExtractChloro();
+						}
 						else
+						{
 							Chlorophyte = reader.ReadInt16();
+						}
 					}
 					SendServerMessage(message);
 					break;
@@ -246,13 +297,18 @@ namespace GadgetBox.Tiles
 			Main.PlaySound(SoundID.Mech, Style: 0);
 			IsON = !IsON;
 			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
 				SendClientMessage(ExtractorMessage.SyncOn);
+			}
 		}
 
 		internal void ProvidePower()
 		{
 			if (Main.mouseItem == null || Main.mouseItem.stack <= 0 || Main.mouseItem.type != ItemID.LihzahrdPowerCell)
+			{
 				return;
+			}
+
 			Main.mouseItem.Consume();
 			Power = MaxResources;
 			Main.PlaySound(SoundID.Grab);
@@ -264,7 +320,10 @@ namespace GadgetBox.Tiles
 		internal void ProvideMud()
 		{
 			if (Main.mouseItem == null || Main.mouseItem.stack <= 0 || Main.mouseItem.type != ItemID.MudBlock)
+			{
 				return;
+			}
+
 			short addAmount = (short)Math.Min(Main.mouseItem.stack, MaxResources - Mud);
 			Main.mouseItem.Consume(addAmount);
 			Mud += addAmount;
@@ -278,7 +337,10 @@ namespace GadgetBox.Tiles
 		{
 			SendClientMessage(ExtractorMessage.SyncChlorophyte);
 			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
 				return;
+			}
+
 			Item.NewItem(new Rectangle((Position.X - 1) * 16, (Position.Y - 1) * 16, 54, 54), ItemID.ChlorophyteOre, Chlorophyte);
 			Chlorophyte = 0;
 		}
@@ -287,7 +349,10 @@ namespace GadgetBox.Tiles
 		{
 			bool switching = ChlorophyteExtractorUI.ExtractorTE.CurrentPlayer != byte.MaxValue;
 			if (switching)
+			{
 				ChlorophyteExtractorUI.ExtractorTE.CurrentPlayer = byte.MaxValue;
+			}
+
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
 				ModPacket packet;
@@ -311,7 +376,10 @@ namespace GadgetBox.Tiles
 			}
 			Main.stackSplit = 600;
 			if (PlayerInput.GrappleAndInteractAreShared)
+			{
 				PlayerInput.Triggers.JustPressed.Grapple = false;
+			}
+
 			ChlorophyteExtractorUI.visible = true;
 			ChlorophyteExtractorUI.ExtractorTE = this;
 			Main.playerInventory = true;
@@ -332,13 +400,17 @@ namespace GadgetBox.Tiles
 					packet.Send();
 				}
 				else
+				{
 					Main.stackSplit = 600;
+				}
 			}
 			ChlorophyteExtractorUI.visible = false;
 			CurrentPlayer = byte.MaxValue;
 			ChlorophyteExtractorUI.ExtractorTE = new ChlorophyteExtractorTE();
 			if (!silent)
+			{
 				Main.PlaySound(SoundID.MenuClose);
+			}
 		}
 
 		void ExtractorEffect(short i, short j)
@@ -369,32 +441,53 @@ namespace GadgetBox.Tiles
 		void SendServerMessage(ExtractorMessage serverMsg = ExtractorMessage.SyncAll)
 		{
 			if (Main.netMode != NetmodeID.Server)
+			{
 				return;
+			}
+
 			bool syncAll = serverMsg == ExtractorMessage.SyncAll;
 			ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.ExtractorMessage, syncAll ? 12 : serverMsg == ExtractorMessage.SyncOn ? 6 : 7);
 			packet.Write(ID);
 			packet.Write((byte)serverMsg);
 			if (serverMsg == ExtractorMessage.SyncOn || syncAll)
+			{
 				packet.Write(IsON);
+			}
+
 			if (serverMsg == ExtractorMessage.SyncPower || syncAll)
+			{
 				packet.Write(Power);
+			}
+
 			if (serverMsg == ExtractorMessage.SyncMud || syncAll)
+			{
 				packet.Write(Mud);
+			}
+
 			if (serverMsg == ExtractorMessage.SyncChlorophyte || syncAll)
+			{
 				packet.Write(Chlorophyte);
+			}
+
 			packet.Send();
 		}
 
 		void SendClientMessage(ExtractorMessage clientMsg, short mud = 0)
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
 				return;
+			}
+
 			bool AddMud = clientMsg == ExtractorMessage.SyncMud;
 			ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.ExtractorMessage, AddMud ? 7 : 5);
 			packet.Write(ID);
 			packet.Write((byte)clientMsg);
 			if (AddMud)
+			{
 				packet.Write(mud);
+			}
+
 			packet.Send();
 		}
 

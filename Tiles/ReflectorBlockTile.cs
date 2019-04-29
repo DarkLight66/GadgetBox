@@ -31,7 +31,9 @@ namespace GadgetBox.Tiles
 			if (projectile.minion || projectile.sentry || projectile.bobber || projectile.manualDirectionChange ||
 				ProjectileID.Sets.LightPet[projectile.type] || ProjectileID.Sets.StardustDragon[projectile.type] ||
 				projectile.damage < 1 || oldVelocity.LengthSquared() <= 4f || Array.Exists(NonDeflect, x => x == projectile.aiStyle))
+			{
 				return true;
+			}
 
 			var tiles = GadgetMethods.TilesHit(projectile.position, oldVelocity, projectile.width, projectile.height);
 			var deflectors = tiles.FindAll(x => x.Item2 == mod.TileType<ReflectorBlockTile>());
@@ -39,12 +41,17 @@ namespace GadgetBox.Tiles
 			if (deflectors.Count != 0 && deflectors.Count >= (tiles.Count / 2))
 			{
 				for (int i = 0; i < deflectors.Count; i++)
+				{
 					WorldGen.KillTile(deflectors[i].Item1.X, deflectors[i].Item1.Y, true, true);
+				}
 
 				float bouncyness = projectile.aiStyle == 2 || projectile.aiStyle == 113 ? 0.5f : 0.9f;
 				projectile.Bounce(oldVelocity, bouncyness);
 				if (projectile.timeLeft > 5)
+				{
 					projectile.timeLeft -= projectile.timeLeft > 100 ? (int)(projectile.timeLeft * 0.1f) : 2;
+				}
+
 				projectile.damage = (int)(projectile.damage * 0.95f);
 				Main.PlaySound(SoundID.Item30.WithVolume(.5f), projectile.Center);
 				return projectile.damage < 1;

@@ -37,7 +37,10 @@ namespace GadgetBox.Tiles
 		{
 			ChlorophyteExtractorTE extractorTE = mod.GetTileEntity<ChlorophyteExtractorTE>(TEPosition(i, j));
 			if (extractorTE == null)
+			{
 				return;
+			}
+
 			if (extractorTE.Animating && !extractorTE.IsWorking && (Main.tileFrame[TileID.Extractinator] - extractorTE.FrameYOffset + 10) % 10 == 0)
 			{
 				extractorTE.Animating = false;
@@ -57,15 +60,23 @@ namespace GadgetBox.Tiles
 			Point16 extractorPos = TEPosition(i, j);
 			ChlorophyteExtractorTE extractorTE = mod.GetTileEntity<ChlorophyteExtractorTE>(extractorPos);
 			if (extractorTE == null)
+			{
 				return;
+			}
+
 			Player player = Main.LocalPlayer;
 			GadgetPlayer gadgetPlayer = player.Gadget();
 
 			player.CloseVanillaUIs();
-			if (ReforgeMachineUI.visible)
-				GadgetBox.Instance.reforgeMachineUI.ToggleUI(false, Point16.NegativeOne, true);
+			if (GadgetBox.Instance.reforgeMachineInterface.CurrentState != null)
+			{
+				GadgetBox.Instance.reforgeMachineInterface.SetState(null);
+			}
+
 			if (extractorTE.CurrentPlayer == player.whoAmI)
+			{
 				extractorTE.CloseUI();
+			}
 			else
 			{
 				extractorTE.CurrentPlayer = (byte)player.whoAmI;

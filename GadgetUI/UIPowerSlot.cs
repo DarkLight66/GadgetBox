@@ -23,7 +23,9 @@ namespace GadgetBox.GadgetUI
 		public override void MouseDown(UIMouseEvent evt)
 		{
 			if (!_hasPower())
+			{
 				base.MouseDown(evt);
+			}
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)

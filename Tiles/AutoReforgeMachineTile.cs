@@ -29,7 +29,7 @@ namespace GadgetBox.Tiles
 			AddMapEntry(new Color(132, 155, 255), name);
 			disableSmartCursor = true;
 			animationFrameHeight = 54;
-			dustType = 1;
+			dustType = -1;
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -43,7 +43,9 @@ namespace GadgetBox.Tiles
 			{
 				frameCounter = 0;
 				if (++frame > 3)
+				{
 					frame = 0;
+				}
 			}
 		}
 
@@ -52,11 +54,20 @@ namespace GadgetBox.Tiles
 			int baseX = (i - Main.tile[i, j].frameX / 18) / 4;
 			int uniqueAnimationFrame = Main.tileFrame[Type] + baseX;
 			if (baseX % 2 == 0)
+			{
 				uniqueAnimationFrame += 3;
+			}
+
 			if (baseX % 3 == 0)
+			{
 				uniqueAnimationFrame += 3;
+			}
+
 			if (baseX % 4 == 0)
+			{
 				uniqueAnimationFrame += 3;
+			}
+
 			uniqueAnimationFrame = uniqueAnimationFrame % 4;
 			frameYOffset = uniqueAnimationFrame * animationFrameHeight;
 		}
@@ -68,8 +79,23 @@ namespace GadgetBox.Tiles
 			Player player = Main.LocalPlayer;
 			player.CloseVanillaUIs();
 			if (ChlorophyteExtractorUI.ExtractorTE.CurrentPlayer == player.whoAmI)
+			{
 				ChlorophyteExtractorUI.ExtractorTE.CloseUI(true);
-			GadgetBox.Instance.reforgeMachineUI.ToggleUI(!ReforgeMachineUI.visible, CenterPos);
+			}
+
+			bool notOpened = GadgetBox.Instance.reforgeMachineInterface.CurrentState == null;
+			bool sameMachine = player.Gadget().machinePos == CenterPos;
+			if (!notOpened)
+			{
+				GadgetBox.Instance.reforgeMachineInterface.SetState(null);
+			}
+
+			if (notOpened || !sameMachine)
+			{
+				player.Gadget().machinePos = CenterPos;
+				GadgetBox.Instance.reforgeMachineInterface.SetState(new ReforgeMachineUI());
+			}
+			Main.PlaySound(notOpened ? SoundID.MenuOpen : sameMachine ? SoundID.MenuClose : SoundID.MenuTick);
 		}
 
 		public override void MouseOver(int i, int j)

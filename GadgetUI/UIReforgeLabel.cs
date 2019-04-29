@@ -39,9 +39,14 @@ namespace GadgetBox.GadgetUI
 			_rarity = rarity;
 			_value = value;
 			if (rarityColors.ContainsKey(rarity))
+			{
 				TextColor = rarityColors[rarity];
+			}
+
 			if (Text.StartsWith("("))
+			{
 				Text = Text.Split('(', ')')[1];
+			}
 		}
 
 		public override int CompareTo(object obj)
@@ -56,7 +61,10 @@ namespace GadgetBox.GadgetUI
 		{
 			BackgroundColor = selected ? Color.LightSkyBlue : Color.CornflowerBlue;
 			if (_rarity == -12)
+			{
 				TextColor = Main.DiscoColor;
+			}
+
 			base.DrawSelf(spriteBatch);
 		}
 	}

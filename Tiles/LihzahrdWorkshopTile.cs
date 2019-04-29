@@ -38,11 +38,20 @@ namespace GadgetBox.Tiles
 			int baseX = (i - Main.tile[i, j].frameX / 18) / 3;
 			int uniqueAnimationFrame = Main.tileFrame[Type] + baseX;
 			if (baseX % 2 == 0)
+			{
 				uniqueAnimationFrame += 3;
+			}
+
 			if (baseX % 3 == 0)
+			{
 				uniqueAnimationFrame += 3;
+			}
+
 			if (baseX % 4 == 0)
+			{
 				uniqueAnimationFrame += 3;
+			}
+
 			uniqueAnimationFrame = uniqueAnimationFrame % 5;
 			frameYOffset = uniqueAnimationFrame * animationFrameHeight;
 		}

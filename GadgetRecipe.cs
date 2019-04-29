@@ -9,6 +9,7 @@ namespace GadgetBox
 	public static class GadgetRecipes
 	{
 		internal static string AnyGoldBar = "";
+		internal static string AnyCorruptionKey = "";
 
 		public static void AddRecipeGroups(Mod mod)
 		{
@@ -19,6 +20,13 @@ namespace GadgetBox
 			});
 			AnyGoldBar = mod.Name + ":AnyGoldBar";
 			RecipeGroup.RegisterGroup(AnyGoldBar, group);
+			group = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " " + Lang.GetItemNameValue(ItemID.CorruptionKey), new int[]
+			{
+				ItemID.CorruptionKey,
+				ItemID.CrimsonKey
+			});
+			AnyCorruptionKey = mod.Name + ":AnyCorruptionKey";
+			RecipeGroup.RegisterGroup(AnyCorruptionKey, group);
 		}
 
 		public static void AddRecipes(Mod mod)

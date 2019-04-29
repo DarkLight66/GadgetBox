@@ -11,8 +11,8 @@ namespace GadgetBox.GadgetUI
 {
 	internal class UIReforgePanel : UIPanel
 	{
-		Func<Item> _reforgeItem;
-		Func<int> _reforgePrice;
+		readonly Func<Item> _reforgeItem;
+		readonly Func<int> _reforgePrice;
 
 		public UIReforgePanel(Func<Item> reforgeItem, Func<int> reforgePrice)
 		{
@@ -42,7 +42,10 @@ namespace GadgetBox.GadgetUI
 				ItemSlot.DrawSavings(spriteBatch, priceOffset.X, priceOffset.Y - 14, true);
 			}
 			else
+			{
 				priceText = Language.GetTextValue("LegacyInterface.20");
+			}
+
 			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Main.fontMouseText, priceText, priceOffset, new Color(Main.mouseTextColor, Main.mouseTextColor, Main.mouseTextColor, Main.mouseTextColor), 0f, Vector2.Zero, Vector2.One, -1f, 2f);
 		}
 	}

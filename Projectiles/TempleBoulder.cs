@@ -54,7 +54,10 @@ namespace GadgetBox.Projectiles
 			if (projectile.velocity.X != oldVelocity.X)
 			{
 				if (Math.Abs(oldVelocity.X) > 3f)
+				{
 					return true;
+				}
+
 				projectile.velocity.X = -oldVelocity.X * 1.5f;
 			}
 			return false;
@@ -63,7 +66,9 @@ namespace GadgetBox.Projectiles
 		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
 		{
 			if (projectile.hide)
+			{
 				drawCacheProjsBehindNPCsAndTiles.Add(index);
+			}
 		}
 
 		public override void Kill(int timeLeft)
@@ -73,7 +78,9 @@ namespace GadgetBox.Projectiles
 			{
 				Dust dust = Dust.NewDustDirect(projectile.position, projectile.width, projectile.height, 148);
 				if (Main.rand.Next(2) == 0)
+				{
 					dust.scale *= 1.4f;
+				}
 			}
 		}
 	}

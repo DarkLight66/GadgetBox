@@ -25,7 +25,9 @@ namespace GadgetBox.GadgetUI
 		{
 			_targetPercentage = value;
 			if (!transition)
+			{
 				_powerPercentage = value;
+			}
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -38,7 +40,10 @@ namespace GadgetBox.GadgetUI
 			for (int i = drawAmount; i >= 0; i--)
 			{
 				if (i == 0)
+				{
 					sourceRect.Width = (int)endWidth + 1;
+				}
+
 				spriteBatch.Draw(_fillTexture, dimensions.Position(), sourceRect, Color.Gray);
 				dimensions.X += _fillTexture.Width;
 			}
@@ -53,7 +58,10 @@ namespace GadgetBox.GadgetUI
 				for (int i = drawAmount; i >= 0; i--)
 				{
 					if (i == 0)
+					{
 						sourceRect.Width = (int)endWidth + 1;
+					}
+
 					spriteBatch.Draw(_fillTexture, dimensions.Position(), sourceRect, Color.White);
 					dimensions.X += _fillTexture.Width;
 				}

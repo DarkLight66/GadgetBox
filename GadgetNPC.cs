@@ -16,7 +16,10 @@ namespace GadgetBox
 			{
 				case NPCID.WallofFlesh:
 					if (Main.rand.NextBool(10))
+					{
 						Item.NewItem(npc.getRect(), mod.ItemType<EtherealVortex>(), 1, false, -1);
+					}
+
 					break;
 				case NPCID.ArmoredSkeleton:
 				case NPCID.BlueArmoredBones:
@@ -24,7 +27,10 @@ namespace GadgetBox
 				case NPCID.BlueArmoredBonesNoPants:
 				case NPCID.BlueArmoredBonesSword:
 					if (Main.rand.NextBool(Main.expertMode ? 50 : 100))
+					{
 						Item.NewItem(npc.getRect(), mod.ItemType<EnchantedPolish>(), Main.rand.Next(1, 3));
+					}
+
 					break;
 			}
 		}
@@ -32,7 +38,9 @@ namespace GadgetBox
 		public override void SetupShop(int type, Chest shop, ref int nextSlot)
 		{
 			if (nextSlot > 38)
+			{
 				return;
+			}
 
 			switch (type)
 			{
@@ -41,9 +49,15 @@ namespace GadgetBox
 					while (slot < nextSlot)
 					{
 						if (shop.item[slot++].type != ItemID.CopperAxe && slot != nextSlot)
+						{
 							continue;
+						}
+
 						for (int i = nextSlot; i > slot; i--)
+						{
 							shop.item[i] = shop.item[i - 1];
+						}
+
 						shop.item[slot] = new Item();
 						shop.item[slot].SetDefaults(mod.ItemType<OldShovel>());
 						slot = ++nextSlot;
@@ -53,9 +67,18 @@ namespace GadgetBox
 					shop.item[nextSlot++].SetDefaults(mod.ItemType<ReflectorBlock>());
 					break;
 				case NPCID.Steampunker:
+					if (nextSlot > 36)
+					{
+						return;
+					}
+
 					shop.item[nextSlot++].SetDefaults(mod.ItemType<AutoReforgeMachine>());
 					if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
+					{
 						shop.item[nextSlot++].SetDefaults(mod.ItemType<ClockworkDigger>());
+					}
+
+					shop.item[nextSlot++].SetDefaults(mod.ItemType<AutoReelingRod>());
 					break;
 			}
 		}
@@ -63,7 +86,10 @@ namespace GadgetBox
 		public override void SetupTravelShop(int[] shop, ref int nextSlot)
 		{
 			if (!Main.hardMode || nextSlot >= shop.Length || !Main.rand.NextBool(50))
+			{
 				return;
+			}
+
 			shop[nextSlot++] = mod.ItemType<EnchantedPolish>();
 		}
 	}

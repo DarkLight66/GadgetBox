@@ -21,7 +21,10 @@ namespace GadgetBox.Items.Tools
 		{
 			SetShovelDefaults();
 			if (item.useStyle == 0)
+			{
 				item.useStyle = UseStyleShovel; // Needed so the use style can actually be changed
+			}
+
 			item.melee = true;
 		}
 
@@ -30,9 +33,15 @@ namespace GadgetBox.Items.Tools
 		public override bool CanUseItem(Player player)
 		{
 			if (player.noItems)
+			{
 				return false;
+			}
+
 			if (item.pick <= 0 && Shovel > 0)
+			{
 				player.toolTime = 1;
+			}
+
 			return true;
 		}
 
@@ -43,22 +52,32 @@ namespace GadgetBox.Items.Tools
 				item.pick = Pick;
 				Pick = 0;
 				if (player.HeldItem == item && player.selectedItem == 58)
+				{
 					Main.mouseItem = item.Clone();
+				}
 			}
 		}
 
 		public override void HoldItem(Player player)
 		{
 			if (player.noBuilding || player.whoAmI != Main.myPlayer || Shovel <= 0)
+			{
 				return;
+			}
+
 			if (player.position.X / 16f - Player.tileRangeX - item.tileBoost > Player.tileTargetX || (player.position.X + player.width) / 16f + Player.tileRangeX + item.tileBoost - 1f < Player.tileTargetX || player.position.Y / 16f - Player.tileRangeY - item.tileBoost > Player.tileTargetY || (player.position.Y + player.height) / 16f + Player.tileRangeY + item.tileBoost - 2f < Player.tileTargetY)
+			{
 				return;
+			}
+
 			if (item.pick > 0)
 			{
 				Pick = item.pick;
 				item.pick = 0;
 				if (player.selectedItem == 58)
+				{
 					Main.mouseItem = item.Clone();
+				}
 			}
 			if (!Main.GamepadDisableCursorItemIcon)
 			{
@@ -91,7 +110,10 @@ namespace GadgetBox.Items.Tools
 				return;
 			}
 			if (!WorldGen.CanKillTile(x, y))
+			{
 				actualPower = 0;
+			}
+
 			if (player.hitTile.AddDamage(tileId, actualPower, true) >= 100)
 			{
 				AchievementsHelper.CurrentlyMining = true;
@@ -99,36 +121,62 @@ namespace GadgetBox.Items.Tools
 				bool wasActive = tile.active();
 				WorldGen.KillTile(x, y, false, false, false);
 				if (wasActive && !tile.active())
+				{
 					AchievementsHelper.HandleMining();
+				}
+
 				AchievementsHelper.CurrentlyMining = false;
 			}
 			else
+			{
 				WorldGen.KillTile(x, y, true, false, false);
+			}
+
 			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
 				NetMessage.SendData(MessageID.TileChange, -1, -1, null, 0, x, y);
+			}
+
 			if (actualPower != 0)
+			{
 				player.hitTile.Prune();
+			}
 		}
 
 		public override bool UseItemFrame(Player player)
 		{
 			if (item.useStyle != UseStyleShovel)
+			{
 				return false;
+			}
+
 			if (player.itemAnimation < player.itemAnimationMax * 0.222f)
+			{
 				player.bodyFrame.Y = player.bodyFrame.Height;
+			}
 			else if (player.itemAnimation < player.itemAnimationMax * 0.555f)
+			{
 				player.bodyFrame.Y = player.bodyFrame.Height * 2;
+			}
 			else if (player.itemAnimation < player.itemAnimationMax * 0.888f)
+			{
 				player.bodyFrame.Y = player.bodyFrame.Height * 3;
+			}
 			else
+			{
 				player.bodyFrame.Y = player.bodyFrame.Height * 4;
+			}
+
 			return true;
 		}
 
 		public override void UseItemHitbox(Player player, ref Rectangle hitbox, ref bool noHitbox)
 		{
 			if (item.useStyle != UseStyleShovel)
+			{
 				return;
+			}
+
 			if (player.itemAnimation < player.itemAnimationMax * 0.222f)
 			{
 				hitbox.X -= (int)(hitbox.Width * (player.direction == 1 ? 0.8f : -0.7f));
@@ -163,7 +211,10 @@ namespace GadgetBox.Items.Tools
 		public override void UseStyle(Player player)
 		{
 			if (item.useStyle != UseStyleShovel)
+			{
 				return;
+			}
+
 			int mountOffset = player.mount.PlayerOffsetHitbox;
 			int width = Main.itemTexture[item.type].Width;
 			int height = Main.itemTexture[item.type].Height;
@@ -172,51 +223,105 @@ namespace GadgetBox.Items.Tools
 			{
 				widthOffset = 6;
 				if (width > 32)
+				{
 					widthOffset = 10;
+				}
+
 				if (width >= 48)
+				{
 					widthOffset = 14;
+				}
+
 				if (width >= 52)
+				{
 					widthOffset = 20;
+				}
+
 				if (width >= 64)
+				{
 					widthOffset = 26;
+				}
+
 				if (width >= 92)
+				{
 					widthOffset = 34;
+				}
+
 				player.itemLocation.X = player.position.X + player.width * 0.5f - (width * 0.5f - widthOffset) * player.direction;
 				if (height > 52)
+				{
 					heightOffset = 12;
+				}
+
 				if (height > 64)
+				{
 					heightOffset = 14;
+				}
+
 				player.itemLocation.Y = player.position.Y + heightOffset + mountOffset;
 			}
 			else if (player.itemAnimation < player.itemAnimationMax * 0.555f)
 			{
 				if (width > 32)
+				{
 					widthOffset = 14;
+				}
+
 				if (width >= 52)
+				{
 					widthOffset = 20;
+				}
+
 				if (width >= 64)
+				{
 					widthOffset = 26;
+				}
+
 				if (width >= 92)
+				{
 					widthOffset = 34;
+				}
+
 				player.itemLocation.X = player.position.X + player.width * 0.5f + (width * 0.5f - widthOffset) * player.direction;
 				if (height > 32)
+				{
 					heightOffset = 8;
+				}
+
 				if (height > 52)
+				{
 					heightOffset = 12;
+				}
+
 				if (height > 64)
+				{
 					heightOffset = 14;
+				}
+
 				player.itemLocation.Y = player.position.Y + heightOffset + mountOffset;
 			}
 			else
 			{
 				if (width > 32)
+				{
 					widthOffset = 14;
+				}
+
 				if (width >= 52)
+				{
 					widthOffset = 24;
+				}
+
 				if (width >= 64)
+				{
 					widthOffset = 28;
+				}
+
 				if (width >= 92)
+				{
 					widthOffset = 38;
+				}
+
 				player.itemLocation.X = player.position.X + player.width * 0.5f + (width * 0.5f - widthOffset) * player.direction;
 				player.itemLocation.Y = player.position.Y + 24 + mountOffset;
 			}
@@ -231,10 +336,15 @@ namespace GadgetBox.Items.Tools
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			if (Shovel <= 0)
+			{
 				return;
+			}
+
 			int ttindex = tooltips.FindLastIndex(t => t.mod == "Terraria" && (t.Name.EndsWith("Power") || t.Name == "Knockback" || t.Name == "Speed"));
 			if (ttindex != -1)
+			{
 				tooltips.Insert(ttindex + 1, new TooltipLine(mod, "ShovelPower", Shovel + mod.GetTextValue("Misc.ShovelPower")));
+			}
 		}
 	}
 
@@ -246,23 +356,35 @@ namespace GadgetBox.Items.Tools
 		public override void PostItemCheck()
 		{
 			if (player.whoAmI != Main.myPlayer || player.HeldItem.modItem == null)
+			{
 				return;
-			BaseShovel shovel = player.HeldItem.modItem as BaseShovel;
-			if (shovel == null || shovel.Pick == 0)
+			}
+
+			if (!(player.HeldItem.modItem is BaseShovel shovel) || shovel.Pick == 0)
+			{
 				return;
+			}
+
 			player.HeldItem.pick = shovel.Pick;
 			shovel.Pick = 0;
 			if (player.selectedItem == 58)
+			{
 				Main.mouseItem = player.HeldItem.Clone();
+			}
 		}
 
 		public override void FrameEffects()
 		{
 			if (player.whoAmI != Main.myPlayer || Main.mouseItem.IsAir || Main.mouseItem.modItem == null)
+			{
 				return;
-			BaseShovel shovel = Main.mouseItem.modItem as BaseShovel;
-			if (shovel == null || shovel.Pick == 0)
+			}
+
+			if (!(Main.mouseItem.modItem is BaseShovel shovel) || shovel.Pick == 0)
+			{
 				return;
+			}
+
 			Main.mouseItem.pick = shovel.Pick;
 			shovel.Pick = 0;
 			player.inventory[player.selectedItem] = Main.mouseItem.Clone();
@@ -274,9 +396,11 @@ namespace GadgetBox.Items.Tools
 		public override bool AutoSelect(int i, int j, int type, Item item)
 		{
 			if (Main.SmartCursorEnabled && Main.SmartCursorShowing)
+			{
 				type = Main.tile[Player.tileTargetX, Player.tileTargetY].type;
-			BaseShovel myShovel = item.modItem as BaseShovel;
-			return myShovel != null && ShovelMethods.DigPower((ushort)type, myShovel.Shovel) >= 100;
+			}
+
+			return item.modItem is BaseShovel myShovel && ShovelMethods.DigPower((ushort)type, myShovel.Shovel) >= 100;
 		}
 	}
 
@@ -298,16 +422,27 @@ namespace GadgetBox.Items.Tools
 			};
 			int actualPower = 0;
 			if (Main.tileNoFail[type])
+			{
 				actualPower = 100;
+			}
 			else if (weakBlocks.Contains(type) || TileID.Sets.Grass[type] || TileID.Sets.GrassSpecial[type] || TileID.Sets.Snow[type] ||
 				 TileID.Sets.Mud[type] || TileID.Sets.Leaves[type] || TileID.Sets.NeedsGrassFraming[type])
+			{
 				actualPower = shovelPower * 2;
+			}
 			else if (TileID.Sets.Falling[type] || TileID.Sets.Conversion.HardenedSand[type] || TileID.Sets.Conversion.Sandstone[type])
+			{
 				actualPower = shovelPower;
+			}
 			else if (type == TileID.Stone)
+			{
 				actualPower = shovelPower / 2;
+			}
 			else if (TileID.Sets.Conversion.Stone[type] || TileID.Sets.Conversion.Ice[type] || TileID.Sets.Conversion.Moss[type])
+			{
 				actualPower = shovelPower / 3;
+			}
+
 			return actualPower;
 		}
 
@@ -315,23 +450,38 @@ namespace GadgetBox.Items.Tools
 		public static void SmartCursorLookup(Player player)
 		{
 			if (player.whoAmI != Main.myPlayer || !Main.SmartCursorEnabled || Main.SmartInteractShowingGenuine)
+			{
 				return;
+			}
+
 			try
 			{
 				Item item = player.inventory[player.selectedItem];
 				if (Main.SmartCursorShowing && item.pick > 0)
+				{
 					return;
+				}
+
 				int shovel = (item.modItem as BaseShovel)?.Shovel ?? 0;
 				if (shovel <= 0)
+				{
 					return;
+				}
+
 				Vector2 MousePoss = Main.ReverseGravitySupport(Main.MouseScreen) + Main.screenPosition;
 				int x = Utils.Clamp((int)(MousePoss.X / 16), 10, Main.maxTilesX - 10);
 				int y = Utils.Clamp((int)(MousePoss.Y / 16), 10, Main.maxTilesY - 10);
 				if (Main.tile[x, y] == null)
+				{
 					return;
+				}
+
 				bool DisableSmart = false;
 				if (Main.tile[x, y].active())
+				{
 					DisableSmart = CanDigTile(Main.tile[x, y].type, shovel);
+				}
+
 				TileLoader.DisableSmartCursor(Main.tile[x, y], ref DisableSmart);
 				int tileBoost = item.tileBoost;
 				int minX = (int)(player.position.X / 16) - Player.tileRangeX - tileBoost + 1;
@@ -343,7 +493,10 @@ namespace GadgetBox.Items.Tools
 				minY = Utils.Clamp(minY, 10, Main.maxTilesY - 10);
 				maxY = Utils.Clamp(maxY, 10, Main.maxTilesY - 10);
 				if (DisableSmart && x >= minX && x <= maxX && y >= minY && y <= maxY)
+				{
 					return;
+				}
+
 				List<Tuple<int, int>> grapledTiles = new List<Tuple<int, int>>();
 				for (int i = 0; i < player.grapCount; i++)
 				{
@@ -358,7 +511,9 @@ namespace GadgetBox.Items.Tools
 					Vector2 gamepadThumbstickLeft = PlayerInput.GamepadThumbstickLeft;
 					Vector2 gamepadThumbstickRight = PlayerInput.GamepadThumbstickRight;
 					if (navigatorDirections == Vector2.Zero && gamepadThumbstickLeft.Length() < 0.05f && gamepadThumbstickRight.Length() < 0.05f)
+					{
 						MousePoss = player.Center + new Vector2(player.direction * 1000, 0f);
+					}
 				}
 				Vector2 MouseDir = MousePoss - player.Center;
 				int leftOrRight = Math.Sign(MouseDir.X);
@@ -387,7 +542,10 @@ namespace GadgetBox.Items.Tools
 					for (int i = 0; i < heightInTiles; i++)
 					{
 						if (Main.tile[sideSearchX, topSearchY + i * notUpperCorners] == null)
+						{
 							return;
+						}
+
 						startTiles.Add(new Tuple<int, int>(sideSearchX, topSearchY + i * notUpperCorners));
 					}
 				}
@@ -396,26 +554,44 @@ namespace GadgetBox.Items.Tools
 					for (int i = 0; i < widthInTiles; i++)
 					{
 						if (Main.tile[(int)(player.position.X / 16f) + i, topSearchY] == null)
+						{
 							return;
+						}
+
 						startTiles.Add(new Tuple<int, int>((int)(player.position.X / 16f) + i, topSearchY));
 					}
 				}
 				int endX = (int)((MousePoss.X + ((player.width / 2 - 1) * leftOrRight)) / 16);
 				int endY = (int)((MousePoss.Y + 0.1f - (player.height / 2 + 1)) / 16);
 				if (notUpperCorners == -1)
+				{
 					endY = (int)((MousePoss.Y + (player.height / 2) - 1f) / 16);
+				}
+
 				if (player.gravDir == -1f && avobeOrBelow == 0)
+				{
 					endY++;
+				}
+
 				if (endY < 10)
+				{
 					endY = 10;
+				}
+
 				if (endY > Main.maxTilesY - 10)
+				{
 					endY = Main.maxTilesY - 10;
+				}
+
 				if (leftOrRight != 0)
 				{
 					for (int i = 0; i < heightInTiles; i++)
 					{
 						if (Main.tile[endX, endY + i * notUpperCorners] == null)
+						{
 							return;
+						}
+
 						endTiles.Add(new Tuple<int, int>(endX, endY + i * notUpperCorners));
 					}
 				}
@@ -424,7 +600,10 @@ namespace GadgetBox.Items.Tools
 					for (int i = 0; i < widthInTiles; i++)
 					{
 						if (Main.tile[(int)((MousePoss.X - (player.width / 2)) / 16f) + i, endY] == null)
+						{
 							return;
+						}
+
 						endTiles.Add(new Tuple<int, int>((int)((MousePoss.X - (player.width / 2)) / 16f) + i, endY));
 					}
 				}
@@ -433,8 +612,7 @@ namespace GadgetBox.Items.Tools
 				{
 					Tuple<int, int> tuple = startTiles[0];
 					Tuple<int, int> tuple2 = endTiles[0];
-					Tuple<int, int> tuple3;
-					if (!Collision.TupleHitLine(tuple.Item1, tuple.Item2, tuple2.Item1, tuple2.Item2, leftOrRight * (int)player.gravDir, -avobeOrBelow * (int)player.gravDir, grapledTiles, out tuple3))
+					if (!Collision.TupleHitLine(tuple.Item1, tuple.Item2, tuple2.Item1, tuple2.Item2, leftOrRight * (int)player.gravDir, -avobeOrBelow * (int)player.gravDir, grapledTiles, out Tuple<int, int> tuple3))
 					{
 						startTiles.Remove(tuple);
 						endTiles.Remove(tuple2);
@@ -442,20 +620,34 @@ namespace GadgetBox.Items.Tools
 					else
 					{
 						if (tuple3.Item1 != tuple2.Item1 || tuple3.Item2 != tuple2.Item2)
+						{
 							validTiles.Add(tuple3);
+						}
+
 						Tile tile2 = Main.tile[tuple3.Item1, tuple3.Item2];
 						if (!tile2.inActive() && tile2.active() && Main.tileSolid[tile2.type] && !Main.tileSolidTop[tile2.type] && !grapledTiles.Contains(tuple3))
+						{
 							validTiles.Add(tuple3);
+						}
+
 						startTiles.Remove(tuple);
 						endTiles.Remove(tuple2);
 					}
 				}
 				List<Tuple<int, int>> tilesToRemove = new List<Tuple<int, int>>();
 				for (int i = 0; i < validTiles.Count; i++)
+				{
 					if (DigPower(Main.tile[validTiles[i].Item1, validTiles[i].Item2].type, shovel) < 100 || !WorldGen.CanKillTile(validTiles[i].Item1, validTiles[i].Item2))
+					{
 						tilesToRemove.Add(validTiles[i]);
+					}
+				}
+
 				for (int i = 0; i < tilesToRemove.Count; i++)
+				{
 					validTiles.Remove(tilesToRemove[i]);
+				}
+
 				tilesToRemove.Clear();
 				if (validTiles.Count > 0)
 				{

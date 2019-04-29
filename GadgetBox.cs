@@ -21,23 +21,14 @@ namespace GadgetBox
 		internal UserInterface chloroExtractInterface;
 		internal ChlorophyteExtractorUI chlorophyteExtractorUI;
 		internal UserInterface reforgeMachineInterface;
-		internal ReforgeMachineUI reforgeMachineUI;
 
 		int lastSeenScreenWidth;
 		int lastSeenScreenHeight;
 		bool lastFocus;
-
-		public GadgetBox()
-		{
-			Properties = new ModProperties()
-			{
-				Autoload = true
-			};
-		}
-
+		
 		public override void Load()
 		{
-			Version targetVersion = new Version(0, 10, 1, 3);
+			Version targetVersion = new Version(0, 11);
 			if (ModLoader.version < targetVersion)
 			{
 				throw new Exception($"\nThis mod uses functionality only present in versions {targetVersion} or newer of tModLoader. Please update tModLoader to use this mod\n\n");
@@ -52,9 +43,6 @@ namespace GadgetBox
 				chlorophyteExtractorUI.Activate();
 				chloroExtractInterface.SetState(chlorophyteExtractorUI);
 				reforgeMachineInterface = new UserInterface();
-				reforgeMachineUI = new ReforgeMachineUI();
-				reforgeMachineUI.Activate();
-				reforgeMachineInterface.SetState(reforgeMachineUI);
 			}
 		}
 
@@ -73,12 +61,18 @@ namespace GadgetBox
 		public override void UpdateUI(GameTime gameTime)
 		{
 			if (ChlorophyteExtractorUI.visible)
+			{
 				chloroExtractInterface.Update(gameTime);
+			}
 			else
+			{
 				chlorophyteExtractorUI.powerButton.Update(gameTime);
+			}
 
-			if (ReforgeMachineUI.visible)
+			if (reforgeMachineInterface != null)
+			{
 				reforgeMachineInterface.Update(gameTime);
+			}
 		}
 
 		public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -95,18 +89,22 @@ namespace GadgetBox
 							if (lastSeenScreenWidth != Main.screenWidth || lastSeenScreenHeight != Main.screenHeight || !lastFocus && Main.hasFocus)
 							{
 								chlorophyteExtractorUI.Recalculate();
-								reforgeMachineUI.Recalculate();
+								reforgeMachineInterface.Recalculate();
 								lastSeenScreenWidth = Main.screenWidth;
 								lastSeenScreenHeight = Main.screenHeight;
 							}
 
 							if (lastFocus != Main.hasFocus)
+							{
 								lastFocus = Main.hasFocus;
+							}
 
 							if (ChlorophyteExtractorUI.visible)
+							{
 								chlorophyteExtractorUI.Draw(Main.spriteBatch);
-							if (ReforgeMachineUI.visible)
-								reforgeMachineUI.Draw(Main.spriteBatch);
+							}
+
+							reforgeMachineInterface.Draw(Main.spriteBatch, Main._drawInterfaceGameTime);
 						}
 						return true;
 					},
@@ -132,12 +130,6 @@ namespace GadgetBox
 			}
 		}
 
-		internal static void Log(object message)
-			=> ErrorLogger.Log(string.Format("[{0}][{1}] {2}", Instance, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), message));
-
-		internal static void Log(string message, params object[] formatData)
-			=> ErrorLogger.Log(string.Format("[{0}][{1}] {2}", Instance, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), string.Format(message, formatData)));
-
 		internal ModPacket GetPacket(MessageType type, int capacity)
 		{
 			ModPacket packet = GetPacket(capacity + 1);
@@ -145,10 +137,13 @@ namespace GadgetBox
 			return packet;
 		}
 
-		bool RightClickHacks()
+		private bool RightClickHacks()
 		{
 			if (!Main.playerInventory || PlayerInput.IgnoreMouseInterface || !Main.mouseRight || !Main.mouseRightRelease)
+			{
 				return true;
+			}
+
 			Player player = Main.player[Main.myPlayer];
 
 			float scale = 0.85f;
@@ -161,17 +156,23 @@ namespace GadgetBox
 					x = (int)(20f + i * 56 * scale);
 					y = (int)(20f + j * 56 * scale);
 					if (Main.mouseX < x || Main.mouseX > x + Main.inventoryBackTexture.Width * scale || Main.mouseY < y || Main.mouseY > y + Main.inventoryBackTexture.Height * scale)
+					{
 						continue;
+					}
 
 					slot = i + j * 10;
 					Item item = player.inventory[slot];
 					if (item.IsAir)
+					{
 						return true;
+					}
 
 					if (item.type == ItemID.LockBox)
 					{
 						if (player.HasItem(ItemID.GoldenKey) || !player.HasItem(ItemType<MasterKey>()))
+						{
 							return true;
+						}
 
 						item.Consume(1, false);
 						Main.PlaySound(SoundID.Grab);
@@ -183,7 +184,9 @@ namespace GadgetBox
 					else if (Main.mouseItem.type == ItemType<ReforgingKit>() || Main.mouseItem.type == ItemType<LesserReforgingKit>())
 					{
 						if (Main.mouseItem.type == ItemType<LesserReforgingKit>() && item.prefix != 0 || !item.Prefix(-3) || !ItemLoader.PreReforge(item))
+						{
 							return true;
+						}
 
 						GadgetMethods.PrefixItem(ref player.inventory[slot]);
 

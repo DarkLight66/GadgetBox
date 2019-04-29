@@ -20,8 +20,7 @@ namespace GadgetBox.Items
 			recipe.AddIngredient(ItemID.GoldenKey, 10);
 			recipe.AddIngredient(ItemID.ShadowKey);
 			recipe.AddIngredient(ItemID.HallowedKey);
-			recipe.AddIngredient(ItemID.CorruptionKey);
-			recipe.AddIngredient(ItemID.CrimsonKey);
+			recipe.AddRecipeGroup(GadgetRecipes.AnyCorruptionKey);
 			recipe.AddIngredient(ItemID.FrozenKey);
 			recipe.AddIngredient(ItemID.JungleKey);
 			recipe.AddIngredient(ItemID.TempleKey);

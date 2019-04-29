@@ -17,7 +17,6 @@ namespace GadgetBox.Tiles
 			Main.tileSolid[Type] = true;
 			TileObjectData.newTile.Width = 2;
 			TileObjectData.newTile.Height = 2;
-			TileObjectData.newTile.Origin = Point16.Zero;
 			TileObjectData.newTile.UsesCustomCanPlace = true;
 			TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16 };
 			TileObjectData.newTile.CoordinateWidth = 16;
@@ -61,7 +60,10 @@ namespace GadgetBox.Tiles
 		{
 			Tile tile = Main.tile[i, j];
 			if (tile.wall == WallID.LihzahrdBrickUnsafe && tile.inActive() && !NPC.downedGolemBoss)
+			{
 				return 1;
+			}
+
 			return 0;
 		}
 
@@ -76,8 +78,11 @@ namespace GadgetBox.Tiles
 			Main.tile[x, y + 1].frameX = (short)(frame * 36);
 			Main.tile[x + 1, y + 1].frameX = (short)(frame * 36 + 18);
 
-			if (Main.netMode == 1)
-				NetMessage.SendTileSquare(-1, x, y, 2);
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendTileSquare(-1, x, y, 3);
+			}
+
 			return false;
 		}
 
