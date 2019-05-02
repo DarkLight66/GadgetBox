@@ -25,6 +25,7 @@ namespace GadgetBox.Tiles
 	public class DeflectProjectiles : GlobalProjectile
 	{
 		private static readonly int[] NonDeflect = new int[] { 9, 10, 11, 17, 26, 35, 39, 45, 58, 61, 63, 73, 75, 88, 90, 99, 102, 103, 121, 124, 144 };
+		private static uint lastGameUpdateCount;
 
 		public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
 		{
@@ -53,7 +54,11 @@ namespace GadgetBox.Tiles
 				}
 
 				projectile.damage = (int)(projectile.damage * 0.95f);
-				Main.PlaySound(SoundID.Item30.WithVolume(.5f), projectile.Center);
+				if (!Main.dedServ && Main.GameUpdateCount - lastGameUpdateCount > 30)
+				{
+					lastGameUpdateCount = Main.GameUpdateCount;
+					Main.PlaySound(SoundID.Item30.WithVolume(.1f).WithPitchVariance(0.2f), projectile.Center);
+				}
 				return projectile.damage < 1;
 			}
 			return true;
