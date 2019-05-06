@@ -113,23 +113,23 @@ namespace GadgetBox
 
 			if (context == "crate")
 			{
-				int chance = !Main.hardMode ? 50 : NPC.downedMechBossAny ? 20 : 35;
+				int chance = !Main.hardMode ? 25 : !NPC.downedMechBossAny ? 15 : 10;
 				if (arg == ItemID.WoodenCrate)
 				{
-					chance += (chance / 2);
+					chance += (chance / 3);
 				}
 				else if (arg == ItemID.GoldenCrate)
 				{
 					chance /= 2;
 				}
 
-				if (Main.rand.NextBool((int)chance))
+				if (Main.rand.NextBool(chance))
 				{
-					player.QuickSpawnItem(mod.ItemType<LesserReforgingKit>(), Main.rand.NextBool(4) ? 2 : 1);
+					player.QuickSpawnItem(mod.ItemType<LesserReforgingKit>(), Main.rand.NextBool() ? 2 : 1);
 				}
-				else if (Main.hardMode && Main.rand.NextBool(chance * 2))
+				else if (Main.hardMode && Main.rand.NextBool((int)(chance * 1.5f)))
 				{
-					player.QuickSpawnItem(mod.ItemType<ReforgingKit>(), Main.rand.NextBool(8) ? 2 : 1);
+					player.QuickSpawnItem(mod.ItemType<ReforgingKit>(), Main.rand.NextBool(4) ? 2 : 1);
 				}
 			}
 		}

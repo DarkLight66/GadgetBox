@@ -98,6 +98,7 @@
     <Compile Include="Items\Tools\ClockworkDigger.cs" />
     <Compile Include="Items\Tools\PlatedShovel.cs" />
     <Compile Include="Items\Tools\OldShovel.cs" />
+    <Compile Include="Items\Tools\ActivationRod.cs" />
     <Compile Include="ModCompat.cs" />
     <Compile Include="Prefixes\GadgetItemPrefix.cs" />
     <Compile Include="Prefixes\ToolPrefix.cs" />
@@ -125,6 +126,7 @@
     <Content Include="GadgetUI\PowerButton_ON.png" />
     <Content Include="GadgetUI\PowerSlot_Closed.png" />
     <Content Include="GadgetUI\PowerSlot_Open.png" />
+    <Content Include="Images\AutoReelingAim.png" />
     <Content Include="Items\Accessories\CrystalLens.png" />
     <Content Include="Items\Accessories\CritterNetAttachment.png" />
     <Content Include="Items\Placeable\BoulderTrap.png" />
@@ -143,6 +145,7 @@
     <Content Include="Items\Tools\ClockworkDigger.png" />
     <Content Include="Items\Tools\PlatedShovel.png" />
     <Content Include="Items\Tools\OldShovel.png" />
+    <Content Include="Items\Tools\ActivationRod.png" />
     <Content Include="Projectiles\AutoBobber.png" />
     <Content Include="Projectiles\ClockworkDiggerProj.png" />
     <Content Include="Projectiles\TempleBoulder.png" />

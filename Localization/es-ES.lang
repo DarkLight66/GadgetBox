@@ -20,6 +20,8 @@ ItemTooltip.MemorialBanner=Te recuerda de los enemigos que has derrotado
 ItemName.ReflectorBlock=Bloque Reflector
 ItemTooltip.ReflectorBlock=Refleja la mayoría de los projectiles
 
+ItemName.ActivationRod=Vara de activación
+ItemTooltip.ActivationRod=Activa los mecanismos
 ItemName.ClockworkDigger=Cavador de precisíon
 ItemName.OldShovel=Pala vieja
 ItemTooltip.OldShovel=Útil para excavar tierra blanda

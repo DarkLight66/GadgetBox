@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace GadgetBox.Items.Consumables
@@ -12,7 +13,6 @@ namespace GadgetBox.Items.Consumables
 			item.consumable = true;
 			item.maxStack = 99;
 			item.rare = 4;
-			item.value = 0;
 		}
 
 		public override bool CanRightClick()
@@ -22,6 +22,15 @@ namespace GadgetBox.Items.Consumables
 		{
 			GadgetMethods.PrefixItem(ref Main.mouseItem);
 			player.inventory[58] = Main.mouseItem.Clone();
+		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(mod.ItemType<LesserReforgingKit>(), 5);
+			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
 		}
 	}
 }

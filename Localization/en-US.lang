@@ -13,6 +13,7 @@ ItemTooltip.ReflectorBlock=Reflects most projectiles
 ItemTooltip.AutoReelingRod=Automatically reels in anything caught by the hook\nAutomatically releases a new hook after auto-reeling in\nIncreased bait consumption and line breaking chances
 ItemTooltip.OldShovel=Good for digging soft land
 ItemTooltip.PlatedShovel=Cuts through land like butter
+ItemTooltip.ActivationRod=Activates Mechanisms
 
 ItemTooltip.EnchantedPolish=Polishes your equipment temporarily\nPolished equipment grants extra effects depending on their prefix
 ItemTooltip.LesserReforgingKit=Grants a random prefix to an item\nOnly works on unprefixed items\nTake it and <right> over another item to use

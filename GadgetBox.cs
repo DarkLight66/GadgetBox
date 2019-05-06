@@ -80,9 +80,7 @@ namespace GadgetBox
 			int invIndex = layers.FindIndex(l => l.Name.Equals("Vanilla: Inventory"));
 			if (invIndex != -1)
 			{
-				layers.Insert(invIndex++, new LegacyGameInterfaceLayer(Name + ": RightClick Hacks", RightClickHacks));
-
-				layers.Insert(invIndex + 1, new LegacyGameInterfaceLayer(Name + ": Machine UI", () =>
+				layers.Insert(invIndex, new LegacyGameInterfaceLayer(Name + ": Machine UI", () =>
 					{
 						if (Main.playerInventory && !Main.recBigList)
 						{
@@ -110,6 +108,8 @@ namespace GadgetBox
 					},
 					InterfaceScaleType.UI)
 				);
+
+				layers.Insert(invIndex, new LegacyGameInterfaceLayer(Name + ": RightClick Hacks", RightClickHacks));
 			}
 		}
 
@@ -126,6 +126,14 @@ namespace GadgetBox
 					break;
 				case MessageType.ExtractorMessage:
 					this.GetTileEntity<ChlorophyteExtractorTE>(reader.ReadInt32())?.ReceiveExtractorMessage(reader, whoAmI);
+					break;
+				case MessageType.TripWire:
+					int tileX = reader.ReadInt32();
+					int tileY = reader.ReadInt32();
+					if (WorldGen.InWorld(tileX, tileY) && Main.tile[tileX, tileY] != null)
+					{
+						Items.Tools.ActivationRod.TriggerMech(tileX, tileY);
+					}
 					break;
 			}
 		}
@@ -205,6 +213,7 @@ namespace GadgetBox
 	internal enum MessageType
 	{
 		CatchNPC,
-		ExtractorMessage
+		ExtractorMessage,
+		TripWire
 	}
 }

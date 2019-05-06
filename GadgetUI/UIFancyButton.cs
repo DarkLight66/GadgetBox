@@ -9,12 +9,14 @@ namespace GadgetBox.GadgetUI
 {
 	internal class UIFancyButton : UIHoverText
 	{
-		internal bool visible = true;
 		Texture2D _texture;
 		Texture2D _hoverTexture;
-		bool _isClicking = false;
+		bool _isClicking;
 		float _clickScale;
-		public event Func<bool> CanClick;
+
+		public bool Visible { get; internal set; }
+		public float Rotation { get; internal set; }
+		internal event Func<bool> CanClick;
 
 		public UIFancyButton(Texture2D texture, Texture2D hoverTexture, float clickScale = 0.85f) : base()
 		{
@@ -27,7 +29,7 @@ namespace GadgetBox.GadgetUI
 
 		public override void MouseDown(UIMouseEvent evt)
 		{
-			if (!visible)
+			if (!Visible)
 			{
 				return;
 			}
@@ -41,7 +43,7 @@ namespace GadgetBox.GadgetUI
 
 		public override void MouseUp(UIMouseEvent evt)
 		{
-			if (!visible)
+			if (!Visible)
 			{
 				return;
 			}
@@ -56,7 +58,7 @@ namespace GadgetBox.GadgetUI
 
 		public override void MouseOut(UIMouseEvent evt)
 		{
-			if (!visible)
+			if (!Visible)
 			{
 				return;
 			}
@@ -71,7 +73,7 @@ namespace GadgetBox.GadgetUI
 
 		public override void MouseOver(UIMouseEvent evt)
 		{
-			if (!visible)
+			if (!Visible)
 			{
 				return;
 			}
@@ -82,7 +84,7 @@ namespace GadgetBox.GadgetUI
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
-			if (!visible)
+			if (!Visible)
 			{
 				return;
 			}
@@ -90,7 +92,7 @@ namespace GadgetBox.GadgetUI
 			Texture2D texture = IsMouseHovering ? _hoverTexture : _texture;
 			float scale = _isClicking ? _clickScale : 1f;
 			Vector2 origin = texture.Size() * 0.5f * scale;
-			spriteBatch.Draw(texture, GetDimensions().Position() + origin, null, Color.White, 0, origin, scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(texture, GetDimensions().Position() + origin, null, Color.White, Rotation, origin, scale, SpriteEffects.None, 0);
 			base.DrawSelf(spriteBatch);
 		}
 	}

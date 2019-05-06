@@ -34,7 +34,7 @@ namespace GadgetBox.GadgetUI
 			reforgePanel = new UIReforgePanel(() => reforgeSlot.item, () => reforgePrice);
 			reforgePanel.SetPadding(4);
 			reforgePanel.Top.Pixels = Main.instance.invBottom + 60;
-			reforgePanel.Left.Pixels = 154;
+			reforgePanel.Left.Pixels = 110;
 			reforgePanel.MinHeight.Pixels = 260;
 
 			reforgeSlot = new UIItemSlot(0.85f);
@@ -100,7 +100,7 @@ namespace GadgetBox.GadgetUI
 				silent = true;
 			}
 			else if (!Main.playerInventory || Framing.GetTileSafely(machinePos).type != GadgetBox.Instance.TileType<AutoReforgeMachineTile>() ||
-				player.OutTileBounds(machinePos, Player.tileRangeX + 1, Player.tileRangeY + 1, Player.tileRangeX + 2, Player.tileRangeY + 1))
+				player.OutOfTileBounds(machinePos, Player.tileRangeX + 1, Player.tileRangeY + 1, Player.tileRangeX + 2, Player.tileRangeY + 1))
 			{
 				closeUI = true;
 			}
@@ -134,6 +134,18 @@ namespace GadgetBox.GadgetUI
 						reforgeTries = tickCounter = 0;
 					}
 				}
+				else
+				{
+					reforgeButton.Rotation += 0.2f;
+				}
+			}
+			else if (reforgeButton.Rotation != 0)
+			{
+				if (reforgeButton.Rotation > MathHelper.TwoPi)
+				{
+					reforgeButton.Rotation = reforgeButton.Rotation % MathHelper.TwoPi;
+				}
+				reforgeButton.Rotation = MathHelper.TwoPi - reforgeButton.Rotation <= 0.2f ? 0 : reforgeButton.Rotation + 0.2f;
 			}
 		}
 
@@ -145,7 +157,8 @@ namespace GadgetBox.GadgetUI
 				Main.HoverItem.TurnToAir();
 				Main.hoverItemName = "";
 			}
-			reforgeButton.visible = !reforgeSlot.item.IsAir;
+			Main.HidePlayerCraftingMenu = true;
+			reforgeButton.Visible = !reforgeSlot.item.IsAir;
 		}
 
 		void OnReforgeButtonClick(UIMouseEvent evt, UIElement listeningElement)

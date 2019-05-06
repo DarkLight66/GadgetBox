@@ -38,12 +38,12 @@ namespace GadgetBox
 				}
 
 				Tile tile = Main.tile[chest.x, chest.y];
-				if (!TileID.Sets.BasicChest[tile.type] || tile.type > TileID.Count || chest.item == null)
+				if (!TileID.Sets.BasicChest[tile.type] || chest.item == null)
 				{
 					continue;
 				}
 
-				int chestType = tile.frameX / 36;
+				int chestType = tile.type >= TileID.Count ? 1 : tile.frameX / 36;
 				int chance = 5;
 
 				switch (chestType)
@@ -72,7 +72,7 @@ namespace GadgetBox
 				}
 
 				int itemid = mod.ItemType<LesserReforgingKit>();
-				if (chestType == 5 || chestType == 16 || chestType >= 23 && chestType <= 27 || chestType == 2 && WorldGen.genRand.NextBool(3) || WorldGen.genRand.NextBool(7))
+				if (chestType == 5 || chestType == 16 || chestType >= 23 && chestType <= 27 || chestType == 2 && WorldGen.genRand.NextBool(2) || WorldGen.genRand.NextBool(4))
 				{
 					itemid = mod.ItemType<ReforgingKit>();
 				}

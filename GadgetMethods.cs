@@ -710,10 +710,10 @@ namespace GadgetBox
 
 		public static bool HasWire(int x, int y) => Main.tile[x, y] != null && (Main.tile[x, y].wire() || Main.tile[x, y].wire2() || Main.tile[x, y].wire3() || Main.tile[x, y].wire4());
 
-		public static bool OutTileBounds(this Entity entity, Point16 tilePos, int lX, int lY, int hX, int hY)
+		public static bool OutOfTileBounds(this Entity entity, Point16 tilePos, int minX, int minY, int maxX, int maxY)
 		{
 			Point16 entPos = entity.Center.ToTileCoordinates16();
-			return entPos.X < tilePos.X - lX || entPos.X > tilePos.X + hX || entPos.Y < tilePos.Y - lY || entPos.Y > tilePos.Y + hY;
+			return entPos.X < tilePos.X - minX || entPos.X > tilePos.X + maxX || entPos.Y < tilePos.Y - minY || entPos.Y > tilePos.Y + maxY;
 		}
 
 		public static T GetTileEntity<T>(this Mod mod, int ID) where T : ModTileEntity
