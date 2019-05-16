@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GadgetBox.GadgetUI;
 using GadgetBox.Items.Accessories;
 using GadgetBox.Items.Placeable;
@@ -19,6 +20,7 @@ namespace GadgetBox
 		public bool critterCatch;
 		public bool nearBanner;
 		public bool crystalLens;
+		public static float crystalLensFadeMult;
 
 		public byte critShine;
 		public byte speedShine;
@@ -52,6 +54,11 @@ namespace GadgetBox
 			{
 				ChlorophyteExtractorUI.ExtractorTE.CloseUI(true);
 			}
+		}
+
+		public override void OnEnterWorld(Player player)
+		{
+			crystalLensFadeMult = 0;
 		}
 
 		public override void PreUpdate()
@@ -98,6 +105,18 @@ namespace GadgetBox
 
 		public override void PostUpdateEquips()
 		{
+			if (Main.myPlayer == player.whoAmI)
+			{
+				if (crystalLens && crystalLensFadeMult < 1)
+				{
+					crystalLensFadeMult += 0.00625f;
+				}
+				else if (!crystalLens && crystalLensFadeMult > 0)
+				{
+					crystalLensFadeMult -= 0.00625f;
+				}
+			}
+
 			/* if (Main.myPlayer != player.whoAmI)
 				return;
 
@@ -148,10 +167,9 @@ namespace GadgetBox
 				return;
 			}
 
-			NPC npc;
 			for (byte i = 0; i < Main.maxNPCs; i++)
 			{
-				npc = Main.npc[i];
+				NPC npc = Main.npc[i];
 				if (!npc.active || npc.catchItem <= 0)
 				{
 					continue;
@@ -171,6 +189,22 @@ namespace GadgetBox
 				Item item = new Item();
 				item.SetDefaults(mod.ItemType<CritterNetAttachment>());
 				rewardItems.Add(item);
+			}
+		}
+
+		public override void PostSellItem(NPC vendor, Item[] shopInventory, Item item)
+		{
+			GadgetItem gadget = item.Gadget();
+			if (gadget.tweak != GadgetItem.TweakType.None)
+			{
+				if (gadget.tweak == GadgetItem.TweakType.Malleable)
+				{
+					player.BuyItem(item.value / 2);
+				}
+				else if (gadget.tweak == GadgetItem.TweakType.Precious)
+				{
+					player.SellItem(item.value * 5, 1);
+				}
 			}
 		}
 
@@ -208,7 +242,7 @@ namespace GadgetBox
 				jumpHeight /= 5;
 			}
 
-			Player.jumpHeight += speedShine;
+			Player.jumpHeight += jumpHeight;
 		}
 
 		public override void ModifyDrawLayers(List<PlayerLayer> layers)
@@ -225,16 +259,14 @@ namespace GadgetBox
 			{
 				return;
 			}
-
 			Vector2 aimPos = drawPlayer.Gadget().autoReelAim;
 			if (aimPos == Vector2.Zero)
 			{
 				return;
 			}
-
 			aimPos = ((aimPos * 100).Floor() + drawPlayer.RotatedRelativePoint(drawPlayer.MountedCenter) + new Vector2(0, drawPlayer.gfxOffY)).Floor() - Main.screenPosition;
 			Texture2D texture = GadgetBox.Instance.GetTexture("Images/AutoReelingAim");
-			DrawData data = new DrawData(texture, aimPos, null, Main.mouseTextColorReal, 0f, texture.Size() * 0.5f, 1f, SpriteEffects.None, 0);
+			DrawData data = new DrawData(texture, aimPos, null, Main.mouseTextColorReal, 0f, texture.Size() * 0.5f, 1f, drawPlayer.gravDir == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None, 0);
 			Main.playerDrawData.Add(data);
 		}
 	}

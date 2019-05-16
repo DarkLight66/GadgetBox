@@ -3,9 +3,12 @@ BuffDescription.ShinyEquipment=Equipment grants extra effects depending on their
 
 ItemTooltip.CritterNetAttachment=Critters hit by all weapons will be catched\nIncreases pickup range for catched critters
 ItemTooltip.EtherealVortex=Increases pickup range for floating items
+ItemTooltip.CrystalLens=Reveals Crystal Clear Blocks and Walls\nAlso works while favorited
 
 ItemTooltip.AutoReforgeMachine=Allows auto reforging items
 ItemTooltip.ChlorophyteExtractor=Automatically extracts Chlorophyte from a small area bellow itself\nRequires power from a Lihzahrd Power Cell and Mud Blocks to function
+ItemTooltip.CrystalClearBlock=Invisible to the naked eye
+ItemTooltip.CrystalClearBlockWall={$Mods.GadgetBox.ItemTooltip.CrystalClearBlock}
 ItemTooltip.LihzahrdWorkshop=Allows creating gadgets using ancient lihzahrd technology
 ItemTooltip.MemorialBanner=Reminds you of the foes that you have defeated
 ItemTooltip.ReflectorBlock=Reflects most projectiles
@@ -23,17 +26,20 @@ ItemTooltip.ReforgingKit=Grants a random prefix to an item\nTake it and <right> 
 MapObject.AutoReforgeMachineTile={$Mods.GadgetBox.ItemName.AutoReforgeMachine}
 MapObject.ChlorophyteExtractorTile={$Mods.GadgetBox.ItemName.ChlorophyteExtractor}
 MapObject.LihzahrdWorkshopTile={$Mods.GadgetBox.ItemName.LihzahrdWorkshop}
-MapObject.MemorialBannerTile={$Mods.GadgetBox.ItemName.MemorialBanner}
 
 ProjectileName.ClockworkDiggerProj={$Mods.GadgetBox.ItemName.ClockworkDigger}
 
 TweakName.Malleable=Malleable
-TweakTooltip.Malleable=-25% reforge cost
+TweakTooltipGood.Malleable=-25% reforge cost
+TweakTooltipBad.Malleable=-50% sell price
+TweakName.Precious=Precious
+TweakTooltipGood.Precious=+100% sell price
+TweakTooltipBad.Precious=+50% reforge cost
 
-Misc.ShovelPower=% shovel power
-Misc.CriticalDamage=% critical damage
-Misc.MiningSpeed=% mining speed
-Misc.ArmorPenetration=armor penetration
-Misc.JumpHeight=jump height
+Misc.ShovelPower={0}% shovel power
+Misc.CriticalDamage=+{0}% critical damage
+Misc.MiningSpeed=+{0}% mining speed
+Misc.ArmorPenetration=+{0} armor penetration
+Misc.JumpHeight=+jump height
 Misc.CurrentlyGrants=Currently grants:
 Misc.NoEffects=No effects

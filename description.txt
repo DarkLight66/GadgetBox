@@ -7,7 +7,7 @@ Changelog:
 0.1.1.0 : New Placeables and Other Stuff:
 - Updated to TModLoader 0.11
 - Added Activation Rod, Auto Reeling Rod, Crystal Lens, Crystal Clear Blocks and Walls.
-- Increased chances of finding Reforge Kits and Lesser Reforge Kits.
+- Increased chances of finding Reforge Kits, Lesser Reforge Kits and Enchanted Polish.
 0.1.0.2 : Small Fixes and Additions:
 - Updated to TModLoader 0.10.1.4
 - Added Clockwork Digger.
@@ -37,4 +37,4 @@ Changelog:
 - Some spanish translations missing accents and having other grammatical errors (thanks a lot to RascaLDiego for the help!).
 0.0.2.0 : Updated to TModLoader 0.10.1.2, added Critter Net Attachment, Old Shovel, Plated Shovel, Tool Prefixes and Localization files.
 0.0.1.1 : Added mod icon.
-0.0.1.0 : Initial release, added Master Key, Eethereal Vortex, Enchanted Polish, Reflector Block, Reforging Kit and Lesser Reforging Kit.
+0.0.1.0 : Initial release, added Master Key, Ethereal Vortex, Enchanted Polish, Reflector Block, Reforging Kit and Lesser Reforging Kit.

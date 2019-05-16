@@ -14,9 +14,9 @@ using Terraria.UI;
 
 namespace GadgetBox
 {
-	internal class GadgetBox : Mod
+	public class GadgetBox : Mod
 	{
-		internal static GadgetBox Instance;
+		public static GadgetBox Instance { get; private set; }
 
 		internal UserInterface chloroExtractInterface;
 		internal ChlorophyteExtractorUI chlorophyteExtractorUI;
@@ -25,7 +25,7 @@ namespace GadgetBox
 		int lastSeenScreenWidth;
 		int lastSeenScreenHeight;
 		bool lastFocus;
-		
+
 		public override void Load()
 		{
 			Version targetVersion = new Version(0, 11);
@@ -44,6 +44,8 @@ namespace GadgetBox
 				chloroExtractInterface.SetState(chlorophyteExtractorUI);
 				reforgeMachineInterface = new UserInterface();
 			}
+
+			GadgetHooks.Initialize();
 		}
 
 		public override void PostSetupContent()
@@ -91,25 +93,20 @@ namespace GadgetBox
 								lastSeenScreenWidth = Main.screenWidth;
 								lastSeenScreenHeight = Main.screenHeight;
 							}
-
 							if (lastFocus != Main.hasFocus)
 							{
 								lastFocus = Main.hasFocus;
 							}
-
 							if (ChlorophyteExtractorUI.visible)
 							{
 								chlorophyteExtractorUI.Draw(Main.spriteBatch);
 							}
-
 							reforgeMachineInterface.Draw(Main.spriteBatch, Main._drawInterfaceGameTime);
 						}
 						return true;
 					},
 					InterfaceScaleType.UI)
 				);
-
-				layers.Insert(invIndex, new LegacyGameInterfaceLayer(Name + ": RightClick Hacks", RightClickHacks));
 			}
 		}
 
@@ -143,70 +140,6 @@ namespace GadgetBox
 			ModPacket packet = GetPacket(capacity + 1);
 			packet.Write((byte)type);
 			return packet;
-		}
-
-		private bool RightClickHacks()
-		{
-			if (!Main.playerInventory || PlayerInput.IgnoreMouseInterface || !Main.mouseRight || !Main.mouseRightRelease)
-			{
-				return true;
-			}
-
-			Player player = Main.player[Main.myPlayer];
-
-			float scale = 0.85f;
-			int x, y, slot;
-
-			for (int i = 0; i < 10; i++)
-			{
-				for (int j = 0; j < 5; j++)
-				{
-					x = (int)(20f + i * 56 * scale);
-					y = (int)(20f + j * 56 * scale);
-					if (Main.mouseX < x || Main.mouseX > x + Main.inventoryBackTexture.Width * scale || Main.mouseY < y || Main.mouseY > y + Main.inventoryBackTexture.Height * scale)
-					{
-						continue;
-					}
-
-					slot = i + j * 10;
-					Item item = player.inventory[slot];
-					if (item.IsAir)
-					{
-						return true;
-					}
-
-					if (item.type == ItemID.LockBox)
-					{
-						if (player.HasItem(ItemID.GoldenKey) || !player.HasItem(ItemType<MasterKey>()))
-						{
-							return true;
-						}
-
-						item.Consume(1, false);
-						Main.PlaySound(SoundID.Grab);
-						Main.stackSplit = 30;
-						player.openLockBox();
-						Main.mouseRightRelease = false;
-						Recipe.FindRecipes();
-					}
-					else if (Main.mouseItem.type == ItemType<ReforgingKit>() || Main.mouseItem.type == ItemType<LesserReforgingKit>())
-					{
-						if (Main.mouseItem.type == ItemType<LesserReforgingKit>() && item.prefix != 0 || !item.Prefix(-3) || !ItemLoader.PreReforge(item))
-						{
-							return true;
-						}
-
-						GadgetMethods.PrefixItem(ref player.inventory[slot]);
-
-						Main.mouseItem.Consume();
-						player.inventory[58] = Main.mouseItem.Clone();
-						Main.mouseRightRelease = false;
-						Recipe.FindRecipes();
-					}
-					return true;
-				}
-			}
-			return true;
 		}
 	}
 

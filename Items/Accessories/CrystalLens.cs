@@ -27,7 +27,7 @@ namespace GadgetBox.Items.Accessories
 		{
 			if (item.favorited)
 			{
-				UpdateAccessory(player, false);
+				player.Gadget().crystalLens = true;
 			}
 		}
 

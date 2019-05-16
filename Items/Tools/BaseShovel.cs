@@ -24,7 +24,6 @@ namespace GadgetBox.Items.Tools
 			{
 				item.useStyle = UseStyleShovel; // Needed so the use style can actually be changed
 			}
-
 			item.melee = true;
 		}
 
@@ -214,7 +213,6 @@ namespace GadgetBox.Items.Tools
 			{
 				return;
 			}
-
 			int mountOffset = player.mount.PlayerOffsetHitbox;
 			int width = Main.itemTexture[item.type].Width;
 			int height = Main.itemTexture[item.type].Height;
@@ -226,38 +224,31 @@ namespace GadgetBox.Items.Tools
 				{
 					widthOffset = 10;
 				}
-
 				if (width >= 48)
 				{
 					widthOffset = 14;
 				}
-
 				if (width >= 52)
 				{
 					widthOffset = 20;
 				}
-
 				if (width >= 64)
 				{
 					widthOffset = 26;
 				}
-
 				if (width >= 92)
 				{
 					widthOffset = 34;
 				}
-
 				player.itemLocation.X = player.position.X + player.width * 0.5f - (width * 0.5f - widthOffset) * player.direction;
 				if (height > 52)
 				{
 					heightOffset = 12;
 				}
-
 				if (height > 64)
 				{
 					heightOffset = 14;
 				}
-
 				player.itemLocation.Y = player.position.Y + heightOffset + mountOffset;
 			}
 			else if (player.itemAnimation < player.itemAnimationMax * 0.555f)
@@ -266,38 +257,31 @@ namespace GadgetBox.Items.Tools
 				{
 					widthOffset = 14;
 				}
-
 				if (width >= 52)
 				{
 					widthOffset = 20;
 				}
-
 				if (width >= 64)
 				{
 					widthOffset = 26;
 				}
-
 				if (width >= 92)
 				{
 					widthOffset = 34;
 				}
-
 				player.itemLocation.X = player.position.X + player.width * 0.5f + (width * 0.5f - widthOffset) * player.direction;
 				if (height > 32)
 				{
 					heightOffset = 8;
 				}
-
 				if (height > 52)
 				{
 					heightOffset = 12;
 				}
-
 				if (height > 64)
 				{
 					heightOffset = 14;
 				}
-
 				player.itemLocation.Y = player.position.Y + heightOffset + mountOffset;
 			}
 			else
@@ -306,22 +290,18 @@ namespace GadgetBox.Items.Tools
 				{
 					widthOffset = 14;
 				}
-
 				if (width >= 52)
 				{
 					widthOffset = 24;
 				}
-
 				if (width >= 64)
 				{
 					widthOffset = 28;
 				}
-
 				if (width >= 92)
 				{
 					widthOffset = 38;
 				}
-
 				player.itemLocation.X = player.position.X + player.width * 0.5f + (width * 0.5f - widthOffset) * player.direction;
 				player.itemLocation.Y = player.position.Y + 24 + mountOffset;
 			}
@@ -339,11 +319,10 @@ namespace GadgetBox.Items.Tools
 			{
 				return;
 			}
-
 			int ttindex = tooltips.FindLastIndex(t => t.mod == "Terraria" && (t.Name.EndsWith("Power") || t.Name == "Knockback" || t.Name == "Speed"));
 			if (ttindex != -1)
 			{
-				tooltips.Insert(ttindex + 1, new TooltipLine(mod, "ShovelPower", Shovel + mod.GetTextValue("Misc.ShovelPower")));
+				tooltips.Insert(ttindex + 1, new TooltipLine(mod, "ShovelPower", mod.GetTextValue("Misc.ShovelPower", Shovel)));
 			}
 		}
 	}
@@ -359,12 +338,10 @@ namespace GadgetBox.Items.Tools
 			{
 				return;
 			}
-
 			if (!(player.HeldItem.modItem is BaseShovel shovel) || shovel.Pick == 0)
 			{
 				return;
 			}
-
 			player.HeldItem.pick = shovel.Pick;
 			shovel.Pick = 0;
 			if (player.selectedItem == 58)
@@ -379,12 +356,10 @@ namespace GadgetBox.Items.Tools
 			{
 				return;
 			}
-
 			if (!(Main.mouseItem.modItem is BaseShovel shovel) || shovel.Pick == 0)
 			{
 				return;
 			}
-
 			Main.mouseItem.pick = shovel.Pick;
 			shovel.Pick = 0;
 			player.inventory[player.selectedItem] = Main.mouseItem.Clone();
@@ -399,7 +374,6 @@ namespace GadgetBox.Items.Tools
 			{
 				type = Main.tile[Player.tileTargetX, Player.tileTargetY].type;
 			}
-
 			return item.modItem is BaseShovel myShovel && ShovelMethods.DigPower((ushort)type, myShovel.Shovel) >= 100;
 		}
 	}
@@ -442,7 +416,6 @@ namespace GadgetBox.Items.Tools
 			{
 				actualPower = shovelPower / 3;
 			}
-
 			return actualPower;
 		}
 
@@ -453,7 +426,6 @@ namespace GadgetBox.Items.Tools
 			{
 				return;
 			}
-
 			try
 			{
 				Item item = player.inventory[player.selectedItem];

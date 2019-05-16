@@ -1,178 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\references\tModLoader.targets" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{23E39A3E-9694-47C5-9961-F9D60B21B4A1}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GadgetBox</RootNamespace>
     <AssemblyName>GadgetBox</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <TargetFramework>net452</TargetFramework>
     <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
+    <AutoGenerateBindingRedirects></AutoGenerateBindingRedirects>
+    <Version>0.1.1.0</Version>
+    <Authors>DarkLight</Authors>
+    <Company />
+    <Product>Box of Gadgets</Product>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>6</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Xact\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Xact.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Xna.Framework" />
-    <Reference Include="Microsoft.Xna.Framework.Game" />
-    <Reference Include="Microsoft.Xna.Framework.Graphics" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="ReLogic">
-      <HintPath>..\References\ReLogic.dll</HintPath>
-    </Reference>
-    <Reference Include="Terraria">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\SteamApps\common\Terraria\Terraria.exe</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Buffs\ShinyEquipment.cs" />
-    <Compile Include="GadgetBox.cs" />
-    <Compile Include="GadgetItem.cs" />
-    <Compile Include="GadgetMethods.cs" />
-    <Compile Include="GadgetNPC.cs" />
-    <Compile Include="GadgetTile.cs" />
-    <Compile Include="GadgetUI\ReforgeMachineUI.cs" />
-    <Compile Include="GadgetUI\ChlorophyteExtractorUI.cs" />
-    <Compile Include="GadgetUI\InvisibleFixedUIScrollbar.cs" />
-    <Compile Include="GadgetUI\UIFancyButton.cs" />
-    <Compile Include="GadgetUI\UILeftAlignedLabel.cs" />
-    <Compile Include="GadgetUI\UIHoverText.cs" />
-    <Compile Include="GadgetUI\UIItemSlot.cs" />
-    <Compile Include="GadgetUI\UIPowerBar.cs" />
-    <Compile Include="GadgetUI\UIPowerButton.cs" />
-    <Compile Include="GadgetUI\UIExtractorSlot.cs" />
-    <Compile Include="GadgetUI\UIPowerSlot.cs" />
-    <Compile Include="GadgetUI\UIReforgeLabel.cs" />
-    <Compile Include="GadgetUI\UIReforgePanel.cs" />
-    <Compile Include="GadgetWorld.cs" />
-    <Compile Include="GadgetRecipe.cs" />
-    <Compile Include="Items\Accessories\CrystalLens.cs" />
-    <Compile Include="Items\Accessories\CritterNetAttachment.cs" />
-    <Compile Include="Items\Placeable\BoulderTrap.cs" />
-    <Compile Include="Items\Placeable\CrystalClearBlockWall.cs" />
-    <Compile Include="Items\Placeable\LihzahrdWorkshop.cs" />
-    <Compile Include="Items\Placeable\AutoReforgeMachine.cs" />
-    <Compile Include="Items\Placeable\ChlorophyteExtractor.cs" />
-    <Compile Include="Items\Placeable\CrystalClearBlock.cs" />
-    <Compile Include="Items\Placeable\ReflectorBlock.cs" />
-    <Compile Include="Items\Consumables\EnchantedPolish.cs" />
-    <Compile Include="Items\Accessories\EtherealVortex.cs" />
-    <Compile Include="GadgetPlayer.cs" />
-    <Compile Include="Items\Consumables\ReforgingKit.cs" />
-    <Compile Include="Items\MasterKey.cs" />
-    <Compile Include="Items\Consumables\LesserReforgingKit.cs" />
-    <Compile Include="Items\Tools\AutoReelingRod.cs" />
-    <Compile Include="Items\Tools\BaseShovel.cs" />
-    <Compile Include="Items\Tools\ClockworkDigger.cs" />
-    <Compile Include="Items\Tools\PlatedShovel.cs" />
-    <Compile Include="Items\Tools\OldShovel.cs" />
-    <Compile Include="Items\Tools\ActivationRod.cs" />
-    <Compile Include="ModCompat.cs" />
-    <Compile Include="Prefixes\GadgetItemPrefix.cs" />
-    <Compile Include="Prefixes\ToolPrefix.cs" />
-    <Compile Include="Projectiles\AutoBobber.cs" />
-    <Compile Include="Projectiles\ClockworkDiggerProj.cs" />
-    <Compile Include="Projectiles\TempleBoulder.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tiles\BoulderTrapTile.cs" />
-    <Compile Include="Tiles\LihzahrdWorkshopTile.cs" />
-    <Compile Include="Tiles\AutoReforgeMachineTile.cs" />
-    <Compile Include="Tiles\ChlorophyteExtractorTE.cs" />
-    <Compile Include="Tiles\ChlorophyteExtractorTile.cs" />
-    <Compile Include="Tiles\CrystalClearBlockTile.cs" />
-    <Compile Include="Tiles\ReflectorBlockTile.cs" />
-    <Compile Include="Walls\CrystalClearBlockWallWall.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Buffs\ShinyEquipment.png" />
-    <Content Include="build.txt" />
-    <Content Include="description.txt" />
-    <Content Include="GadgetUI\ExtractorSlot.png" />
-    <Content Include="GadgetUI\PowerBar.png" />
-    <Content Include="GadgetUI\PowerBarFill.png" />
-    <Content Include="GadgetUI\PowerButton_OFF.png" />
-    <Content Include="GadgetUI\PowerButton_ON.png" />
-    <Content Include="GadgetUI\PowerSlot_Closed.png" />
-    <Content Include="GadgetUI\PowerSlot_Open.png" />
-    <Content Include="Images\AutoReelingAim.png" />
-    <Content Include="Items\Accessories\CrystalLens.png" />
-    <Content Include="Items\Accessories\CritterNetAttachment.png" />
-    <Content Include="Items\Placeable\BoulderTrap.png" />
-    <Content Include="Items\Placeable\CrystalClearBlockWall.png" />
-    <Content Include="Items\Placeable\LihzahrdWorkshop.png" />
-    <Content Include="Items\Placeable\AutoReforgeMachine.png" />
-    <Content Include="Items\Placeable\ChlorophyteExtractor.png" />
-    <Content Include="Items\Placeable\CrystalClearBlock.png" />
-    <Content Include="Items\Placeable\ReflectorBlock.png" />
-    <Content Include="Items\Consumables\EnchantedPolish.png" />
-    <Content Include="Items\Accessories\EtherealVortex.png" />
-    <Content Include="Items\MasterKey.png" />
-    <Content Include="Items\Consumables\LesserReforgingKit.png" />
-    <Content Include="Items\Consumables\ReforgingKit.png" />
-    <Content Include="Items\Tools\AutoReelingRod.png" />
-    <Content Include="Items\Tools\ClockworkDigger.png" />
-    <Content Include="Items\Tools\PlatedShovel.png" />
-    <Content Include="Items\Tools\OldShovel.png" />
-    <Content Include="Items\Tools\ActivationRod.png" />
-    <Content Include="Projectiles\AutoBobber.png" />
-    <Content Include="Projectiles\ClockworkDiggerProj.png" />
-    <Content Include="Projectiles\TempleBoulder.png" />
-    <Content Include="Tiles\BoulderTrapTile.png" />
-    <Content Include="Tiles\LihzahrdWorkshopTile.png" />
-    <Content Include="Tiles\AutoReforgeMachineTile.png" />
-    <Content Include="Tiles\AutoReforgeMachineTile_Highlight.png" />
-    <Content Include="Tiles\ChlorophyteExtractorTile.png" />
-    <Content Include="Tiles\ChlorophyteExtractorTile_Highlight.png" />
-    <Content Include="Tiles\CrystalClearBlockTile.png" />
-    <Content Include="Tiles\ReflectorBlockTile.png" />
-    <Content Include="Walls\CrystalClearBlockWallWall.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Localization\es-ES.lang" />
-    <None Include="Localization\en-US.lang" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Steam\steamapps\common\Terraria\tModLoaderServer.exe" -build "$(ProjectDir)\" -eac "$(TargetPath)"</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Target Name="BuildMod" AfterTargets="Build">
+    <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build $(ProjectDir) -eac $(TargetPath) -define $(DefineConstants) -unsafe $(AllowUnsafeBlocks)" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <Compile Remove="excluded\**" />
+    <Compile Remove="Wiki\**" />
+    <EmbeddedResource Remove="excluded\**" />
+    <EmbeddedResource Remove="Wiki\**" />
+    <None Remove="excluded\**" />
+    <None Remove="Wiki\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove=".editorconfig" />
+    <None Remove=".gitattributes" />
+    <None Remove=".gitignore" />
+    <None Remove="LICENSE" />
+    <None Remove="README.md" />
+  </ItemGroup>
 </Project>

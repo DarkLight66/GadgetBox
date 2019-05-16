@@ -119,31 +119,30 @@ namespace GadgetBox.GadgetUI
 			reforgePrice = reforgeSlot.item.ReforgePrice();
 			if (autoReforge)
 			{
+				tickCounter++;
+				reforgeButton.Rotation += 0.2f;
 				if (selectedPrefixes.Count == 0 || selectedPrefixes.Contains(reforgeSlot.item.prefix) || !CanReforgeItem())
 				{
 					autoReforge = false;
 					reforgeTries = tickCounter = 0;
 				}
-				else if (++tickCounter > 9)
+				else if (tickCounter > 9)
 				{
 					tickCounter = 0;
+					reforgeTries++;
 					ReforgeItem();
-					if (selectedPrefixes.Contains(reforgeSlot.item.prefix) || ++reforgeTries > 200)
+					if (selectedPrefixes.Contains(reforgeSlot.item.prefix) || reforgeTries > 200)
 					{
 						autoReforge = false;
 						reforgeTries = tickCounter = 0;
 					}
-				}
-				else
-				{
-					reforgeButton.Rotation += 0.2f;
 				}
 			}
 			else if (reforgeButton.Rotation != 0)
 			{
 				if (reforgeButton.Rotation > MathHelper.TwoPi)
 				{
-					reforgeButton.Rotation = reforgeButton.Rotation % MathHelper.TwoPi;
+					reforgeButton.Rotation %= MathHelper.TwoPi;
 				}
 				reforgeButton.Rotation = MathHelper.TwoPi - reforgeButton.Rotation <= 0.2f ? 0 : reforgeButton.Rotation + 0.2f;
 			}
@@ -243,7 +242,6 @@ namespace GadgetBox.GadgetUI
 			{
 				selectedPrefixes.Add(element.prefix);
 			}
-
 			reforgeList.UpdateOrder();
 			Main.PlaySound(SoundID.MenuTick);
 		}

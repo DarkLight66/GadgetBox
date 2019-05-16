@@ -13,7 +13,9 @@ namespace GadgetBox
 	public static class GadgetMethods
 	{
 		public static GadgetPlayer Gadget(this Player player) => player.GetModPlayer<GadgetPlayer>();
+		public static GadgetItem Gadget(this Item item) => item.GetGlobalItem<GadgetItem>();
 		public static string GetTextValue(this Mod mod, string key) => Language.GetTextValue($"Mods.{mod.Name}.{key}");
+		public static string GetTextValue(this Mod mod, string key, object arg) => Language.GetTextValue($"Mods.{mod.Name}.{key}", arg);
 
 		public static void Bounce(this Projectile projectile, Vector2 oldVelocity, float bouncyness = 1f)
 		{
@@ -21,7 +23,6 @@ namespace GadgetBox
 			{
 				projectile.velocity.X = -oldVelocity.X * bouncyness;
 			}
-
 			if (projectile.velocity.Y != oldVelocity.Y)
 			{
 				projectile.velocity.Y = -oldVelocity.Y * bouncyness;
@@ -35,7 +36,6 @@ namespace GadgetBox
 			{
 				return;
 			}
-
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
 				ModPacket packet = GadgetBox.Instance.GetPacket(MessageType.CatchNPC, 2);
@@ -107,12 +107,10 @@ namespace GadgetBox
 			{
 				return 0;
 			}
-
 			if (player == null)
 			{
 				player = Main.LocalPlayer;
 			}
-
 			int reforgePrice = item.value;
 			bool canApplyDiscount = true;
 			if (ItemLoader.ReforgePrice(item, ref reforgePrice, ref canApplyDiscount))
@@ -121,7 +119,6 @@ namespace GadgetBox
 				{
 					reforgePrice = (int)(reforgePrice * 0.8f);
 				}
-
 				reforgePrice /= 3;
 			}
 			return reforgePrice;
@@ -250,7 +247,6 @@ namespace GadgetBox
 				{
 					return false;
 				}
-
 				int[] valid = new int[] { 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80 };
 				if (valid.Contains(prefix))
 				{
@@ -261,12 +257,10 @@ namespace GadgetBox
 					invalid = !modPrefix.CanRoll(item);
 				}
 			}
-
 			if (invalid)
 			{
 				return false;
 			}
-
 			switch (choise)
 			{
 				case 1:
@@ -541,35 +535,28 @@ namespace GadgetBox
 					{
 						modPrefix?.SetStats(ref damageMult, ref knockBackMult, ref useTimeMult, ref scaleMult, ref shootSpeedMult, ref manaMult, ref critBonus);
 					}
-
 					break;
 			}
-
 			if (damageMult != 1f && Math.Round(item.damage * damageMult) == item.damage)
 			{
 				invalid = true;
 			}
-
 			if (useTimeMult != 1f && Math.Round(item.useAnimation * useTimeMult) == item.useAnimation)
 			{
 				invalid = true;
 			}
-
 			if (manaMult != 1f && Math.Round(item.mana * manaMult) == item.mana)
 			{
 				invalid = true;
 			}
-
 			if (knockBackMult != 1f && item.knockBack == 0f)
 			{
 				invalid = true;
 			}
-
 			if (choise >= PrefixID.Count)
 			{
 				modPrefix?.ValidateItem(item, ref invalid);
 			}
-
 			return !invalid;
 		}
 
@@ -652,7 +639,6 @@ namespace GadgetBox
 					{
 						continue;
 					}
-
 					return false;
 				}
 			}

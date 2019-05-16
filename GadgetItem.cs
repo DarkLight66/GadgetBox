@@ -25,7 +25,6 @@ namespace GadgetBox
 			{
 				grabRange += grabRange > Player.defaultItemGrabRange ? 100 : 500;
 			}
-
 			if (item.makeNPC > 0 && player.Gadget().critterCatch)
 			{
 				grabRange += grabRange > Player.defaultItemGrabRange ? 70 : 300;
@@ -42,23 +41,26 @@ namespace GadgetBox
 				{
 					TooltipLine tooltip = new TooltipLine(mod, "TweakName", mod.GetTextValue($"TweakName.{tweak}"))
 					{
-						overrideColor = new Color(152, 76, 26)
+						overrideColor = tweak == TweakType.Malleable ? new Color(152, 76, 26) : Color.Goldenrod
 					};
 					tooltips.Insert(index + 1, tooltip);
-					tooltip = new TooltipLine(mod, "TweakTooltip", mod.GetTextValue($"TweakTooltip.{tweak}"))
+					index = tooltips.FindIndex(tt => tt.mod == "Terraria" && (tt.Name == "SetBonus" ||
+					tt.Name == "Expert" || tt.Name == "SpecialPrice" || tt.Name == "Price"));
+					if (index == -1)
+					{
+						index = tooltips.Count;
+					}
+					tooltip = new TooltipLine(mod, "TweakTooltipGood", mod.GetTextValue($"TweakTooltipGood.{tweak}"))
 					{
 						isModifier = true
 					};
-					index = tooltips.FindIndex(tt => tt.mod == "Terraria" && (tt.Name == "SetBonus" ||
-					tt.Name == "Expert" || tt.Name == "SpecialPrice" || tt.Name == "Price"));
-					if (index != -1)
+					tooltips.Insert(index++, tooltip);
+					tooltip = new TooltipLine(mod, "TweakTooltipBad", mod.GetTextValue($"TweakTooltipBad.{tweak}"))
 					{
-						tooltips.Insert(index, tooltip);
-					}
-					else
-					{
-						tooltips.Add(tooltip);
-					}
+						isModifier = true,
+						isModifierBad = true
+					};
+					tooltips.Insert(index, tooltip);
 				}
 			}
 
@@ -73,27 +75,27 @@ namespace GadgetBox
 				string text = "";
 				if (item.prefix <= PrefixID.Warding)
 				{
-					text = "+" + ((item.prefix - PrefixID.Hard + 1) * 2) + " " + Language.GetTextValue("LegacyTooltip.30");
+					text = $"+{(item.prefix - PrefixID.Hard + 1) * 2} {Language.GetTextValue("LegacyTooltip.30")}";
 				}
 				else if (item.prefix == PrefixID.Arcane)
 				{
-					text = "-2" + Language.GetTextValue("LegacyTooltip.42");
+					text = $"-2{Language.GetTextValue("LegacyTooltip.42")}";
 				}
 				else if (item.prefix <= PrefixID.Lucky)
 				{
-					text = "+" + (item.prefix - PrefixID.Precise + 1) + mod.GetTextValue("Misc.CriticalDamage");
+					text = mod.GetTextValue("Misc.CriticalDamage", item.prefix - PrefixID.Precise + 1);
 				}
 				else if (item.prefix <= PrefixID.Menacing)
 				{
-					text = "+" + ((item.prefix - PrefixID.Jagged + 2) / 2) + " " + mod.GetTextValue("Misc.ArmorPenetration");
+					text = mod.GetTextValue("Misc.ArmorPenetration", (item.prefix - PrefixID.Jagged + 2) / 2);
 				}
 				else if (item.prefix <= PrefixID.Quick2)
 				{
-					text = "+" + (item.prefix - PrefixID.Brisk + 1) + " " + mod.GetTextValue("Misc.JumpHeight");
+					text = mod.GetTextValue("Misc.JumpHeight", item.prefix - PrefixID.Brisk + 1);
 				}
 				else
 				{
-					text = "+" + (item.prefix - PrefixID.Wild + 1) + mod.GetTextValue("Misc.MiningSpeed");
+					text = mod.GetTextValue("Misc.MiningSpeed", item.prefix - PrefixID.Wild + 1);
 				}
 
 				TooltipLine tt = new TooltipLine(mod, "ShinyAcc", text)
@@ -122,7 +124,6 @@ namespace GadgetBox
 				{
 					chance /= 2;
 				}
-
 				if (Main.rand.NextBool(chance))
 				{
 					player.QuickSpawnItem(mod.ItemType<LesserReforgingKit>(), Main.rand.NextBool() ? 2 : 1);
@@ -140,13 +141,11 @@ namespace GadgetBox
 			{
 				return;
 			}
-
 			GadgetPlayer modPlayer = player.Gadget();
 			if (!modPlayer.shinyEquips)
 			{
 				return;
 			}
-
 			if (item.prefix <= PrefixID.Warding)
 			{
 				player.statLifeMax2 += (item.prefix - PrefixID.Hard + 1) * 2;
@@ -178,9 +177,12 @@ namespace GadgetBox
 		{
 			if (tweak == TweakType.Malleable)
 			{
-				reforgePrice = (int)Math.Ceiling(reforgePrice * 0.75);
+				reforgePrice = (int)Math.Ceiling(reforgePrice * 0.75f);
 			}
-
+			else if (tweak == TweakType.Precious)
+			{
+				reforgePrice = (int)(reforgePrice * 1.5f);
+			}
 			return true;
 		}
 
@@ -190,7 +192,7 @@ namespace GadgetBox
 			if (item.accessory && Main.LocalPlayer.adjTile[workshop] &&
 				Array.Exists(recipe.requiredTile, x => x == TileID.TinkerersWorkbench || x == workshop))
 			{
-				tweak = TweakType.Malleable;
+				tweak = Main.rand.NextBool(3) ? TweakType.Malleable : TweakType.Precious;
 			}
 		}
 
@@ -203,7 +205,32 @@ namespace GadgetBox
 		internal enum TweakType : byte
 		{
 			None,
-			Malleable
+			Malleable,
+			Precious
+		}
+
+		public override bool Autoload(ref string name)
+		{
+			On.Terraria.Item.GetStoreValue += OnGetStoreValue;
+			return base.Autoload(ref name);
+		}
+
+		private static int OnGetStoreValue(On.Terraria.Item.orig_GetStoreValue orig, Item self)
+		{
+			int value = orig(self);
+			if (!self.buy && self.shopSpecialCurrency == -1)
+			{
+				TweakType tweakType = self.Gadget().tweak;
+				if (tweakType == TweakType.Malleable)
+				{
+					value /= 2;
+				}
+				else if (tweakType == TweakType.Precious)
+				{
+					value *= 2;
+				}
+			}
+			return value;
 		}
 	}
 }

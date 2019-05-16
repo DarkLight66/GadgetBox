@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace GadgetBox.Items.Consumables
 {
-	public class ReforgingKit : ModItem
+	public class ReforgingKit : ItemOnRightClick
 	{
 		public override void SetDefaults()
 		{
@@ -15,13 +15,17 @@ namespace GadgetBox.Items.Consumables
 			item.rare = 4;
 		}
 
-		public override bool CanRightClick()
-			=> Main.mouseItem != null && !Main.mouseItem.IsAir && Main.mouseItem.Prefix(-3) && ItemLoader.PreReforge(Main.mouseItem);
+		public override bool CanRightClick() => CanRightClick(Main.mouseItem, true);
+		public override bool CanRightClick(Item item, bool byMouseItem) => item != null && !item.IsAir && item.Prefix(-3) && ItemLoader.PreReforge(item);
 
-		public override void RightClick(Player player)
+		public override void RightClick(Player player) => RightClick(ref Main.mouseItem, player, true);
+		public override void RightClick(ref Item item, Player player, bool byMouseItem)
 		{
-			GadgetMethods.PrefixItem(ref Main.mouseItem);
-			player.inventory[58] = Main.mouseItem.Clone();
+			GadgetMethods.PrefixItem(ref item);
+			if (byMouseItem)
+			{
+				player.inventory[58] = item.Clone();
+			}
 		}
 
 		public override void AddRecipes()

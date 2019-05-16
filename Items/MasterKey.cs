@@ -1,6 +1,10 @@
-﻿using Terraria;
+﻿using MonoMod.Cil;
+using System;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+
+using static Mono.Cecil.Cil.OpCodes;
 
 namespace GadgetBox.Items
 {
@@ -27,6 +31,32 @@ namespace GadgetBox.Items
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
+		}
+
+		public override bool Autoload(ref string name)
+		{
+			IL.Terraria.UI.ItemSlot.RightClick_ItemArray_int_int += ILGoldenLockBox;
+			return base.Autoload(ref name);
+		}
+
+		private void ILGoldenLockBox(ILContext il)
+		{
+			ILCursor cursor = new ILCursor(il);
+
+			if (!cursor.TryGotoNext(MoveType.After, i => i.MatchLdcI4(ItemID.GoldenKey), i => i.MatchLdcI4(0),
+				i => i.MatchCallvirt(typeof(Player).GetMethod(nameof(Player.ConsumeItem)))))
+			{
+				return;
+			}
+
+			ILLabel label = il.DefineLabel();
+
+			cursor.Index--;
+			cursor.Emit(Brtrue_S, label);
+			cursor.Emit(Ldloc_0);
+			cursor.EmitDelegate<Func<Player, bool>>(player => player.HasItem(mod.ItemType<MasterKey>()));
+			cursor.Index++;
+			cursor.MarkLabel(label);
 		}
 	}
 }

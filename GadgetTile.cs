@@ -62,6 +62,7 @@ namespace GadgetBox
 				}
 				if (Chest.isLocked(left, top) && player.HasItem(masterKey) && Chest.Unlock(left, top) && Main.netMode == NetmodeID.MultiplayerClient)
 				{
+					player.tileInteractionHappened = true;
 					NetMessage.SendData(MessageID.Unlock, -1, -1, null, player.whoAmI, 1f, left, top);
 				}
 			}
@@ -70,6 +71,7 @@ namespace GadgetBox
 				WorldGen.UnlockDoor(i, j);
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 				{
+					player.tileInteractionHappened = true;
 					NetMessage.SendData(MessageID.Unlock, -1, -1, null, player.whoAmI, 2f, i, j);
 				}
 			}

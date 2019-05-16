@@ -24,7 +24,6 @@ namespace GadgetBox.Buffs
 				{
 					continue;
 				}
-
 				if (item.prefix <= PrefixID.Warding)
 				{
 					effect[0] += (item.prefix - PrefixID.Hard + 1) * 2;
@@ -51,38 +50,32 @@ namespace GadgetBox.Buffs
 				}
 			}
 			tip += Environment.NewLine + mod.GetTextValue("Misc.CurrentlyGrants");
-			string text = string.Empty;
+			string text = "";
 			if (effect[0] > 0)
 			{
-				text += $"{Environment.NewLine}+{effect[0]} {Language.GetTextValue("LegacyTooltip.30")}";
+				text += $"\n+{effect[0]} {Language.GetTextValue("LegacyTooltip.30")}";
 			}
-
 			if (effect[1] > 0)
 			{
-				text += $"{Environment.NewLine}-{effect[1]} {Language.GetTextValue("LegacyTooltip.42")}";
+				text += $"\n-{effect[1]} {Language.GetTextValue("LegacyTooltip.42")}";
 			}
-
 			if (effect[2] > 0)
 			{
-				text += $"{Environment.NewLine}+{effect[2] + mod.GetTextValue("Misc.CriticalDamage")}";
+				text += $"\n{mod.GetTextValue("Misc.CriticalDamage", effect[2])}";
 			}
-
 			if (effect[3] > 0)
 			{
-				text += $"{Environment.NewLine}+{effect[3]} {mod.GetTextValue("Misc.ArmorPenetration")}";
+				text += $"\n{mod.GetTextValue("Misc.ArmorPenetration", effect[3])}";
 			}
-
 			if (effect[4] > 0)
 			{
-				text += $"{Environment.NewLine}+{effect[4]} {mod.GetTextValue("Misc.JumpHeight")}";
+				text += $"\n{mod.GetTextValue("Misc.JumpHeight", effect[4])}";
 			}
-
 			if (effect[5] > 0)
 			{
-				text += $"{Environment.NewLine}+{effect[5] + mod.GetTextValue("Misc.MiningSpeed")}";
+				text += $"\n{mod.GetTextValue("Misc.MiningSpeed", effect[5])}";
 			}
-
-			tip += text == string.Empty ? Environment.NewLine + mod.GetTextValue("Misc.NoEffects") : text;
+			tip += text == "" ? "\n" + mod.GetTextValue("Misc.NoEffects") : text;
 		}
 	}
 }

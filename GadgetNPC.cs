@@ -19,65 +19,51 @@ namespace GadgetBox
 					{
 						Item.NewItem(npc.getRect(), mod.ItemType<EtherealVortex>(), 1, false, -1);
 					}
-
 					break;
 				case NPCID.ArmoredSkeleton:
 				case NPCID.BlueArmoredBones:
 				case NPCID.BlueArmoredBonesMace:
 				case NPCID.BlueArmoredBonesNoPants:
 				case NPCID.BlueArmoredBonesSword:
-					if (Main.rand.NextBool(Main.expertMode ? 50 : 100))
+					if (Main.rand.NextBool(Main.expertMode ? 25 : 50))
 					{
 						Item.NewItem(npc.getRect(), mod.ItemType<EnchantedPolish>(), Main.rand.Next(1, 3));
 					}
-
 					break;
 			}
 		}
 
 		public override void SetupShop(int type, Chest shop, ref int nextSlot)
 		{
-			if (nextSlot > 38)
-			{
-				return;
-			}
-
 			switch (type)
 			{
 				case NPCID.Merchant:
 					int slot = 0;
-					while (slot < nextSlot)
+					while (slot <= nextSlot)
 					{
-						if (shop.item[slot++].type != ItemID.CopperAxe && slot != nextSlot)
+						if (shop.item[slot].type != ItemID.CopperAxe && slot != nextSlot)
 						{
+							slot++;
 							continue;
 						}
-
-						for (int i = nextSlot; i > slot; i--)
+						for (int i = nextSlot; i > slot + 1; i--)
 						{
 							shop.item[i] = shop.item[i - 1];
 						}
-
-						shop.item[slot] = new Item();
-						shop.item[slot].SetDefaults(mod.ItemType<OldShovel>());
-						slot = ++nextSlot;
+						shop.item[slot + 1] = new Item();
+						shop.item[slot + 1].SetDefaults(mod.ItemType<OldShovel>());
+						break;
 					}
 					break;
 				case NPCID.Wizard:
 					shop.item[nextSlot++].SetDefaults(mod.ItemType<ReflectorBlock>());
 					break;
 				case NPCID.Steampunker:
-					if (nextSlot > 36)
-					{
-						return;
-					}
-
 					shop.item[nextSlot++].SetDefaults(mod.ItemType<AutoReforgeMachine>());
 					if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
 					{
 						shop.item[nextSlot++].SetDefaults(mod.ItemType<ClockworkDigger>());
 					}
-
 					shop.item[nextSlot++].SetDefaults(mod.ItemType<AutoReelingRod>());
 					break;
 			}
@@ -85,12 +71,10 @@ namespace GadgetBox
 
 		public override void SetupTravelShop(int[] shop, ref int nextSlot)
 		{
-			if (!Main.hardMode || nextSlot >= shop.Length || !Main.rand.NextBool(50))
+			if (Main.hardMode && nextSlot < shop.Length && Main.rand.NextBool(25))
 			{
-				return;
+				shop[nextSlot++] = mod.ItemType<EnchantedPolish>();
 			}
-
-			shop[nextSlot++] = mod.ItemType<EnchantedPolish>();
 		}
 	}
 }
