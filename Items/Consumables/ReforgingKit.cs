@@ -31,8 +31,9 @@ namespace GadgetBox.Items.Consumables
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType<LesserReforgingKit>(), 5);
-			recipe.AddTile(TileID.MythrilAnvil);
+			recipe.AddIngredient(mod.ItemType<LesserReforgingKit>(), 2);
+			recipe.AddIngredient(mod.ItemType<RestoringKit>(), 2);
+			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}

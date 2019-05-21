@@ -66,6 +66,12 @@ namespace GadgetBox
 					}
 					shop.item[nextSlot++].SetDefaults(mod.ItemType<AutoReelingRod>());
 					break;
+				case NPCID.GoblinTinkerer:
+					if (Main.hardMode)
+					{
+						shop.item[nextSlot++].SetDefaults(mod.ItemType<RestoringKit>());
+					}
+					break;
 			}
 		}
 

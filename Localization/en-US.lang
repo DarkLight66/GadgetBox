@@ -19,9 +19,10 @@ ItemTooltip.PlatedShovel=Cuts through land like butter
 ItemTooltip.ActivationRod=Activates Mechanisms
 
 ItemTooltip.EnchantedPolish=Polishes your equipment temporarily\nPolished equipment grants extra effects depending on their prefix
-ItemTooltip.LesserReforgingKit=Grants a random prefix to an item\nOnly works on unprefixed items\nTake it and <right> over another item to use
+ItemTooltip.LesserReforgingKit=Grants a random prefix to an item\nOnly works on unprefixed items\nTake and <right> over another item to use
 ItemTooltip.MasterKey=Opens any lock
-ItemTooltip.ReforgingKit=Grants a random prefix to an item\nTake it and <right> over another item to use
+ItemTooltip.ReforgingKit=Grants a random prefix to an item\nTake and <right> over another item to use
+ItemTooltip.RestoringKit=Removes prefixes from items\nTake and <right> over another item to use
 
 MapObject.AutoReforgeMachineTile={$Mods.GadgetBox.ItemName.AutoReforgeMachine}
 MapObject.ChlorophyteExtractorTile={$Mods.GadgetBox.ItemName.ChlorophyteExtractor}

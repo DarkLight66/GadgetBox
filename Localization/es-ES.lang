@@ -39,6 +39,8 @@ ItemName.MasterKey=Llave maestra
 ItemTooltip.MasterKey=Abre cualquier cerradura
 ItemName.ReforgingKit=Equipo de refuerzo
 ItemTooltip.ReforgingKit=Le da un sufijo al azar a un objeto\nTómalo y <right> sobre un objeto para usarlo
+ItemName.RestoringKit=Equipo restaurador
+ItemTooltip.RestoringKit=Remueve los sufijos de un objeto\nTómalo y <right> sobre un objeto para usarlo
 
 Prefix.Trashed=(Destrozado)
 Prefix.Shortened=(Acortado)

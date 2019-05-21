@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -137,25 +138,31 @@ namespace GadgetBox
 			}
 		}
 
-		public static void PrefixItem(ref Item item, bool silent = false)
+		public static void PrefixItem(ref Item item, bool silent = false, bool reset = false)
 		{
 			bool favorited = item.favorited;
 			int stack = item.stack;
 			Item tempItem = new Item();
 			tempItem.netDefaults(item.netID);
 			tempItem = tempItem.CloneWithModdedDataFrom(item);
-			tempItem.Prefix(-2);
+			if (!reset)
+			{
+				tempItem.Prefix(-2);
+			}
 			item = tempItem.Clone();
 			item.Center = Main.LocalPlayer.Center;
 			item.favorited = favorited;
 			item.stack = stack;
-			ItemLoader.PostReforge(item);
+			if (!reset)
+			{
+				ItemLoader.PostReforge(item);
+			}
 			if (silent)
 			{
 				return;
 			}
 			ItemText.NewText(item, item.stack, true, false);
-			Main.PlaySound(SoundID.Item37);
+			Main.PlaySound(reset ? new LegacySoundStyle(SoundID.Grab, 1) : SoundID.Item37);
 		}
 
 		public static bool CanApplyPrefix(this Item item, byte prefix)
@@ -565,6 +572,25 @@ namespace GadgetBox
 		static bool MeleePrefix(Item item) => item.modItem != null && GeneralPrefix(item) && item.melee && !item.noUseGraphic;
 		static bool RangedPrefix(Item item) => item.modItem != null && GeneralPrefix(item) && (item.ranged || item.thrown);
 		static bool MagicPrefix(Item item) => item.modItem != null && GeneralPrefix(item) && (item.magic || item.summon);
+
+		public static void ResetPrefixOnItem(ref Item item, bool silent = false)
+		{
+			bool favorited = item.favorited;
+			int stack = item.stack;
+			Item tempItem = new Item();
+			tempItem.netDefaults(item.netID);
+			tempItem = tempItem.CloneWithModdedDataFrom(item);
+			item = tempItem.Clone();
+			item.Center = Main.LocalPlayer.Center;
+			item.favorited = favorited;
+			item.stack = stack;
+			if (silent)
+			{
+				return;
+			}
+			ItemText.NewText(item, item.stack, true, false);
+			Main.PlaySound(SoundID.Grab);
+		}
 
 		public static List<Tuple<Point16, ushort>> TilesHit(Vector2 Position, Vector2 Velocity, int Width, int Height)
 		{

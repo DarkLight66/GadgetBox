@@ -15,6 +15,7 @@ namespace GadgetBox.Tiles
 			Main.tileFrameImportant[Type] = true;
 			Main.tileBlockLight[Type] = true;
 			Main.tileSolid[Type] = true;
+			// Initial setup of the TileObjectData, note the lack of anchors
 			TileObjectData.newTile.Width = 2;
 			TileObjectData.newTile.Height = 2;
 			TileObjectData.newTile.UsesCustomCanPlace = true;
@@ -22,32 +23,44 @@ namespace GadgetBox.Tiles
 			TileObjectData.newTile.CoordinateWidth = 16;
 			TileObjectData.newTile.CoordinatePadding = 2;
 			TileObjectData.newTile.StyleHorizontal = true;
+			// Placing from the ceiling
 			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 			TileObjectData.newAlternate.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidBottom, 2, 0);
 			TileObjectData.newAlternate.Origin = new Point16(1, 0);
-			TileObjectData.addAlternate(0);
+			TileObjectData.addAlternate(0); // shows first frame of spritesheet
+			// Placing from the background wall
 			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 			TileObjectData.newAlternate.AnchorWall = true;
 			TileObjectData.addAlternate(0);
+			// Placing from the background wall also, with origin slightly adjusted in case the placement position doesn't allow the previous alternate.
+			// This is only useful for multi tiles.
 			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 			TileObjectData.newAlternate.Origin = new Point16(1, 0);
 			TileObjectData.newAlternate.AnchorWall = true;
 			TileObjectData.addAlternate(0);
+			// Placing from the right wall
 			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 			TileObjectData.newAlternate.Origin = new Point16(1, 0);
 			TileObjectData.newAlternate.AnchorRight = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, 2, 0);
-			TileObjectData.addAlternate(1);
+			TileObjectData.addAlternate(1); // shows second frame of the spritesheet
+			// Placing from the left wall
 			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 			TileObjectData.newAlternate.AnchorLeft = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, 2, 0);
-			TileObjectData.addAlternate(2);
+			TileObjectData.addAlternate(2); // shows third frame of the spritesheet
+			// Placing from the floor
 			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 			TileObjectData.newAlternate.Origin = new Point16(0, 1);
 			TileObjectData.newAlternate.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidWithTop, 2, 0);
-			TileObjectData.addAlternate(3);
+			TileObjectData.addAlternate(3); // shows fourth frame of the spritesheet
+			// Also placing from the floor, with origin slightly adjusted in case the placement position doesn't allow the previous alternate.
+			// This is only useful for multi tiles.
 			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 			TileObjectData.newAlternate.Origin = new Point16(1, 1);
 			TileObjectData.newAlternate.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidWithTop, 2, 0);
 			TileObjectData.addAlternate(3);
+			// Last we modify the *original* place style, which is the same as the first alternate with origin slightly adjusted in case the placement position doesn't allow the previous alternate.
+			// This is only useful for multi tiles.
+			// Why did i do it in this order? had i added the anchortop before adding the alternates, i would have had to reset the anchortop for all the alternates
 			TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidBottom, 2, 0);
 			TileObjectData.addTile(Type);
 			AddMapEntry(new Color(141, 56, 0));
@@ -56,6 +69,7 @@ namespace GadgetBox.Tiles
 			disableSmartCursor = true;
 		}
 
+		// Make the traps invisible the same color as Lihzahrd Brick Walls on the map if the tile is deactuated and the golem hasn't been defeated
 		public override ushort GetMapOption(int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
@@ -63,7 +77,6 @@ namespace GadgetBox.Tiles
 			{
 				return 1;
 			}
-
 			return 0;
 		}
 
@@ -82,7 +95,6 @@ namespace GadgetBox.Tiles
 			{
 				NetMessage.SendTileSquare(-1, x, y, 3);
 			}
-
 			return false;
 		}
 
@@ -126,6 +138,7 @@ namespace GadgetBox.Tiles
 
 		public override bool Dangersense(int i, int j, Player player) => true;
 
+		// This is basically a hack, needed because mining the bottom of a trap while a chest is placed on top can break the game
 		public static bool CanMineTrap(int i, int j, ushort trap)
 		{
 			int y = j - (Main.tile[i, j].frameY / 18);
