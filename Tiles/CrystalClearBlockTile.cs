@@ -1,13 +1,10 @@
-﻿using System;
-using GadgetBox.Items.Placeable;
+﻿using GadgetBox.Items.Placeable;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoMod.Cil;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-
-using static Mono.Cecil.Cil.OpCodes;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Tiles
 {
@@ -21,7 +18,7 @@ namespace GadgetBox.Tiles
 			TileID.Sets.BlocksStairs[Type] = true;
 			TileID.Sets.GemsparkFramingTypes[Type] = Type;
 			dustType = DustID.SilverCoin;
-			drop = mod.ItemType<CrystalClearBlock>();
+			drop = ItemType<CrystalClearBlock>();
 			AddMapEntry(Color.Orchid);
 		}
 
@@ -32,10 +29,7 @@ namespace GadgetBox.Tiles
 
 		public override void NumDust(int i, int j, bool fail, ref int num)
 		{
-			if (Main.LocalPlayer.Gadget().crystalLens)
-			{
-				num = fail ? 1 : 3;
-			}
+			num = Main.LocalPlayer.Gadget().crystalLens ? fail ? 1 : 3 : 0;
 		}
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
@@ -44,35 +38,9 @@ namespace GadgetBox.Tiles
 			return false;
 		}
 
-		public override bool Autoload(ref string name, ref string texture)
+		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
 		{
-			IL.Terraria.Main.DrawTiles += ILDrawTiles;
-			return base.Autoload(ref name, ref texture);
-		}
-
-		private void ILDrawTiles(ILContext il)
-		{
-			ILCursor cursor = new ILCursor(il);
-
-			if (!cursor.TryGotoNext(i => i.MatchStloc(22)))
-			{
-				return;
-			}
-
-			cursor.Index++;
-			cursor.Emit(Ldloca_S, (byte)22);
-			cursor.Emit(Ldloc_S, (byte)17);
-			cursor.EmitDelegate<ColorMod>(ColorModMult);
-		}
-
-		private delegate void ColorMod(ref Color color, ushort tile);
-
-		private static void ColorModMult(ref Color color, ushort tile)
-		{
-			if (tile == GadgetBox.Instance.TileType<CrystalClearBlockTile>())
-			{
-				color *= GadgetPlayer.crystalLensFadeMult;
-			}
+			drawColor *= GadgetPlayer.crystalLensFadeMult;
 		}
 	}
 }

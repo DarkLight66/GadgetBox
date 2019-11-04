@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox
 {
@@ -16,7 +17,7 @@ namespace GadgetBox
 			}
 
 			Player player = Main.LocalPlayer;
-			int masterKey = mod.ItemType<MasterKey>();
+			int masterKey = ItemType<MasterKey>();
 			bool mayUnlock = false;
 			if (TileID.Sets.BasicChest[tile.type])
 			{
@@ -48,7 +49,7 @@ namespace GadgetBox
 		{
 			Player player = Main.LocalPlayer;
 			Tile tile = Main.tile[i, j];
-			int masterKey = mod.ItemType<MasterKey>();
+			int masterKey = ItemType<MasterKey>();
 			if (TileID.Sets.BasicChest[tile.type] && player.talkNPC == -1)
 			{
 				int left = i, top = j;

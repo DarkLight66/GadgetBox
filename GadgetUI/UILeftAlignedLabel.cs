@@ -9,9 +9,9 @@ namespace GadgetBox.GadgetUI
 {
 	internal class UILeftAlignedLabel : UIPanel
 	{
-		float _textScale = 1f;
-		Vector2 _textSize = Vector2.Zero;
-		bool _isLarge;
+		private float _textScale = 1f;
+		private Vector2 _textSize = Vector2.Zero;
+		private bool _isLarge;
 
 		internal string Text { get; set; } = "";
 		internal Color TextColor { get; set; } = Color.White;

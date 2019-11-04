@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Items.Tools
 {
@@ -19,7 +20,7 @@ namespace GadgetBox.Items.Tools
 			item.value = Item.sellPrice(0, 5, 50);
 			item.rare = 5;
 			item.UseSound = SoundID.Item23;
-			item.shoot = mod.ProjectileType<ClockworkDiggerProj>();
+			item.shoot = ProjectileType<ClockworkDiggerProj>();
 			item.shootSpeed = 40;
 			item.noMelee = true;
 			item.noUseGraphic = true;

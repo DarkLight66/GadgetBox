@@ -132,9 +132,12 @@ namespace GadgetBox
 				return;
 			}
 
-			if (ItemLoader.ConsumeItem(item, Main.LocalPlayer) && (item.stack -= amount) <= 0)
+			for (int i = 0; i < amount; i++)
 			{
-				item.TurnToAir();
+				if (ItemLoader.ConsumeItem(item, Main.LocalPlayer) && (item.stack--) <= 0)
+				{
+					item.TurnToAir();
+				}
 			}
 		}
 
@@ -567,30 +570,11 @@ namespace GadgetBox
 			return !invalid;
 		}
 
-		static bool GeneralPrefix(Item item) => item.maxStack == 1 && item.damage > 0 && item.ammo == 0 && !item.accessory;
-		static bool WeaponPrefix(Item item) => item.modItem != null && GeneralPrefix(item) && item.melee && item.noUseGraphic;
-		static bool MeleePrefix(Item item) => item.modItem != null && GeneralPrefix(item) && item.melee && !item.noUseGraphic;
-		static bool RangedPrefix(Item item) => item.modItem != null && GeneralPrefix(item) && (item.ranged || item.thrown);
-		static bool MagicPrefix(Item item) => item.modItem != null && GeneralPrefix(item) && (item.magic || item.summon);
-
-		public static void ResetPrefixOnItem(ref Item item, bool silent = false)
-		{
-			bool favorited = item.favorited;
-			int stack = item.stack;
-			Item tempItem = new Item();
-			tempItem.netDefaults(item.netID);
-			tempItem = tempItem.CloneWithModdedDataFrom(item);
-			item = tempItem.Clone();
-			item.Center = Main.LocalPlayer.Center;
-			item.favorited = favorited;
-			item.stack = stack;
-			if (silent)
-			{
-				return;
-			}
-			ItemText.NewText(item, item.stack, true, false);
-			Main.PlaySound(SoundID.Grab);
-		}
+		private static bool GeneralPrefix(Item item) => item.maxStack == 1 && item.damage > 0 && item.ammo == 0 && !item.accessory;
+		private static bool WeaponPrefix(Item item) => item.modItem != null && GeneralPrefix(item) && item.melee && item.noUseGraphic;
+		private static bool MeleePrefix(Item item) => item.modItem != null && GeneralPrefix(item) && item.melee && !item.noUseGraphic;
+		private static bool RangedPrefix(Item item) => item.modItem != null && GeneralPrefix(item) && (item.ranged || item.thrown);
+		private static bool MagicPrefix(Item item) => item.modItem != null && GeneralPrefix(item) && (item.magic || item.summon);
 
 		public static List<Tuple<Point16, ushort>> TilesHit(Vector2 Position, Vector2 Velocity, int Width, int Height)
 		{

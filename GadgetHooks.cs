@@ -12,6 +12,7 @@ namespace GadgetBox
 		internal static void Initialize()
 		{
 			IL.Terraria.UI.ItemSlot.RightClick_ItemArray_int_int += ILItemOnRightClick;
+			//IL.Terraria.Player.ItemCheck += ILItemCheck;
 		}
 
 		private static void ILItemOnRightClick(ILContext il)
@@ -46,6 +47,11 @@ namespace GadgetBox
 				return false;
 			});
 			cursor.Emit(Brtrue, label);
+		}
+
+		private static void ILItemCheck(ILContext il)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

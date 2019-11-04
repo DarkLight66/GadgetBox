@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 using static Mono.Cecil.Cil.OpCodes;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Items
 {
@@ -51,10 +52,9 @@ namespace GadgetBox.Items
 
 			ILLabel label = il.DefineLabel();
 
-			cursor.Index--;
 			cursor.Emit(Brtrue_S, label);
 			cursor.Emit(Ldloc_0);
-			cursor.EmitDelegate<Func<Player, bool>>(player => player.HasItem(mod.ItemType<MasterKey>()));
+			cursor.EmitDelegate<Func<Player, bool>>(player => player.HasItem(ItemType<MasterKey>()));
 			cursor.Index++;
 			cursor.MarkLabel(label);
 		}

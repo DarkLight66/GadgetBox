@@ -5,6 +5,7 @@ using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.World.Generation;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox
 {
@@ -71,10 +72,10 @@ namespace GadgetBox
 					continue;
 				}
 
-				int itemid = mod.ItemType<LesserReforgingKit>();
+				int itemid = ItemType<LesserReforgingKit>();
 				if (chestType == 5 || chestType == 16 || chestType >= 23 && chestType <= 27 || chestType == 2 && WorldGen.genRand.NextBool(2) || WorldGen.genRand.NextBool(4))
 				{
-					itemid = mod.ItemType<ReforgingKit>();
+					itemid = ItemType<ReforgingKit>();
 				}
 
 				for (int i = 0; i < chest.item.Length; i++)
@@ -357,7 +358,7 @@ namespace GadgetBox
 				plateX = x;
 			}
 
-			ushort boulderTrap = (ushort)mod.TileType<Tiles.BoulderTrapTile>();
+			ushort boulderTrap = (ushort)TileType<Tiles.BoulderTrapTile>();
 			int style = floorTrap ? 3 : 0;
 
 			Main.tile[trapX, trapY].active(true);

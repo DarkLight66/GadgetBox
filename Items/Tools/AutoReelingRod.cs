@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Items.Tools
 {
@@ -11,7 +12,7 @@ namespace GadgetBox.Items.Tools
 		public override void SetDefaults()
 		{
 			item.CloneDefaults(ItemID.MechanicsRod);
-			item.shoot = mod.ProjectileType<AutoBobber>();
+			item.shoot = ProjectileType<AutoBobber>();
 			item.rare = ItemRarityID.Pink;
 			item.value = Item.buyPrice(gold: 20);
 		}

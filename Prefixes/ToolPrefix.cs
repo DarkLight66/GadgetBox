@@ -7,7 +7,7 @@ namespace GadgetBox.Prefixes
 {
 	public class ToolPrefix : ModPrefix
 	{
-		internal static List<byte> ToolPrefixes = new List<byte>();
+		internal static List<byte> ToolPrefixes;
 		internal int critBonus = 0;
 		internal float damageMult = 1f;
 		internal float knockbackMult = 1f;
@@ -31,6 +31,7 @@ namespace GadgetBox.Prefixes
 		{
 			if (base.Autoload(ref name))
 			{
+				ToolPrefixes = new List<byte>();
 				AddToolPrefix(mod, ToolPrefixType.Trashed, 0.85f, 1, 1.15f, 0, -1);
 				AddToolPrefix(mod, ToolPrefixType.Shortened, 0.9f, 1, 1, 0, -2);
 				AddToolPrefix(mod, ToolPrefixType.Restless, 0.8f, 1, 0.85f, 2);
@@ -45,7 +46,7 @@ namespace GadgetBox.Prefixes
 
 		public override void Apply(Item item) => item.tileBoost += item.tileBoost == 0 && tileBoost < 0 ? -1 : tileBoost;
 
-		public override void ModifyValue(ref float valueMult) => valueMult *= 1 + tileBoost * 0.04f;
+		public override void ModifyValue(ref float valueMult) => valueMult *= 1 + tileBoost * 0.03f;
 
 		public override bool CanRoll(Item item) => item.pick + item.axe + item.hammer + ((item.modItem as BaseShovel)?.Shovel ?? 0) > 0 && item.tileBoost + tileBoost > -3 && (!item.noUseGraphic || useTimeMult == 1f);
 
@@ -59,7 +60,7 @@ namespace GadgetBox.Prefixes
 			critBonus = this.critBonus;
 		}
 
-		static void AddToolPrefix(Mod mod, ToolPrefixType prefixType, float damageMult = 1f, float knockbackMult = 1f, float useTimeMult = 1f, int critBonus = 0, int tileBoost = 0)
+		private static void AddToolPrefix(Mod mod, ToolPrefixType prefixType, float damageMult = 1f, float knockbackMult = 1f, float useTimeMult = 1f, int critBonus = 0, int tileBoost = 0)
 		{
 			mod.AddPrefix(prefixType.ToString(), new ToolPrefix(damageMult, knockbackMult, useTimeMult, critBonus, tileBoost));
 			ToolPrefixes.Add(mod.GetPrefix(prefixType.ToString()).Type);

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Tiles
 {
@@ -15,7 +16,7 @@ namespace GadgetBox.Tiles
 			Main.tileBrick[Type] = true;
 			Main.tileBlockLight[Type] = true;
 			dustType = DustID.SilverCoin;
-			drop = mod.ItemType<ReflectorBlock>();
+			drop = ItemType<ReflectorBlock>();
 			AddMapEntry(new Color(180, 180, 220));
 		}
 
@@ -37,7 +38,7 @@ namespace GadgetBox.Tiles
 			}
 
 			var tiles = GadgetMethods.TilesHit(projectile.position, oldVelocity, projectile.width, projectile.height);
-			var deflectors = tiles.FindAll(x => x.Item2 == mod.TileType<ReflectorBlockTile>());
+			var deflectors = tiles.FindAll(x => x.Item2 == TileType<ReflectorBlockTile>());
 
 			if (deflectors.Count != 0 && deflectors.Count >= (tiles.Count / 2))
 			{

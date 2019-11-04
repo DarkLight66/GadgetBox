@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Items.Consumables
 {
@@ -31,8 +32,8 @@ namespace GadgetBox.Items.Consumables
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.ItemType<LesserReforgingKit>(), 2);
-			recipe.AddIngredient(mod.ItemType<RestoringKit>(), 2);
+			recipe.AddIngredient(ItemType<LesserReforgingKit>(), 2);
+			recipe.AddIngredient(ItemType<RestoringKit>(), 2);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.SetResult(this);
 			recipe.AddRecipe();

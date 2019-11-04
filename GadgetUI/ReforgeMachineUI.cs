@@ -9,6 +9,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.GadgetUI
 {
@@ -19,12 +20,11 @@ namespace GadgetBox.GadgetUI
 		internal UIFancyButton reforgeButton;
 		internal UIPanel reforgeListPanel;
 		internal UIList reforgeList;
-
-		List<byte> selectedPrefixes = new List<byte>();
-		int reforgePrice;
-		int reforgeTries;
-		bool autoReforge;
-		byte tickCounter;
+		private List<byte> selectedPrefixes = new List<byte>();
+		private int reforgePrice;
+		private int reforgeTries;
+		private bool autoReforge;
+		private byte tickCounter;
 
 		public override void OnInitialize()
 		{
@@ -94,12 +94,12 @@ namespace GadgetBox.GadgetUI
 			Player player = Main.LocalPlayer;
 			Point16 machinePos = player.Gadget().machinePos;
 			bool closeUI = false, silent = false;
-			if (player.chest != -1 || Main.npcShop != 0 || player.talkNPC != -1 || player.sign >= 0)
+			if (!Main.playerInventory || player.chest != -1 || Main.npcShop != 0 || player.talkNPC != -1 || player.sign >= 0)
 			{
 				closeUI = true;
 				silent = true;
 			}
-			else if (!Main.playerInventory || Framing.GetTileSafely(machinePos).type != GadgetBox.Instance.TileType<AutoReforgeMachineTile>() ||
+			else if (Framing.GetTileSafely(machinePos).type != TileType<AutoReforgeMachineTile>() ||
 				player.OutOfTileBounds(machinePos, Player.tileRangeX + 1, Player.tileRangeY + 1, Player.tileRangeX + 2, Player.tileRangeY + 1))
 			{
 				closeUI = true;
@@ -111,7 +111,6 @@ namespace GadgetBox.GadgetUI
 				{
 					Main.PlaySound(SoundID.MenuClose);
 				}
-
 				GadgetBox.Instance.reforgeMachineInterface.SetState(null);
 				return;
 			}
@@ -160,7 +159,7 @@ namespace GadgetBox.GadgetUI
 			reforgeButton.Visible = !reforgeSlot.item.IsAir;
 		}
 
-		void OnReforgeButtonClick(UIMouseEvent evt, UIElement listeningElement)
+		private void OnReforgeButtonClick(UIMouseEvent evt, UIElement listeningElement)
 		{
 			if (autoReforge)
 			{
@@ -177,9 +176,10 @@ namespace GadgetBox.GadgetUI
 			}
 		}
 
-		bool CanReforgeItem() => !reforgeSlot.item.IsAir && Main.LocalPlayer.CanBuyItem(reforgePrice, -1) && ItemLoader.PreReforge(reforgeSlot.item);
+		private bool CanReforgeItem() => !reforgeSlot.item.IsAir && !selectedPrefixes.Contains(reforgeSlot.item.prefix) &&
+			Main.LocalPlayer.CanBuyItem(reforgePrice, -1) && ItemLoader.PreReforge(reforgeSlot.item);
 
-		void OnItemChanged()
+		private void OnItemChanged()
 		{
 			reforgeList.Clear();
 			if (reforgeSlot.item.IsAir)
@@ -192,36 +192,39 @@ namespace GadgetBox.GadgetUI
 			{
 				return;
 			}
+			controlItem.netDefaults(reforgeSlot.item.netID);
+			controlItem = controlItem.CloneWithModdedDataFrom(reforgeSlot.item);
 
 			UIReforgeLabel reforgeLabel;
 			List<byte> tempSelected = new List<byte>();
 			bool isArmor = false;
 			for (byte i = 1; i < ModPrefix.PrefixCount; i++)
 			{
-				controlItem.SetDefaults(reforgeSlot.item.type, true);
-				isArmor = ModCompat.ArmorPrefix(controlItem);
-				if (isArmor && !controlItem.accessory)
+				Item tempItem = controlItem.Clone();
+
+				isArmor = ModCompat.ArmorPrefix(tempItem);
+				if (isArmor && !tempItem.accessory)
 				{
-					controlItem.accessory = true;
+					tempItem.accessory = true;
 				}
 
-				if (!controlItem.CanApplyPrefix(i))
+				if (!tempItem.CanApplyPrefix(i))
 				{
 					continue;
 				}
 
-				controlItem.Prefix(i);
+				tempItem.Prefix(i);
 				if (isArmor)
 				{
-					ModCompat.ApplyArmorPrefix(controlItem, i);
+					ModCompat.ApplyArmorPrefix(tempItem, i);
 				}
 
-				if (controlItem.prefix != i)
+				if (tempItem.prefix != i)
 				{
 					continue;
 				}
 
-				reforgeLabel = new UIReforgeLabel(i, controlItem.expert ? -12 : controlItem.rare, controlItem.value);
+				reforgeLabel = new UIReforgeLabel(tempItem);
 				reforgeLabel.OnMouseDown += ChoseReforge;
 				reforgeLabel.SetPadding(10);
 				if (selectedPrefixes.Contains(i))
@@ -234,19 +237,19 @@ namespace GadgetBox.GadgetUI
 			selectedPrefixes = tempSelected;
 		}
 
-		void ChoseReforge(UIMouseEvent evt, UIElement listeningElement)
+		private void ChoseReforge(UIMouseEvent evt, UIElement listeningElement)
 		{
 			UIReforgeLabel element = ((UIReforgeLabel)listeningElement);
 			element.selected = !element.selected;
-			if (!selectedPrefixes.Remove(element.prefix))
+			if (!selectedPrefixes.Remove(element.shownItem.prefix))
 			{
-				selectedPrefixes.Add(element.prefix);
+				selectedPrefixes.Add(element.shownItem.prefix);
 			}
 			reforgeList.UpdateOrder();
 			Main.PlaySound(SoundID.MenuTick);
 		}
 
-		void ReforgeItem()
+		private void ReforgeItem()
 		{
 			Main.LocalPlayer.BuyItem(reforgePrice, -1);
 			GadgetMethods.PrefixItem(ref reforgeSlot.item);

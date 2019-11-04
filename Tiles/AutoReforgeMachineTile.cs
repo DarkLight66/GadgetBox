@@ -7,6 +7,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Tiles
 {
@@ -34,7 +35,7 @@ namespace GadgetBox.Tiles
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(i * 16, j * 16, 54, 54, mod.ItemType<AutoReforgeMachine>());
+			Item.NewItem(i * 16, j * 16, 54, 54, ItemType<AutoReforgeMachine>());
 		}
 
 		public override void AnimateTile(ref int frame, ref int frameCounter)
@@ -72,7 +73,7 @@ namespace GadgetBox.Tiles
 			frameYOffset = uniqueAnimationFrame * animationFrameHeight;
 		}
 
-		public override void RightClick(int i, int j)
+		public override bool NewRightClick(int i, int j)
 		{
 			Main.mouseRightRelease = false;
 			Point16 CenterPos = Center(i, j);
@@ -96,6 +97,8 @@ namespace GadgetBox.Tiles
 				GadgetBox.Instance.reforgeMachineInterface.SetState(new ReforgeMachineUI());
 			}
 			Main.PlaySound(notOpened ? SoundID.MenuOpen : sameMachine ? SoundID.MenuClose : SoundID.MenuTick);
+
+			return true;
 		}
 
 		public override void MouseOver(int i, int j)
@@ -103,13 +106,13 @@ namespace GadgetBox.Tiles
 			Player player = Main.LocalPlayer;
 			player.noThrow = 2;
 			player.showItemIcon = true;
-			player.showItemIcon2 = mod.ItemType<AutoReforgeMachine>();
+			player.showItemIcon2 = ItemType<AutoReforgeMachine>();
 		}
 
 		public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
 		public override bool HasSmartInteract() => true;
 
-		Point16 Center(int i, int j) => new Point16(i - Main.tile[i, j].frameX / 18 + 1, j - Main.tile[i, j].frameY % animationFrameHeight / 18 + 1);
+		private Point16 Center(int i, int j) => new Point16(i - Main.tile[i, j].frameX / 18 + 1, j - Main.tile[i, j].frameY % animationFrameHeight / 18 + 1);
 	}
 }

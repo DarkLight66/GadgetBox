@@ -7,6 +7,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
+using static Terraria.ModLoader.ModContent;
+
 namespace GadgetBox.Tiles
 {
 	public class ChlorophyteExtractorTile : ModTile
@@ -16,7 +18,7 @@ namespace GadgetBox.Tiles
 			TileID.Sets.HasOutlines[Type] = true;
 			Main.tileFrameImportant[Type] = true;
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(mod.GetTileEntity<ChlorophyteExtractorTE>().Hook_AfterPlacement, -1, 0, false);
+			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(GetInstance<ChlorophyteExtractorTE>().Hook_AfterPlacement, -1, 0, false);
 			TileObjectData.newTile.DrawYOffset = 2;
 			TileObjectData.newTile.LavaDeath = false;
 			TileObjectData.addTile(Type);
@@ -29,8 +31,8 @@ namespace GadgetBox.Tiles
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(i * 16, j * 16, 54, 54, mod.ItemType<ChlorophyteExtractor>());
-			mod.GetTileEntity<ChlorophyteExtractorTE>().Kill(i + 1, j + 1);
+			Item.NewItem(i * 16, j * 16, 54, 54, ItemType<ChlorophyteExtractor>());
+			GetInstance<ChlorophyteExtractorTE>().Kill(i + 1, j + 1);
 		}
 
 		public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset)
@@ -54,14 +56,14 @@ namespace GadgetBox.Tiles
 			frameYOffset = !extractorTE.Animating ? 0 : (Main.tileFrame[TileID.Extractinator] - extractorTE.FrameYOffset + 10) % 10 * animationFrameHeight;
 		}
 
-		public override void RightClick(int i, int j)
+		public override bool NewRightClick(int i, int j)
 		{
 			Main.mouseRightRelease = false;
 			Point16 extractorPos = TEPosition(i, j);
 			ChlorophyteExtractorTE extractorTE = mod.GetTileEntity<ChlorophyteExtractorTE>(extractorPos);
 			if (extractorTE == null)
 			{
-				return;
+				return false;
 			}
 
 			Player player = Main.LocalPlayer;
@@ -83,6 +85,8 @@ namespace GadgetBox.Tiles
 				gadgetPlayer.machinePos = extractorPos;
 				extractorTE.OpenUI();
 			}
+
+			return true;
 		}
 
 		public override void MouseOver(int i, int j)
@@ -90,13 +94,13 @@ namespace GadgetBox.Tiles
 			Player player = Main.LocalPlayer;
 			player.noThrow = 2;
 			player.showItemIcon = true;
-			player.showItemIcon2 = mod.ItemType<ChlorophyteExtractor>();
+			player.showItemIcon2 = ItemType<ChlorophyteExtractor>();
 		}
 
 		public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
 		public override bool HasSmartInteract() => true;
 
-		Point16 TEPosition(int i, int j) => new Point16(i - Main.tile[i, j].frameX / 18 + 1, j - Main.tile[i, j].frameY % animationFrameHeight / 18 + 1);
+		private Point16 TEPosition(int i, int j) => new Point16(i - Main.tile[i, j].frameX / 18 + 1, j - Main.tile[i, j].frameY % animationFrameHeight / 18 + 1);
 	}
 }

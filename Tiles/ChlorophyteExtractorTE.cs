@@ -7,6 +7,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Tiles
 {
@@ -42,7 +43,7 @@ namespace GadgetBox.Tiles
 		public bool CanTurnOn => Power > 0 && Mud > 0 && Chlorophyte < MaxResources;
 		public bool IsWorking => IsON && CanTurnOn;
 
-		short DigDelay { get; set; }
+		private short DigDelay { get; set; }
 
 		public ChlorophyteExtractorTE()
 		{
@@ -163,7 +164,7 @@ namespace GadgetBox.Tiles
 		public override bool ValidTile(int i, int j)
 		{
 			var tile = Main.tile[i, j];
-			return tile.active() && tile.type == mod.TileType<ChlorophyteExtractorTile>() && (tile.frameX / 18 == 1) && (tile.frameY % 54 / 18 == 1);
+			return tile.active() && tile.type == TileType<ChlorophyteExtractorTile>() && (tile.frameX / 18 == 1) && (tile.frameY % 54 / 18 == 1);
 		}
 
 		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
@@ -413,7 +414,7 @@ namespace GadgetBox.Tiles
 			}
 		}
 
-		void ExtractorEffect(short i, short j)
+		private void ExtractorEffect(short i, short j)
 		{
 			if (Main.netMode == NetmodeID.Server)
 			{
@@ -438,7 +439,7 @@ namespace GadgetBox.Tiles
 			}
 		}
 
-		void SendServerMessage(ExtractorMessage serverMsg = ExtractorMessage.SyncAll)
+		private void SendServerMessage(ExtractorMessage serverMsg = ExtractorMessage.SyncAll)
 		{
 			if (Main.netMode != NetmodeID.Server)
 			{
@@ -472,7 +473,7 @@ namespace GadgetBox.Tiles
 			packet.Send();
 		}
 
-		void SendClientMessage(ExtractorMessage clientMsg, short mud = 0)
+		private void SendClientMessage(ExtractorMessage clientMsg, short mud = 0)
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
@@ -491,7 +492,7 @@ namespace GadgetBox.Tiles
 			packet.Send();
 		}
 
-		enum ExtractorMessage : byte
+		private enum ExtractorMessage : byte
 		{
 			None,
 			SyncOn,

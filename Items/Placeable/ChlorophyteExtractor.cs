@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Items.Placeable
 {
@@ -20,7 +21,7 @@ namespace GadgetBox.Items.Placeable
 			item.consumable = true;
 			item.rare = 3;
 			item.value = Item.sellPrice(gold: 2);
-			item.createTile = mod.TileType<ChlorophyteExtractorTile>();
+			item.createTile = TileType<ChlorophyteExtractorTile>();
 		}
 
 		public override void AddRecipes()
@@ -30,7 +31,7 @@ namespace GadgetBox.Items.Placeable
 			recipe.AddIngredient(ItemID.LunarTabletFragment, 20);
 			recipe.AddIngredient(ItemID.Wire, 20);
 			recipe.AddIngredient(ItemID.Cog, 20);
-			recipe.AddTile(mod.TileType<LihzahrdWorkshopTile>());
+			recipe.AddTile(TileType<LihzahrdWorkshopTile>());
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}

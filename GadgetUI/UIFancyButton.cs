@@ -9,10 +9,10 @@ namespace GadgetBox.GadgetUI
 {
 	internal class UIFancyButton : UIHoverText
 	{
-		Texture2D _texture;
-		Texture2D _hoverTexture;
-		bool _isClicking;
-		float _clickScale;
+		private Texture2D _texture;
+		private Texture2D _hoverTexture;
+		private bool _isClicking;
+		private float _clickScale;
 
 		public bool Visible { get; internal set; }
 		public float Rotation { get; internal set; }

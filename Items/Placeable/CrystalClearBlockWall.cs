@@ -1,6 +1,7 @@
 ﻿using GadgetBox.Walls;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Items.Placeable
 {
@@ -9,13 +10,13 @@ namespace GadgetBox.Items.Placeable
 		public override void SetDefaults()
 		{
 			item.CloneDefaults(ItemID.CrystalBlockWall);
-			item.createWall = mod.WallType<CrystalClearBlockWallWall>();
+			item.createWall = WallType<CrystalClearBlockWallWall>();
 		}
 
 		public override void AddRecipes()
 		{
 			ModRecipe recipe = new ModRecipe(mod);
-			recipe.AddIngredient(mod.GetItem<CrystalClearBlock>());
+			recipe.AddIngredient(ItemType<CrystalClearBlock>());
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.SetResult(this, 4);
 			recipe.AddRecipe();

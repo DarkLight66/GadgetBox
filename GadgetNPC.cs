@@ -5,6 +5,7 @@ using GadgetBox.Items.Tools;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox
 {
@@ -17,7 +18,7 @@ namespace GadgetBox
 				case NPCID.WallofFlesh:
 					if (Main.rand.NextBool(10))
 					{
-						Item.NewItem(npc.getRect(), mod.ItemType<EtherealVortex>(), 1, false, -1);
+						Item.NewItem(npc.getRect(), ItemType<EtherealVortex>(), 1, false, -1);
 					}
 					break;
 				case NPCID.ArmoredSkeleton:
@@ -27,7 +28,7 @@ namespace GadgetBox
 				case NPCID.BlueArmoredBonesSword:
 					if (Main.rand.NextBool(Main.expertMode ? 25 : 50))
 					{
-						Item.NewItem(npc.getRect(), mod.ItemType<EnchantedPolish>(), Main.rand.Next(1, 3));
+						Item.NewItem(npc.getRect(), ItemType<EnchantedPolish>(), Main.rand.Next(1, 3));
 					}
 					break;
 			}
@@ -51,25 +52,25 @@ namespace GadgetBox
 							shop.item[i] = shop.item[i - 1];
 						}
 						shop.item[slot + 1] = new Item();
-						shop.item[slot + 1].SetDefaults(mod.ItemType<OldShovel>());
+						shop.item[slot + 1].SetDefaults(ItemType<OldShovel>());
 						break;
 					}
 					break;
 				case NPCID.Wizard:
-					shop.item[nextSlot++].SetDefaults(mod.ItemType<ReflectorBlock>());
+					shop.item[nextSlot++].SetDefaults(ItemType<ReflectorBlock>());
 					break;
 				case NPCID.Steampunker:
-					shop.item[nextSlot++].SetDefaults(mod.ItemType<AutoReforgeMachine>());
+					shop.item[nextSlot++].SetDefaults(ItemType<AutoReforgeMachine>());
 					if (NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3)
 					{
-						shop.item[nextSlot++].SetDefaults(mod.ItemType<ClockworkDigger>());
+						shop.item[nextSlot++].SetDefaults(ItemType<ClockworkDigger>());
 					}
-					shop.item[nextSlot++].SetDefaults(mod.ItemType<AutoReelingRod>());
+					shop.item[nextSlot++].SetDefaults(ItemType<AutoReelingRod>());
 					break;
 				case NPCID.GoblinTinkerer:
 					if (Main.hardMode)
 					{
-						shop.item[nextSlot++].SetDefaults(mod.ItemType<RestoringKit>());
+						shop.item[nextSlot++].SetDefaults(ItemType<RestoringKit>());
 					}
 					break;
 			}
@@ -79,7 +80,7 @@ namespace GadgetBox
 		{
 			if (Main.hardMode && nextSlot < shop.Length && Main.rand.NextBool(25))
 			{
-				shop[nextSlot++] = mod.ItemType<EnchantedPolish>();
+				shop[nextSlot++] = ItemType<EnchantedPolish>();
 			}
 		}
 	}

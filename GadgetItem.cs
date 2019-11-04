@@ -10,6 +10,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox
 {
@@ -64,7 +65,7 @@ namespace GadgetBox
 				}
 			}
 
-			if (item.prefix < PrefixID.Hard || item.prefix > PrefixID.Violent ||!Main.LocalPlayer.Gadget().shinyEquips)
+			if (item.prefix < PrefixID.Hard || item.prefix > PrefixID.Violent || !Main.LocalPlayer.Gadget().shinyEquips)
 			{
 				return;
 			}
@@ -110,7 +111,7 @@ namespace GadgetBox
 		{
 			if (context == "bossBag" && arg == ItemID.WallOfFleshBossBag && Main.rand.NextBool(5))
 			{
-				player.QuickSpawnItem(mod.ItemType<EtherealVortex>());
+				player.QuickSpawnItem(ItemType<EtherealVortex>());
 			}
 
 			if (context == "crate")
@@ -126,11 +127,11 @@ namespace GadgetBox
 				}
 				if (Main.rand.NextBool(chance))
 				{
-					player.QuickSpawnItem(mod.ItemType<LesserReforgingKit>(), Main.rand.NextBool() ? 2 : 1);
+					player.QuickSpawnItem(ItemType<LesserReforgingKit>(), Main.rand.NextBool() ? 2 : 1);
 				}
 				else if (Main.hardMode && Main.rand.NextBool((int)(chance * 1.5f)))
 				{
-					player.QuickSpawnItem(mod.ItemType<ReforgingKit>(), Main.rand.NextBool(4) ? 2 : 1);
+					player.QuickSpawnItem(ItemType<ReforgingKit>(), Main.rand.NextBool(4) ? 2 : 1);
 				}
 			}
 		}
@@ -188,7 +189,7 @@ namespace GadgetBox
 
 		public override void OnCraft(Item item, Recipe recipe)
 		{
-			int workshop = mod.TileType<LihzahrdWorkshopTile>();
+			int workshop = TileType<LihzahrdWorkshopTile>();
 			if (item.accessory && Main.LocalPlayer.adjTile[workshop] &&
 				Array.Exists(recipe.requiredTile, x => x == TileID.TinkerersWorkbench || x == workshop))
 			{

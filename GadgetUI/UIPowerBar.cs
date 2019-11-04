@@ -6,10 +6,10 @@ namespace GadgetBox.GadgetUI
 {
 	internal class UIPowerBar : UIHoverText
 	{
-		Texture2D _barTexture;
-		Texture2D _fillTexture;
-		float _powerPercentage;
-		float _targetPercentage;
+		private Texture2D _barTexture;
+		private Texture2D _fillTexture;
+		private float _powerPercentage;
+		private float _targetPercentage;
 
 		public UIPowerBar(Texture2D barTexture, Texture2D fillTexture, int HPadding, int VPadding)
 		{

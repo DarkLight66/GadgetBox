@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Tiles
 {
@@ -25,7 +26,7 @@ namespace GadgetBox.Tiles
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(i * 16, j * 16, 54, 54, mod.ItemType<LihzahrdWorkshop>());
+			Item.NewItem(i * 16, j * 16, 54, 54, ItemType<LihzahrdWorkshop>());
 		}
 
 		public override void AnimateTile(ref int frame, ref int frameCounter)

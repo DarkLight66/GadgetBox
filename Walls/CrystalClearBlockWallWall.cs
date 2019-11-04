@@ -1,13 +1,12 @@
-using System;
 using GadgetBox.Items.Placeable;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 using static Mono.Cecil.Cil.OpCodes;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Walls
 {
@@ -18,7 +17,7 @@ namespace GadgetBox.Walls
 			Main.wallHouse[Type] = true;
 			Main.wallLight[Type] = true;
 			dustType = DustID.SilverCoin;
-			drop = mod.ItemType<CrystalClearBlockWall>();
+			drop = ItemType<CrystalClearBlockWall>();
 			AddMapEntry(Color.Orchid);
 		}
 
@@ -54,7 +53,7 @@ namespace GadgetBox.Walls
 
 		private static void ColorModMult(ref Color color, ushort wall)
 		{
-			if (wall == GadgetBox.Instance.WallType<CrystalClearBlockWallWall>())
+			if (wall == WallType<CrystalClearBlockWallWall>())
 			{
 				color *= GadgetPlayer.crystalLensFadeMult;
 			}

@@ -11,8 +11,8 @@ namespace GadgetBox.GadgetUI
 {
 	internal class UIReforgePanel : UIPanel
 	{
-		readonly Func<Item> _reforgeItem;
-		readonly Func<int> _reforgePrice;
+		private readonly Func<Item> _reforgeItem;
+		private readonly Func<int> _reforgePrice;
 
 		public UIReforgePanel(Func<Item> reforgeItem, Func<int> reforgePrice)
 		{

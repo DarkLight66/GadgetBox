@@ -8,10 +8,10 @@ namespace GadgetBox.GadgetUI
 {
 	internal class UIExtractorSlot : UIHoverText
 	{
-		Texture2D _slotTexture;
-		Texture2D _itemTexture;
-		Func<bool> _hasItem;
-		Func<bool> _canClick;
+		private Texture2D _slotTexture;
+		private Texture2D _itemTexture;
+		private Func<bool> _hasItem;
+		private Func<bool> _canClick;
 
 		public UIExtractorSlot(Texture2D slotTexture, Texture2D itemTexture, Func<bool> hasItem, Func<bool> canClick = null)
 		{

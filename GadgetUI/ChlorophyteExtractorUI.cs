@@ -20,7 +20,7 @@ namespace GadgetBox.GadgetUI
 		internal UIExtractorSlot mudSlot;
 		internal UIExtractorSlot chloroSlot;
 		internal Mod mod;
-		int oldExtractorID;
+		private int oldExtractorID;
 
 		public override void OnInitialize()
 		{

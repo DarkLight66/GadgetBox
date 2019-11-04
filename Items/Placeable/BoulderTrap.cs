@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Items.Placeable
 {
@@ -19,7 +20,7 @@ namespace GadgetBox.Items.Placeable
 			item.maxStack = 99;
 			item.consumable = true;
 			item.value = Item.sellPrice(silver: 80);
-			item.createTile = mod.TileType<BoulderTrapTile>();
+			item.createTile = TileType<BoulderTrapTile>();
 			item.mech = true;
 		}
 
@@ -29,7 +30,7 @@ namespace GadgetBox.Items.Placeable
 			recipe.AddIngredient(ItemID.LihzahrdBrick, 40);
 			recipe.AddIngredient(ItemID.Cog, 20);
 			recipe.AddIngredient(ItemID.Boulder, 5);
-			recipe.AddTile(mod.TileType<LihzahrdWorkshopTile>());
+			recipe.AddTile(TileType<LihzahrdWorkshopTile>());
 			recipe.SetResult(this);
 			recipe.AddRecipe();
 		}

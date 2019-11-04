@@ -11,8 +11,7 @@ namespace GadgetBox.GadgetUI
 {
 	internal class UIItemSlot : UIElement
 	{
-		public static Texture2D defaultBackgroundTexture = Main.inventoryBack4Texture;
-		public Texture2D backgroundTexture = defaultBackgroundTexture;
+		public Texture2D backgroundTexture;
 		internal float scale;
 		internal Item item;
 		internal event Func<bool> CanClick;
@@ -21,8 +20,9 @@ namespace GadgetBox.GadgetUI
 		{
 			this.scale = scale;
 			item = new Item();
-			Width.Set(defaultBackgroundTexture.Width * scale, 0f);
-			Height.Set(defaultBackgroundTexture.Height * scale, 0f);
+			backgroundTexture = Main.inventoryBack4Texture;
+			Width.Set(backgroundTexture.Width * scale, 0f);
+			Height.Set(backgroundTexture.Height * scale, 0f);
 		}
 
 		public override void MouseDown(UIMouseEvent evt)
@@ -78,15 +78,7 @@ namespace GadgetBox.GadgetUI
 			if (item != null && !item.IsAir)
 			{
 				Texture2D itemTexture = Main.itemTexture[item.type];
-				Rectangle textureFrame;
-				if (Main.itemAnimations[item.type] != null)
-				{
-					textureFrame = Main.itemAnimations[item.type].GetFrame(itemTexture);
-				}
-				else
-				{
-					textureFrame = itemTexture.Frame(1, 1, 0, 0);
-				}
+				Rectangle textureFrame = Main.itemAnimations[item.type]?.GetFrame(itemTexture) ?? itemTexture.Bounds;
 
 				Color newColor = Color.White;
 				float pulseScale = 1f;
@@ -97,18 +89,10 @@ namespace GadgetBox.GadgetUI
 				float availableWidth = 32; // defaultBackgroundTexture.Width * scale;
 				if (width > availableWidth || height > availableWidth)
 				{
-					if (width > height)
-					{
-						drawScale = availableWidth / width;
-					}
-					else
-					{
-						drawScale = availableWidth / height;
-					}
+					drawScale = availableWidth / (width > height ? width : height);
 				}
 				drawScale *= scale;
-				Vector2 size = backgroundTexture.Size() * scale;
-				Vector2 itemPosition = position + size / 2f - textureFrame.Size() * drawScale / 2f;
+				Vector2 itemPosition = position + backgroundTexture.Size() * scale / 2f - textureFrame.Size() * drawScale / 2f;
 				Vector2 itemOrigin = textureFrame.Size() * (pulseScale / 2f - 0.5f);
 				if (ItemLoader.PreDrawInInventory(item, spriteBatch, itemPosition, textureFrame, item.GetAlpha(newColor),
 					item.GetColor(Color.White), itemOrigin, drawScale * pulseScale))

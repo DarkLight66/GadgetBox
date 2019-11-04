@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox
 {
@@ -43,7 +44,7 @@ namespace GadgetBox
 			recipe.AddIngredient(ItemID.LihzahrdBrick, 10);
 			recipe.AddIngredient(ItemID.VialofVenom);
 			recipe.AddIngredient(ItemID.DartTrap);
-			recipe.AddTile(mod.TileType<LihzahrdWorkshopTile>());
+			recipe.AddTile(TileType<LihzahrdWorkshopTile>());
 			recipe.SetResult(ItemID.SuperDartTrap);
 			recipe.AddRecipe();
 
@@ -51,7 +52,7 @@ namespace GadgetBox
 			recipe.AddIngredient(ItemID.LihzahrdBrick, 10);
 			recipe.AddIngredient(ItemID.Wire, 5);
 			recipe.AddIngredient(ItemID.SpikyBall, 50);
-			recipe.AddTile(mod.TileType<LihzahrdWorkshopTile>());
+			recipe.AddTile(TileType<LihzahrdWorkshopTile>());
 			recipe.SetResult(ItemID.SpikyBallTrap);
 			recipe.AddRecipe();
 
@@ -59,7 +60,7 @@ namespace GadgetBox
 			recipe.AddIngredient(ItemID.LihzahrdBrick, 10);
 			recipe.AddIngredient(ItemID.Spike, 10);
 			recipe.AddRecipeGroup(AnyGoldBar, 5);
-			recipe.AddTile(mod.TileType<LihzahrdWorkshopTile>());
+			recipe.AddTile(TileType<LihzahrdWorkshopTile>());
 			recipe.SetResult(ItemID.SpearTrap);
 			recipe.AddRecipe();
 
@@ -67,7 +68,7 @@ namespace GadgetBox
 			recipe.AddIngredient(ItemID.LihzahrdBrick, 10);
 			recipe.AddIngredient(ItemID.LivingFireBlock, 5);
 			recipe.AddIngredient(ItemID.Gel, 50);
-			recipe.AddTile(mod.TileType<LihzahrdWorkshopTile>());
+			recipe.AddTile(TileType<LihzahrdWorkshopTile>());
 			recipe.SetResult(ItemID.FlameTrap);
 			recipe.AddRecipe();
 		}

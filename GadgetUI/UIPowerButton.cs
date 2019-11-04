@@ -7,12 +7,12 @@ namespace GadgetBox.GadgetUI
 {
 	internal class UIDelayedPowerButton : UIElement
 	{
-		Texture2D _turnOnTexture;
-		Texture2D _turnOffTexture;
-		Func<bool> _isOn;
-		Func<bool> _canTurnOn;
-		ushort _toggleDelay;
-		ushort _toggleDelayCounter = 0;
+		private Texture2D _turnOnTexture;
+		private Texture2D _turnOffTexture;
+		private Func<bool> _isOn;
+		private Func<bool> _canTurnOn;
+		private ushort _toggleDelay;
+		private ushort _toggleDelayCounter = 0;
 
 		public UIDelayedPowerButton(Texture2D turnOffTexture, Texture2D turnOnTexture, ushort toogleDelay, Func<bool> isOn, Func<bool> canTurnOn)
 		{

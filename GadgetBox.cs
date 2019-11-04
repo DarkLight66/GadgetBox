@@ -4,6 +4,7 @@ using System.IO;
 using GadgetBox.GadgetUI;
 using GadgetBox.Items;
 using GadgetBox.Items.Consumables;
+using GadgetBox.Prefixes;
 using GadgetBox.Tiles;
 using Microsoft.Xna.Framework;
 using Terraria;
@@ -21,14 +22,13 @@ namespace GadgetBox
 		internal UserInterface chloroExtractInterface;
 		internal ChlorophyteExtractorUI chlorophyteExtractorUI;
 		internal UserInterface reforgeMachineInterface;
-
-		int lastSeenScreenWidth;
-		int lastSeenScreenHeight;
-		bool lastFocus;
+		private int lastSeenScreenWidth;
+		private int lastSeenScreenHeight;
+		private bool lastFocus;
 
 		public override void Load()
 		{
-			Version targetVersion = new Version(0, 11);
+			Version targetVersion = new Version(0, 11, 5);
 			if (ModLoader.version < targetVersion)
 			{
 				throw new Exception($"\nThis mod uses functionality only present in versions {targetVersion} or newer of tModLoader. Please update tModLoader to use this mod\n\n");
@@ -56,6 +56,7 @@ namespace GadgetBox
 		public override void Unload()
 		{
 			ModCompat.Unload();
+			ToolPrefix.ToolPrefixes = null;
 			ChlorophyteExtractorUI.ExtractorTE = null;
 			Instance = null;
 		}

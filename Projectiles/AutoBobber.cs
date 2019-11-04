@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Projectiles
 {
@@ -115,7 +116,7 @@ namespace GadgetBox.Projectiles
 		public override void Kill(int timeLeft)
 		{
 			Player player = Main.LocalPlayer;
-			if (autoCatched && player.HeldItem.type == mod.ItemType<AutoReelingRod>())
+			if (autoCatched && player.HeldItem.type == ItemType<AutoReelingRod>())
 			{
 				Vector2 position = player.RotatedRelativePoint(player.MountedCenter);
 				Vector2 velocity = Main.MouseWorld - position;
@@ -134,7 +135,7 @@ namespace GadgetBox.Projectiles
 			Player player = Main.player[projectile.owner];
 			Item item = player.HeldItem;
 
-			if (item.holdStyle != 1 || item.type != mod.ItemType<AutoReelingRod>())
+			if (item.holdStyle != 1 || item.type != ItemType<AutoReelingRod>())
 			{
 				return true;
 			}

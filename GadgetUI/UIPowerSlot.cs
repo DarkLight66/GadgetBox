@@ -32,7 +32,7 @@ namespace GadgetBox.GadgetUI
 		{
 			CalculatedStyle dimensions = GetDimensions();
 			Texture2D texture = _hasPower() ? _hasPowerTexture : _noPowerTexture;
-			spriteBatch.Draw(texture, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, (int)dimensions.Height), null, Color.White);
+			spriteBatch.Draw(texture, dimensions.ToRectangle(), null, Color.White);
 		}
 	}
 }

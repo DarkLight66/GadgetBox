@@ -5,6 +5,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Tiles
 {
@@ -73,11 +74,7 @@ namespace GadgetBox.Tiles
 		public override ushort GetMapOption(int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
-			if (tile.wall == WallID.LihzahrdBrickUnsafe && tile.inActive() && !NPC.downedGolemBoss)
-			{
-				return 1;
-			}
-			return 0;
+			return (ushort)(tile.wall == WallID.LihzahrdBrickUnsafe && tile.inActive() && !NPC.downedGolemBoss ? 1 : 0);
 		}
 
 		public override bool Slope(int i, int j)
@@ -124,7 +121,7 @@ namespace GadgetBox.Tiles
 						velocity = -velocity;
 						break;
 				}
-				Projectile.NewProjectile(spawn, velocity * 3.5f, mod.ProjectileType<Projectiles.TempleBoulder>(), 70, 3f, Main.myPlayer, Main.rand.Next(2));
+				Projectile.NewProjectile(spawn, velocity * 3.5f, ProjectileType<Projectiles.TempleBoulder>(), 70, 3f, Main.myPlayer, Main.rand.Next(2));
 			}
 		}
 
@@ -134,7 +131,7 @@ namespace GadgetBox.Tiles
 
 		public override bool CanExplode(int i, int j) => CanMineTrap(i, j, Type);
 
-		public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(i * 16, j * 16, 32, 32, mod.ItemType<Items.Placeable.BoulderTrap>());
+		public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(i * 16, j * 16, 32, 32, ItemType<Items.Placeable.BoulderTrap>());
 
 		public override bool Dangersense(int i, int j, Player player) => true;
 

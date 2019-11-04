@@ -3,15 +3,16 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
+using Terraria.UI;
 
 namespace GadgetBox.GadgetUI
 {
 	internal class UIReforgeLabel : UILeftAlignedLabel
 	{
-		internal byte prefix;
 		internal bool selected;
+		internal Item shownItem;
 
-		static Dictionary<int, Color> rarityColors = new Dictionary<int, Color>()
+		private static Dictionary<int, Color> rarityColors = new Dictionary<int, Color>()
 		{
 			[-11] = Colors.RarityAmber,
 			[-1] = Colors.RarityTrash,
@@ -29,19 +30,10 @@ namespace GadgetBox.GadgetUI
 			[11] = new Color(180, 40, 255)
 		};
 
-		int _rarity;
-		int _value;
-
-		public UIReforgeLabel(byte prefix = 0, int rarity = 0, int value = 0) :
-			base(Lang.prefix[prefix].Value, Color.White)
+		public UIReforgeLabel(Item shownItem) :
+			base(Lang.prefix[shownItem.prefix].Value, Color.White)
 		{
-			this.prefix = prefix;
-			_rarity = rarity;
-			_value = value;
-			if (rarityColors.ContainsKey(rarity))
-			{
-				TextColor = rarityColors[rarity];
-			}
+			this.shownItem = shownItem;
 
 			if (Text.StartsWith("("))
 			{
@@ -53,19 +45,38 @@ namespace GadgetBox.GadgetUI
 		{
 			UIReforgeLabel other = obj as UIReforgeLabel;
 			int diffSelected = -selected.CompareTo(other.selected);
-			int diffValue = -_value.CompareTo(other._value);
-			return diffSelected != 0 ? diffSelected : diffValue != 0 ? diffValue : prefix.CompareTo(other.prefix);
+			int diffValue = -shownItem.value.CompareTo(other.shownItem.value);
+			return diffSelected != 0 ? diffSelected : diffValue != 0 ? diffValue : shownItem.prefix.CompareTo(other.shownItem.prefix);
+		}
+
+		public override void MouseOver(UIMouseEvent evt)
+		{
+			Main.HoverItem = shownItem.Clone();
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			BackgroundColor = selected ? Color.LightSkyBlue : Color.CornflowerBlue;
-			if (_rarity == -12)
+			if (shownItem.expert || shownItem.rare == -12)
 			{
 				TextColor = Main.DiscoColor;
 			}
+			else if (rarityColors.ContainsKey(shownItem.rare))
+			{
+				TextColor = rarityColors[shownItem.rare];
+			}
+			else
+			{
+				TextColor = Color.White;
+			}
 
 			base.DrawSelf(spriteBatch);
+
+			if (GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY))
+			{
+				Main.HoverItem = shownItem.Clone();
+				Main.hoverItemName = Main.HoverItem.Name;
+			}
 		}
 	}
 }

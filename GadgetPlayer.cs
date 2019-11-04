@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using GadgetBox.GadgetUI;
 using GadgetBox.Items.Accessories;
-using GadgetBox.Items.Placeable;
 using GadgetBox.Projectiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,23 +9,23 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox
 {
 	public class GadgetPlayer : ModPlayer
 	{
+		public static float crystalLensFadeMult;
+
 		public bool etherMagnet;
 		public bool shinyEquips;
 		public bool critterCatch;
 		public bool nearBanner;
 		public bool crystalLens;
-		public static float crystalLensFadeMult;
 
 		public byte critShine;
 		public byte speedShine;
-		//public byte bannerStandLevel;
 
-		//public HashSet<int> banners = new HashSet<int>();
 		public Point16 machinePos = Point16.NegativeOne;
 		public Vector2 autoReelAim = Vector2.Zero;
 
@@ -39,7 +38,6 @@ namespace GadgetBox
 			crystalLens = false;
 			critShine = 0;
 			speedShine = 0;
-			//bannerStandLevel = 0;
 		}
 
 		public override void UpdateDead()
@@ -97,7 +95,7 @@ namespace GadgetBox
 
 		public override void PostUpdateBuffs()
 		{
-			if (autoReelAim != Vector2.Zero && player.ownedProjectileCounts[mod.ProjectileType<AutoBobber>()] <= 0)
+			if (autoReelAim != Vector2.Zero && player.ownedProjectileCounts[ProjectileType<AutoBobber>()] <= 0)
 			{
 				autoReelAim = Vector2.Zero;
 			}
@@ -116,39 +114,7 @@ namespace GadgetBox
 					crystalLensFadeMult -= 0.00625f;
 				}
 			}
-
-			/* if (Main.myPlayer != player.whoAmI)
-				return;
-
-			banners.Clear();
-
-			int maxBanners = bannerStandLevel;
-			if (maxBanners == 0)
-				return;
-
-			for (int i = 49; i >= 0; i--)
-			{
-				Item banner = player.inventory[i];
-				if (banner == null || banner.IsAir)
-					continue;
-
-				if (banner.type == mod.ItemType<MemorialBanner>() && !banners.Contains(-1))
-				{
-					banners.Add(-1);
-					if (--maxBanners == 0)
-						break;
-					continue;
-				}
-
-				int bannerID = BannerHelper.ItemToBanner(banner.type);
-				if (bannerID == 0 || !ItemID.Sets.BannerStrength[banner.type].Enabled || banners.Contains(bannerID))
-					continue;
-				banners.Add(bannerID);
-				if (--maxBanners == 0)
-					break;
-			} */
 		}
-		
 
 		public override bool? CanHitNPCWithProj(Projectile proj, NPC target)
 		{
@@ -187,7 +153,7 @@ namespace GadgetBox
 			if (player.anglerQuestsFinished > 25 && Main.rand.NextBool((int)((Main.hardMode ? 75 : 100) * rareMultiplier)))
 			{
 				Item item = new Item();
-				item.SetDefaults(mod.ItemType<CritterNetAttachment>());
+				item.SetDefaults(ItemType<CritterNetAttachment>());
 				rewardItems.Add(item);
 			}
 		}

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Items.Placeable
 {
@@ -20,7 +21,7 @@ namespace GadgetBox.Items.Placeable
 			item.useStyle = 1;
 			item.consumable = true;
 			item.value = Item.sellPrice(gold: 2);
-			item.createTile = mod.TileType<LihzahrdWorkshopTile>();
+			item.createTile = TileType<LihzahrdWorkshopTile>();
 		}
 
 		public override void AddRecipes()

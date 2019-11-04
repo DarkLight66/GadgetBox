@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace GadgetBox.Items.Placeable
 {
@@ -19,7 +20,7 @@ namespace GadgetBox.Items.Placeable
 			item.rare = 3;
 			item.consumable = true;
 			item.value = Item.buyPrice(gold: 20);
-			item.createTile = mod.TileType<AutoReforgeMachineTile>();
+			item.createTile = TileType<AutoReforgeMachineTile>();
 		}
 	}
 }
